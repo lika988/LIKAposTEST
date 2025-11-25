@@ -992,7 +992,11 @@
                     let pct = Math.min(100, (realStock/(p.minStock*3 || 20))*100); 
                     const el = document.createElement('div'); el.className = 'prod-card'; el.onclick = () => pos.addToCart(p.id);
                     let imgHTML = '';
-                    if(showImg) { imgHTML = `<div class="prod-img-container"><img src="${p.image}" class="prod-img"><div class="stock-indicator"><div class="stock-fill" style="width:${pct}%; background:${barColor};"></div></div></div>`; }
+                    if(showImg) { 
+                        // UPDATED: Robust image handling with fallback for broken links
+                        const imgSrc = p.image && p.image.trim() !== '' ? p.image : 'https://placehold.co/300?text=No+Image';
+                        imgHTML = `<div class="prod-img-container"><img src="${imgSrc}" class="prod-img" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/300?text=Error';"><div class="stock-indicator"><div class="stock-fill" style="width:${pct}%; background:${barColor};"></div></div></div>`; 
+                    }
                     el.innerHTML = `${imgHTML}<div class="prod-info"><div class="prod-name">${p.name}</div><div class="prod-meta"><span class="prod-price">${app.fmt(p.price)}</span><span class="prod-stock-badge">${realStock}</span></div></div>`;
                     grid.appendChild(el);
                 });
