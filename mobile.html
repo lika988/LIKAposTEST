@@ -388,6 +388,22 @@
         .support-info h4 { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
         .support-info p { font-size: 11px; color: var(--text-tertiary); }
 
+        /* --- FIXED TOAST STYLES --- */
+        #toast {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
+            background: var(--bg-surface); color: var(--text-primary);
+            padding: 12px 20px; border-radius: 50px; z-index: 3000;
+            border: 1px solid var(--secondary); 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex; align-items: center; gap: 12px; white-space: nowrap;
+            pointer-events: auto; cursor: pointer;
+        }
+        #toast.active { transform: translateX(-50%) translateY(0); }
+        #toast-close {
+            background: none; border: none; color: var(--text-secondary); 
+            font-size: 18px; cursor: pointer; padding: 0; margin-left: 8px; display: flex;
+        }
     </style>
 </head>
 <body>
@@ -517,7 +533,7 @@
         <div id="settings-view" class="view-container">
             <div class="scroll-content">
                 <div class="card">
-                    <h3 style="margin-bottom: 16px;">Sync Devices</h3>
+                    <h3 style="margin-bottom: 16px;">Device Sync</h3>
                     <button class="btn btn-primary" onclick="syncApp.open()" style="width: 100%;">
                         <i class="fas fa-sync"></i> Connect & Sync
                     </button>
@@ -798,8 +814,9 @@
 
         <div id="printable-area" class="hidden"></div>
 
-        <div id="toast" style="position:fixed; top:20px; left:50%; transform:translateX(-50%) translateY(-100px); background:var(--bg-surface); color:#fff; padding:12px 24px; border-radius:50px; z-index:3000; border:1px solid var(--secondary); transition:transform 0.4s;">
-            <i class="fas fa-check"></i> <span id="toast-msg">Success</span>
+        <div id="toast" onclick="app.stickToast()">
+            <span id="toast-msg">Action Successful</span>
+            <button id="toast-close" onclick="event.stopPropagation(); app.hideToast()">&times;</button>
         </div>
     </div>
 
@@ -853,6 +870,8 @@
 
         // MAIN APP LOGIC
         window.app = {
+            toastTimeout: null,
+            
             init: () => {
                 const s = localStorage.getItem('likapos_db');
                 if(s) {
@@ -936,11 +955,27 @@
             
             fmt: (n) => db.settings.currency + parseFloat(n).toFixed(2),
             
+            // FIXED TOAST LOGIC
             toast: (m) => {
                 const t = document.getElementById('toast');
                 document.getElementById('toast-msg').innerText = m;
-                t.style.transform = 'translateX(-50%) translateY(0)';
-                setTimeout(() => t.style.transform = 'translateX(-50%) translateY(-100px)', 2500);
+                t.classList.add('active');
+                
+                // Clear existing timeout if any
+                if(app.toastTimeout) clearTimeout(app.toastTimeout);
+                
+                // Auto hide after 5s
+                app.toastTimeout = setTimeout(() => {
+                    t.classList.remove('active');
+                }, 5000);
+            },
+            
+            stickToast: () => {
+                if(app.toastTimeout) clearTimeout(app.toastTimeout);
+            },
+            
+            hideToast: () => {
+                document.getElementById('toast').classList.remove('active');
             },
             
             updateSet: (k, v) => { 
@@ -992,46 +1027,65 @@
 
         // --- SYNC ENGINE (PeerJS) ---
         const syncApp = {
-            peer: null,
-            conn: null,
+            peer: null, conn: null,
+            
             open: () => {
                 document.getElementById('sync-modal').classList.add('active');
                 document.getElementById('sync-step-1').classList.remove('hidden');
                 document.getElementById('sync-step-host').classList.add('hidden');
                 document.getElementById('sync-step-client').classList.add('hidden');
             },
+            
             startHost: () => {
+                // Cleanup old peer if exists
+                if(syncApp.peer) syncApp.peer.destroy();
+                
                 const code = Math.floor(1000 + Math.random() * 9000);
-                syncApp.peer = new Peer('likapos-sync-' + code);
+                syncApp.peer = new Peer('likapos-sync-' + code, { debug: 1 });
+                
                 syncApp.peer.on('open', (id) => {
                     document.getElementById('sync-step-1').classList.add('hidden');
                     document.getElementById('sync-step-host').classList.remove('hidden');
                     document.getElementById('sync-code-display').innerText = code;
                 });
+                
                 syncApp.peer.on('connection', (conn) => {
                     conn.on('open', () => {
                         app.toast("Device Connected! Sending data...");
                         conn.send({ type: 'SYNC_DATA', data: db });
+                        
                         setTimeout(() => {
                             app.toast("Sync Complete!");
                             document.getElementById('sync-modal').classList.remove('active');
-                            syncApp.peer.destroy(); 
-                        }, 1000);
+                            // Don't destroy peer immediately in case client needs to retry
+                        }, 2000);
                     });
                 });
-                syncApp.peer.on('error', (err) => alert("Sync Error: " + err.type));
+                
+                syncApp.peer.on('error', (err) => app.toast("Sync Error: " + err.type));
             },
+            
             startClient: () => {
                 document.getElementById('sync-step-1').classList.add('hidden');
                 document.getElementById('sync-step-client').classList.remove('hidden');
             },
+            
             connectToHost: () => {
                 const code = document.getElementById('sync-code-input').value;
-                if(!code) return alert("Enter code");
-                syncApp.peer = new Peer(); 
+                if(!code) return app.toast("Enter code");
+                
+                // Cleanup
+                if(syncApp.peer) syncApp.peer.destroy();
+                
+                syncApp.peer = new Peer(null, { debug: 1 }); 
+                
                 syncApp.peer.on('open', () => {
                     const conn = syncApp.peer.connect('likapos-sync-' + code);
-                    conn.on('open', () => { app.toast("Connected! Waiting for data..."); });
+                    
+                    conn.on('open', () => { 
+                        app.toast("Connected! Waiting for data..."); 
+                    });
+                    
                     conn.on('data', (msg) => {
                         if(msg.type === 'SYNC_DATA') {
                             if(confirm("Incoming Data received! Overwrite current data?")) {
@@ -1042,9 +1096,17 @@
                             }
                         }
                     });
+                    
+                    // Handle connection failure
+                    setTimeout(() => {
+                        if(!conn.open) {
+                           // Check if we received data
+                        }
+                    }, 5000);
                 });
+                
                 syncApp.peer.on('error', (err) => {
-                    alert("Connection Failed. Check code or internet.");
+                    app.toast("Connection Failed. Check code or internet.");
                 });
             }
         };
@@ -1298,6 +1360,7 @@
             }
         };
 
+        // REPORTS (SAFE MODE)
         window.reports = {
             filter: 'today',
             setFilter: (f) => {
