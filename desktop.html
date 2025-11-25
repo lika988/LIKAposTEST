@@ -1,25 +1,23 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-8XSLX790TS"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-    
       gtag('config', 'G-8XSLX790TS');
     </script>
 
+    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+
     <meta charset="UTF-8">
-    <!-- Adjusted viewport for standard desktop scaling behavior on all devices -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LIKApos</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-    <!-- RealFaviconGenerator Markups -->
     <link rel="icon" type="image/png" href="https://realfavicongenerator.net/files/56477a3f-ceaa-4bcb-8de8-c8c79a099f2d/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="https://realfavicongenerator.net/files/56477a3f-ceaa-4bcb-8de8-c8c79a099f2d/favicon.svg" />
     <link rel="shortcut icon" href="https://realfavicongenerator.net/files/56477a3f-ceaa-4bcb-8de8-c8c79a099f2d/favicon.ico" />
@@ -111,7 +109,6 @@
         .text-warning { color: var(--warning); }
         .text-info { color: var(--info); }
         
-        /* Utility Class - Always visible now as mobile mode is removed */
         .mobile-hidden { display: inline-flex; }
 
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -122,7 +119,6 @@
         @keyframes rollUp { 0% { transform: translateY(100%); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
         @keyframes rollDown { 0% { transform: translateY(-100%); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
         
-        /* CONNECTION DOT ANIMATION */
         @keyframes pulse-red {
             0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 75, 85, 0.7); }
             70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(255, 75, 85, 0); }
@@ -149,12 +145,11 @@
 
         .brand { padding: 24px; font-size: 20px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); }
         
-        /* STATUS DOT STYLE */
         .status-dot {
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            margin-left: 4px; /* Slight spacing from text */
+            margin-left: 4px; 
             transition: background-color 0.3s ease;
         }
         .status-dot.online {
@@ -210,7 +205,6 @@
         }
         input:focus, select:focus { border-color: var(--secondary); box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.15); transform: translateY(-1px); }
 
-        /* Helper for labels above inputs */
         .input-label {
             display: block;
             margin-bottom: 6px;
@@ -341,12 +335,11 @@
         }
         .onboarding-backdrop.active { opacity: 1; pointer-events: auto; }
         
-        /* The spotlight effect simply raises the z-index of the target */
         .onboarding-spotlight {
             position: relative; z-index: 9001 !important;
             box-shadow: 0 0 0 4px var(--accent), 0 0 0 5000px rgba(0,0,0,0.75);
             transition: all 0.3s ease;
-            pointer-events: none !important; /* Prevent interaction during tour */
+            pointer-events: none !important; 
         }
 
         .onboarding-tooltip {
@@ -359,52 +352,21 @@
         }
         .onboarding-tooltip.active { opacity: 1; transform: translateY(0) scale(1); }
         
-        .onboarding-progress {
-            display: flex; gap: 4px; margin-bottom: 16px;
-        }
-        .onboarding-dot {
-            height: 4px; flex: 1; background: var(--border); border-radius: 2px; transition: background 0.3s;
-        }
+        .onboarding-progress { display: flex; gap: 4px; margin-bottom: 16px; }
+        .onboarding-dot { height: 4px; flex: 1; background: var(--border); border-radius: 2px; transition: background 0.3s; }
         .onboarding-dot.active { background: var(--accent); }
         
-        .onboarding-actions {
-            display: flex; justify-content: space-between; align-items: center; margin-top: 20px;
-        }
+        .onboarding-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; }
+        .onboarding-timer { font-size: 11px; font-weight: 600; color: var(--secondary); margin-top: 8px; text-align: right; font-family: 'JetBrains Mono', monospace; }
         
-        .onboarding-timer {
-            font-size: 11px; font-weight: 600; color: var(--secondary);
-            margin-top: 8px; text-align: right; font-family: 'JetBrains Mono', monospace;
-        }
-        
-        /* PREVIEW & IMPORT STYLES */
         .preview-box {
-            width: 100%;
-            aspect-ratio: 1/1; /* Make it square like POS grid */
-            background: var(--bg-app);
-            border: 2px dashed var(--border);
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            position: relative;
-            margin-top: 8px;
+            width: 100%; aspect-ratio: 1/1; background: var(--bg-app); border: 2px dashed var(--border); border-radius: var(--radius-md);
+            display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; margin-top: 8px;
         }
-        .preview-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Crucial for 'perfect' pos crop preview */
-        }
-        .import-row-dupe {
-            background: rgba(255, 75, 85, 0.15) !important;
-            border-left: 3px solid var(--danger) !important;
-        }
-        .import-row-new {
-            background: rgba(0, 229, 160, 0.15) !important;
-            border-left: 3px solid var(--accent) !important;
-        }
+        .preview-box img { width: 100%; height: 100%; object-fit: cover; }
+        .import-row-dupe { background: rgba(255, 75, 85, 0.15) !important; border-left: 3px solid var(--danger) !important; }
+        .import-row-new { background: rgba(0, 229, 160, 0.15) !important; border-left: 3px solid var(--accent) !important; }
         
-        /* --- OPTIMIZED PRINT ENGINE --- */
         @media print { 
             #app, .modal-overlay, #toast, #sidebar, header, .onboarding-backdrop, .onboarding-tooltip { display: none !important; }
             body { background: white !important; color: black !important; height: auto !important; overflow: visible !important; font-size: 12px !important; }
@@ -423,17 +385,13 @@
         
         .hidden { display: none !important; }
         .settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
-
-        /* ALL MOBILE & TABLET MEDIA QUERIES REMOVED TO FORCE DESKTOP VIEW */
     </style>
 </head>
 <body>
     <div id="app">
-        <!-- SIDEBAR (DESKTOP) -->
         <nav id="sidebar">
             <div class="brand">
                 <span>LIKApos</span>
-                <!-- NEW CONNECTION STATUS DOT -->
                 <div id="connection-status" class="status-dot online" title="System Online"></div>
             </div>
             <div class="nav-container">
@@ -451,7 +409,6 @@
             </div>
         </nav>
 
-        <!-- MAIN CONTENT -->
         <main id="main">
             <header>
                 <div style="display: flex; align-items: center; gap: 16px;">
@@ -465,7 +422,6 @@
                 </div>
             </header>
 
-            <!-- VIEWS -->
             <div id="dashboard-view" class="view-container active animate-slide">
                 <div class="stats-grid">
                     <div class="card stat-card">
@@ -530,8 +486,6 @@
                     </div>
 
                     <div class="cart-panel" id="cart-panel">
-                        <!-- MOBILE TOGGLE REMOVED - DESKTOP ONLY -->
-
                         <div style="padding: 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--hover-overlay);">
                             <div style="font-weight: 600; color: var(--text-secondary);" data-i18n="current_order">Current Order</div>
                             <button id="cart-clear-btn" class="btn btn-danger" style="padding: 6px 12px; font-size: 12px;" onclick="pos.clearCart()"><i class="fas fa-trash"></i> <span data-i18n="clear">Clear</span></button>
@@ -635,7 +589,14 @@
             <div id="settings-view" class="view-container">
                 <div class="settings-grid">
                     
-                    <!-- NEW LANGUAGE CARD -->
+                    <div class="card">
+                        <h3 style="margin-bottom: 24px;">Device Sync</h3>
+                        <p class="text-muted" style="margin-bottom: 16px;">Sync data between Desktop, Tablet, and Mobile.</p>
+                        <button class="btn btn-primary hover-scale" onclick="syncApp.open()" style="width: 100%;">
+                            <i class="fas fa-sync"></i> Connect & Sync
+                        </button>
+                    </div>
+
                     <div class="card">
                          <h3 style="margin-bottom: 24px;" data-i18n="system_language">System Language</h3>
                          <div style="display: flex; flex-direction: column; gap: 16px;">
@@ -713,11 +674,8 @@
                 </div>
             </div>
         </main>
-        
-        <!-- REMOVED MOBILE BOTTOM NAVIGATION -->
     </div>
 
-    <!-- ONBOARDING OVERLAY ELEMENTS -->
     <div id="onboarding-backdrop" class="onboarding-backdrop"></div>
     <div id="onboarding-tooltip" class="onboarding-tooltip">
         <div class="onboarding-progress" id="onboarding-progress"></div>
@@ -730,9 +688,6 @@
         <div id="onboarding-timer" class="onboarding-timer"></div>
     </div>
 
-    <!-- MODALS -->
-
-    <!-- NEW LANGUAGE MODAL (FIRST START) -->
     <div id="language-modal" class="modal-overlay">
         <div class="modal" style="text-align: center; max-width: 400px;">
             <div style="margin-bottom: 24px; color: var(--accent); font-size: 48px;">
@@ -740,16 +695,9 @@
             </div>
             <h2 style="margin-bottom: 8px;">Select Language</h2>
             <p class="text-muted" style="margin-bottom: 32px;">Zgjidhni gjuhën tuaj / Choose your language</p>
-            
             <div style="display: grid; gap: 16px;">
-                <button class="btn btn-secondary hover-scale" style="height: 60px; font-size: 16px; justify-content: space-between; padding: 0 24px;" onclick="app.setInitialLanguage('Albanian')">
-                    <span>Albanian (Shqip)</span>
-                    <span style="font-size: 20px;">🇦🇱</span>
-                </button>
-                <button class="btn btn-secondary hover-scale" style="height: 60px; font-size: 16px; justify-content: space-between; padding: 0 24px;" onclick="app.setInitialLanguage('English')">
-                    <span>English</span>
-                    <span style="font-size: 20px;">🇺🇸</span>
-                </button>
+                <button class="btn btn-secondary hover-scale" style="height: 60px; font-size: 16px; justify-content: space-between; padding: 0 24px;" onclick="app.setInitialLanguage('Albanian')"><span>Albanian (Shqip)</span><span style="font-size: 20px;">🇦🇱</span></button>
+                <button class="btn btn-secondary hover-scale" style="height: 60px; font-size: 16px; justify-content: space-between; padding: 0 24px;" onclick="app.setInitialLanguage('English')"><span>English</span><span style="font-size: 20px;">🇺🇸</span></button>
             </div>
         </div>
     </div>
@@ -777,6 +725,36 @@
         </div>
     </div>
 
+    <div id="sync-modal" class="modal-overlay">
+        <div class="modal" style="max-width: 400px; text-align: center;">
+            <h3 style="margin-bottom: 16px;">Device Sync</h3>
+            <div id="sync-step-1">
+                <p class="text-muted" style="margin-bottom: 24px;">Connect two devices to transfer data.</p>
+                <div style="display: grid; gap: 12px;">
+                    <button class="btn btn-primary" onclick="syncApp.startHost()" style="justify-content: center; height: 50px;">
+                        <i class="fas fa-upload"></i> SEND DATA (Host)
+                    </button>
+                    <button class="btn btn-secondary" onclick="syncApp.startClient()" style="justify-content: center; height: 50px;">
+                        <i class="fas fa-download"></i> RECEIVE DATA (Join)
+                    </button>
+                </div>
+            </div>
+            <div id="sync-step-host" class="hidden">
+                <p class="text-muted">Enter this code on the other device:</p>
+                <div id="sync-code-display" style="font-size: 48px; font-family: 'JetBrains Mono'; font-weight: 700; color: var(--accent); margin: 20px 0; letter-spacing: 4px;">...</div>
+                <div style="font-size: 12px;" class="text-secondary"><i class="fas fa-spinner fa-spin"></i> Waiting for connection...</div>
+            </div>
+            <div id="sync-step-client" class="hidden">
+                <p class="text-muted">Enter the code from the Host device:</p>
+                <input type="number" id="sync-code-input" placeholder="0000" style="font-size: 32px; text-align: center; letter-spacing: 4px; font-family: 'JetBrains Mono'; margin: 20px 0; width: 100%;">
+                <button class="btn btn-success" onclick="syncApp.connectToHost()" style="width: 100%; justify-content: center;">CONNECT & SYNC</button>
+            </div>
+            <div style="margin-top: 24px; border-top: 1px solid var(--border); padding-top: 16px;">
+                <button class="btn btn-secondary" onclick="document.getElementById('sync-modal').classList.remove('active')">Close</button>
+            </div>
+        </div>
+    </div>
+
     <div id="checkout-modal" class="modal-overlay">
         <div class="modal" style="max-width: 800px;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
@@ -792,7 +770,6 @@
                     <div style="margin-bottom: 24px;">
                         <label class="text-secondary" style="font-size: 12px; margin-bottom: 8px; display: block;" data-i18n="amount_tendered">AMOUNT TENDERED</label>
                         <div style="display: flex; gap: 12px;">
-                            <!-- FIX: Changed type="text" and added inputmode="decimal" for better mobile/numpad handling -->
                             <input type="text" inputmode="decimal" id="checkout-cash" class="font-mono" style="font-size: 24px; height: 60px;" placeholder="0.00" onkeyup="pos.calcChange()">
                             <button id="checkout-exact-btn" class="btn btn-secondary hover-scale" onclick="pos.setCash(null)" data-i18n="exact">EXACT</button>
                         </div>
@@ -824,7 +801,6 @@
         </div>
     </div>
 
-    <!-- IMPORT PREVIEW MODAL -->
     <div id="import-preview-modal" class="modal-overlay">
         <div class="modal" style="max-width: 600px; display:flex; flex-direction:column; height:80vh;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
@@ -832,7 +808,6 @@
                 <button class="btn btn-secondary hover-scale" style="padding: 4px 8px;" onclick="inventoryManager.closeImportModal()"><i class="fas fa-times"></i></button>
             </div>
             <div class="text-muted" style="font-size: 13px; margin-bottom: 16px;" data-i18n="import_desc">Review items before importing. Duplicates are marked in red.</div>
-            
             <div class="table-container" style="flex:1; overflow-y:auto; margin-bottom:16px;">
                 <table id="import-table">
                     <thead>
@@ -846,7 +821,6 @@
                     <tbody id="import-tbody"></tbody>
                 </table>
             </div>
-
             <div style="display:flex; justify-content:flex-end; gap:12px;">
                 <button class="btn btn-secondary" onclick="inventoryManager.closeImportModal()" data-i18n="cancel">Cancel</button>
                 <button class="btn btn-primary" onclick="inventoryManager.confirmImport()" data-i18n="confirm_import">Confirm Import</button>
@@ -859,50 +833,19 @@
             <h3 id="product-modal-title" style="margin-bottom: 24px;">ADD PRODUCT</h3>
             <input type="hidden" id="prod-id">
             <div style="display: flex; flex-direction: column; gap: 16px; overflow-y: auto; flex: 1; padding-right: 4px;">
-                <div>
-                    <label class="input-label">Product Name</label>
-                    <input type="text" id="prod-name" placeholder="Enter name...">
+                <div><label class="input-label">Product Name</label><input type="text" id="prod-name" placeholder="Enter name..."></div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div><label class="input-label">Barcode</label><input type="text" id="prod-barcode" placeholder="Scan/Type..."></div>
+                    <div><label class="input-label">Category</label><input type="text" id="prod-category" placeholder="Select..." list="category-list"><datalist id="category-list"></datalist></div>
+                </div>
+                <div><label class="input-label">Image (URL or Paste)</label><input type="text" id="prod-image" placeholder="Image URL..." oninput="inventoryManager.updatePreview()"><div class="preview-box"><img id="prod-preview" src="" onerror="this.style.display='none'" style="display:none;"><span class="text-muted" id="prod-preview-text" style="font-size:12px;">POS View Preview</span></div></div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div><label class="input-label">Selling Price</label><input type="number" id="prod-price" placeholder="0.00"></div>
+                    <div><label class="input-label">Cost Price</label><input type="number" id="prod-cost" placeholder="0.00"></div>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                    <div>
-                        <label class="input-label">Barcode</label>
-                        <input type="text" id="prod-barcode" placeholder="Scan/Type...">
-                    </div>
-                    <div>
-                        <label class="input-label">Category</label>
-                        <input type="text" id="prod-category" placeholder="Select..." list="category-list">
-                        <datalist id="category-list"></datalist>
-                    </div>
-                </div>
-                
-                <div>
-                    <label class="input-label">Image (URL or Paste)</label>
-                    <input type="text" id="prod-image" placeholder="Image URL..." oninput="inventoryManager.updatePreview()">
-                    <div class="preview-box">
-                         <img id="prod-preview" src="" onerror="this.style.display='none'" style="display:none;">
-                         <span class="text-muted" id="prod-preview-text" style="font-size:12px;">POS View Preview</span>
-                    </div>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                    <div>
-                        <label class="input-label">Selling Price</label>
-                        <input type="number" id="prod-price" placeholder="0.00">
-                    </div>
-                    <div>
-                        <label class="input-label">Cost Price</label>
-                        <input type="number" id="prod-cost" placeholder="0.00">
-                    </div>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                    <div>
-                        <label class="input-label">Current Stock</label>
-                        <input type="number" id="prod-stock" placeholder="0">
-                    </div>
-                    <div>
-                        <label class="input-label">Min Stock Alert</label>
-                        <input type="number" id="prod-min" placeholder="0">
-                    </div>
+                    <div><label class="input-label">Current Stock</label><input type="number" id="prod-stock" placeholder="0"></div>
+                    <div><label class="input-label">Min Stock Alert</label><input type="number" id="prod-min" placeholder="0"></div>
                 </div>
             </div>
             <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 32px;">
@@ -917,18 +860,9 @@
             <h3 style="margin-bottom: 24px;" data-i18n="customer_profile">Customer Profile</h3>
             <input type="hidden" id="cust-id">
             <div style="display: flex; flex-direction: column; gap: 16px;">
-                <div>
-                    <label class="input-label">Full Name</label>
-                    <input type="text" id="cust-name" placeholder="Enter name...">
-                </div>
-                <div>
-                    <label class="input-label">Phone Number</label>
-                    <input type="text" id="cust-phone" placeholder="Enter phone...">
-                </div>
-                <div>
-                    <label class="input-label">Email Address</label>
-                    <input type="email" id="cust-email" placeholder="Enter email...">
-                </div>
+                <div><label class="input-label">Full Name</label><input type="text" id="cust-name" placeholder="Enter name..."></div>
+                <div><label class="input-label">Phone Number</label><input type="text" id="cust-phone" placeholder="Enter phone..."></div>
+                <div><label class="input-label">Email Address</label><input type="email" id="cust-email" placeholder="Enter email..."></div>
             </div>
             <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 32px;">
                 <button class="btn btn-secondary hover-scale" onclick="customerManager.closeModal()" data-i18n="cancel">Cancel</button>
@@ -956,7 +890,6 @@
         </div>
     </div>
 
-    <!-- VERSION MODAL -->
     <div id="version-modal" class="modal-overlay">
         <div class="modal" style="max-width: 500px; max-height: 80vh; display: flex; flex-direction: column;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
@@ -966,26 +899,22 @@
             <div style="flex: 1; overflow-y: auto; padding-right: 8px;">
                 <div style="margin-bottom: 24px;">
                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                        <h4 class="text-accent">Version 3.1</h4>
+                        <h4 class="text-accent">Version 3.2</h4>
                     </div>
                     <ul style="padding-left: 20px; color: var(--text-secondary); font-size: 13px; line-height: 1.6;">
-                        <li>ADDED: Real-time Connection Status Indicator in sidebar.</li>
-                        <li>FIXED: Learning / Onboarding module is now fully interactive and functional on Desktop.</li>
-                        <li>IMPROVED: Tooltip positioning during the learning tour.</li>
+                        <li>ADDED: Device Sync (Peer-to-Peer) functionality.</li>
+                        <li>FIXED: Unified Database structure with Mobile/Tablet versions.</li>
+                        <li>IMPROVED: Robust Report generation prevents crashes on mixed data.</li>
                     </ul>
                 </div>
             </div>
-            
-            <!-- NEW WEBSITE LINK IN INFO -->
             <a href="https://likapp.pages.dev" target="_blank" class="btn btn-secondary hover-scale" style="margin-top: 0; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none;">
                 <i class="fas fa-globe"></i> <span style="font-family: 'JetBrains Mono'">likapp.pages.dev</span>
             </a>
-
             <button class="btn btn-primary hover-scale" style="width: 100%;" onclick="document.getElementById('version-modal').classList.remove('active')" data-i18n="exit">Exit</button>
         </div>
     </div>
 
-    <!-- HELP MODAL -->
     <div id="help-modal" class="modal-overlay">
         <div class="modal" style="max-width: 800px; max-height: 85vh; display: flex; flex-direction: column;">
              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
@@ -1007,8 +936,6 @@
                         The dashboard provides a real-time overview of your business performance. You can see today's revenue, transaction counts, and total inventory value. Use the "Quick Actions" to jump directly to common tasks like making a sale or adding stock.
                     </p>
                  </div>
-
-                 <!-- NEW WEBSITE SECTION IN HELP MODAL -->
                  <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border);">
                     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
                         <div style="background: rgba(0, 229, 160, 0.1); color: var(--accent); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
@@ -1023,7 +950,6 @@
                         <span>https://likapp.pages.dev</span> <i class="fas fa-external-link-alt"></i>
                     </a>
                  </div>
-
             </div>
             <div style="margin-top: 24px; border-top: 1px solid var(--border); padding-top: 16px; text-align: right;">
                 <button class="btn btn-primary hover-scale" onclick="document.getElementById('help-modal').classList.remove('active')" data-i18n="close">Close Guide</button>
@@ -1063,14 +989,12 @@
                 changelog: "System Changelog", exit: "Exit", manual: "User Manual", close: "Close Guide",
                 reports: "Reports",
                 import_preview: "Import Preview", import_desc: "Review items before importing. Duplicates are marked in red.", confirm_import: "Confirm Import", duplicate: "Duplicate", new: "New",
-                // Tour Steps
                 tour_sidebar_title: "Navigation Sidebar", tour_sidebar_desc: "Access all main modules here. Use F1-F12 keys for shortcuts.",
                 tour_dash_title: "Business Stats", tour_dash_desc: "Real-time overview of your daily sales and inventory value.",
                 tour_actions_title: "Quick Actions", tour_actions_desc: "Fast shortcuts to start a sale or add new products.",
                 tour_pos_title: "POS Terminal", tour_pos_desc: "The main selling interface. Scan barcodes or click items to sell.",
                 tour_settings_title: "System Settings", tour_settings_desc: "Configure your store details, tax rates, and language here.",
                 tour_finish_title: "Jeni Gati!", tour_finish_desc: "That's it! You are now ready to start selling.",
-                // NEW WEBSITE STRINGS
                 visit_website: "Visit Website", website_desc: "Check for updates and news"
             },
             "Albanian": {
@@ -1096,14 +1020,12 @@
                 changelog: "Ndryshimet e Sistemit", exit: "Dil", manual: "Manuali i Përdorimit", close: "Mbyll Udhëzuesin",
                 reports: "Raporte",
                 import_preview: "Paraqitja e Importit", import_desc: "Shqyrto para importimit. Dublikatat janë të shënuara me të kuqe.", confirm_import: "Konfirmo Importin", duplicate: "Dublikatë", new: "E Re",
-                // Tour Steps
                 tour_sidebar_title: "Shiriti i Navigimit", tour_sidebar_desc: "Qasuni në modulet kryesore këtu. Përdorni butonat F1-F12.",
                 tour_dash_title: "Statistikat e Biznesit", tour_dash_desc: "Pasqyrë në kohë reale e shitjeve ditore dhe vlerës së stokut.",
                 tour_actions_title: "Veprime të Shpejta", tour_actions_desc: "Shkurtesa për të filluar shitje ose shtuar produkte.",
                 tour_pos_title: "Arka (POS)", tour_pos_desc: "Ndërfaqja kryesore. Skanoni barkode ose klikoni produktet për të shitur.",
                 tour_settings_title: "Cilësimet e Sistemit", tour_settings_desc: "Konfiguroni detajet e dyqanit, taksat dhe gjuhën këtu.",
                 tour_finish_title: "Jeni Gati!", tour_finish_desc: "Kjo ishte! Tani jeni gati për të filluar shitjen.",
-                // NEW WEBSITE STRINGS
                 visit_website: "Vizito Webfaqen", website_desc: "Kontrollo për përditësime dhe të reja"
             }
         };
@@ -1119,34 +1041,24 @@
 
         const app = {
             init: (skipImport = false) => {
-                // 1. CHECK FOR FIRST TIME LANGUAGE SELECTION
                 const savedLang = localStorage.getItem('likapos_language');
-                if (!savedLang) {
-                    document.getElementById('language-modal').classList.add('active');
-                    return; // Stop here until language is picked
-                }
-                
-                // Ensure db settings has the saved language
+                if (!savedLang) { document.getElementById('language-modal').classList.add('active'); return; }
                 db.settings.language = savedLang;
 
-                // 2. CHECK FOR SAVED DATA
+                // FIXED: Unified DB Key 'likapos_db'
                 const savedDB = localStorage.getItem('likapos_db');
                 if (savedDB && !skipImport) {
                     try {
                         const parsed = JSON.parse(savedDB);
                         Object.assign(db, parsed);
-                        // Force override language from localstorage preference if distinct
                         db.settings.language = savedLang; 
                         app.launch();
                     } catch (e) { console.error("DB Error", e); }
                 } else if (skipImport || !savedDB) {
-                    // 3. SHOW STARTUP MODAL IF NO DB (OR STARTING FRESH)
-                    // But if skipImport is true (clicked "Start Fresh"), we load default data
                     if(skipImport) {
                          app.loadDefaultData();
                          app.save();
                          app.launch();
-                         // First time tour triggering
                          onboarding.init();
                     } else {
                         document.getElementById('startup-modal').classList.add('active');
@@ -1158,13 +1070,7 @@
                 db.settings.language = lang;
                 app.applyTranslations();
                 document.getElementById('language-modal').classList.remove('active');
-                
-                // Check if we have DB, if not show startup
-                if(localStorage.getItem('likapos_db')) {
-                    app.init();
-                } else {
-                    document.getElementById('startup-modal').classList.add('active');
-                }
+                if(localStorage.getItem('likapos_db')) app.init(); else document.getElementById('startup-modal').classList.add('active');
             },
             loadDefaultData: () => {
                  db.products = [
@@ -1181,7 +1087,6 @@
                 document.getElementById('startup-modal').classList.remove('active');
                 document.getElementById('app').classList.remove('hidden');
                 
-                // Restore Settings UI
                 document.getElementById('setting-store-name').value = db.settings.storeName;
                 document.getElementById('setting-currency').value = db.settings.currency;
                 document.getElementById('setting-tax').value = db.settings.taxRate;
@@ -1190,11 +1095,9 @@
                 document.getElementById('setting-images').checked = db.settings.showImages;
                 document.getElementById('pos-grid-size').value = db.settings.gridSize;
                 
-                // Populate Language List
                 const langSelect = document.getElementById('setting-language-select');
                 langSelect.value = db.settings.language;
                 
-                // Apply Translations
                 app.applyTranslations();
 
                 const savedTheme = localStorage.getItem('likapos_theme') || 'dark';
@@ -1205,40 +1108,28 @@
                 inventoryManager.render();
                 customerManager.render();
                 app.updateDashboard();
-                
-                // --- INITIALIZE CONNECTION STATUS ---
                 app.checkConnection();
             },
             save: () => { localStorage.setItem('likapos_db', JSON.stringify(db)); },
             
-            // --- TRANSLATION ENGINE ---
             t: (key) => {
                 const lang = db.settings.language;
-                // Fallback to English if specific lang dictionary or key is missing
                 const dict = TRANSLATIONS[lang] || TRANSLATIONS["English"];
                 return dict[key] || TRANSLATIONS["English"][key] || key;
             },
             updateLanguage: (newLang) => {
                 db.settings.language = newLang;
                 localStorage.setItem('likapos_language', newLang);
-                app.save();
-                app.applyTranslations();
-                app.toast("Language set to " + newLang);
+                app.save(); app.applyTranslations(); app.toast("Language set to " + newLang);
             },
             applyTranslations: () => {
-                // 1. Update text content
                 document.querySelectorAll('[data-i18n]').forEach(el => {
-                    const key = el.getAttribute('data-i18n');
-                    el.innerText = app.t(key);
+                    const key = el.getAttribute('data-i18n'); el.innerText = app.t(key);
                 });
-                // 2. Update placeholders
                 document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-                    const key = el.getAttribute('data-i18n-placeholder');
-                    el.placeholder = app.t(key);
+                    const key = el.getAttribute('data-i18n-placeholder'); el.placeholder = app.t(key);
                 });
-                // 3. Update specific dynamic elements
-                pos.renderCart(); // Updates cart labels
-                inventoryManager.render(); // Updates headers if dynamically rendered (though headers are static HTML)
+                pos.renderCart(); inventoryManager.render();
             },
 
             toggleTheme: () => {
@@ -1250,7 +1141,6 @@
             },
             toggleSidebar: () => {
                 const sidebar = document.getElementById('sidebar');
-                // FORCE DESKTOP LOGIC ONLY
                 sidebar.classList.toggle('closed');
             },
             importData: (input) => {
@@ -1266,11 +1156,13 @@
                 reader.readAsText(file);
             },
             exportData: () => {
+                const d = new Date();
+                const dateStr = d.getFullYear() + "-" + (d.getMonth()+1).toString().padStart(2, '0') + "-" + d.getDate().toString().padStart(2, '0');
                 const blob = new Blob([JSON.stringify(db)], {type: "application/json"});
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = "likapos_backup_" + new Date().toISOString().slice(0,10) + ".json";
+                a.download = `${db.settings.storeName}_Backup_${dateStr}.json`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
@@ -1294,7 +1186,6 @@
                 
                 const sidebar = document.getElementById('sidebar');
                 
-                // DESKTOP ONLY LOGIC
                 if (viewName === 'pos') { 
                     document.getElementById('pos-search').focus(); 
                     sidebar.classList.add('closed'); 
@@ -1333,7 +1224,6 @@
             },
             formatMoney: (amount) => { return db.settings.currency + parseFloat(amount).toFixed(2); },
             
-            // --- CONNECTION CHECKER ---
             checkConnection: () => {
                 const el = document.getElementById('connection-status');
                 const update = () => {
@@ -1346,83 +1236,37 @@
                         app.toast("Connection Lost - Offline Mode");
                     }
                 };
-                
                 window.addEventListener('online', () => { update(); app.toast("System Back Online"); });
                 window.addEventListener('offline', update);
-                update(); // Initial check
+                update();
             }
         };
 
-        /* --- FIXED ONBOARDING MODULE (DESKTOP ONLY NOW DEFAULT) --- */
+        // --- ONBOARDING MODULE ---
         const onboarding = {
             currentStep: 0,
             isActive: false,
             steps: [
-                {
-                    target: '#sidebar',
-                    titleKey: "tour_sidebar_title",
-                    descKey: "tour_sidebar_desc",
-                    position: 'right',
-                    action: () => app.router('dashboard')
-                },
-                {
-                    target: '#dashboard-view .stats-grid',
-                    titleKey: "tour_dash_title",
-                    descKey: "tour_dash_desc",
-                    position: 'bottom',
-                    action: () => app.router('dashboard')
-                },
-                {
-                    target: '#dash-quick-actions',
-                    titleKey: "tour_actions_title",
-                    descKey: "tour_actions_desc",
-                    position: 'top',
-                    action: () => app.router('dashboard')
-                },
-                {
-                    target: '#pos-grid',
-                    titleKey: "tour_pos_title",
-                    descKey: "tour_pos_desc",
-                    position: 'left',
-                    action: () => app.router('pos')
-                },
-                {
-                    target: '#settings-general',
-                    titleKey: "tour_settings_title",
-                    descKey: "tour_settings_desc",
-                    position: 'top',
-                    action: () => app.router('settings')
-                },
-                {
-                    target: '#header-help-btn',
-                    titleKey: "tour_finish_title",
-                    descKey: "tour_finish_desc",
-                    position: 'bottomLeft',
-                    action: () => app.router('dashboard')
-                }
+                { target: '#sidebar', titleKey: "tour_sidebar_title", descKey: "tour_sidebar_desc", position: 'right', action: () => app.router('dashboard') },
+                { target: '#dashboard-view .stats-grid', titleKey: "tour_dash_title", descKey: "tour_dash_desc", position: 'bottom', action: () => app.router('dashboard') },
+                { target: '#dash-quick-actions', titleKey: "tour_actions_title", descKey: "tour_actions_desc", position: 'top', action: () => app.router('dashboard') },
+                { target: '#pos-grid', titleKey: "tour_pos_title", descKey: "tour_pos_desc", position: 'left', action: () => app.router('pos') },
+                { target: '#settings-general', titleKey: "tour_settings_title", descKey: "tour_settings_desc", position: 'top', action: () => app.router('settings') },
+                { target: '#header-help-btn', titleKey: "tour_finish_title", descKey: "tour_finish_desc", position: 'bottomLeft', action: () => app.router('dashboard') }
             ],
             init: () => {
-                // REMOVED MOBILE CHECK - ALWAYS ALLOW TOUR
                 if (!localStorage.getItem('likapos_onboarding_complete')) {
-                    setTimeout(() => {
-                        document.getElementById('onboarding-welcome-modal').classList.add('active');
-                    }, 1000);
+                    setTimeout(() => { document.getElementById('onboarding-welcome-modal').classList.add('active'); }, 1000);
                 }
             },
             start: (force = false) => {
-                // REMOVED MOBILE CHECK
-                if(force) {
-                    localStorage.removeItem('likapos_onboarding_complete');
-                    document.getElementById('onboarding-welcome-modal').classList.remove('active');
-                }
+                if(force) { localStorage.removeItem('likapos_onboarding_complete'); document.getElementById('onboarding-welcome-modal').classList.remove('active'); }
                 onboarding.beginTour();
             },
             beginTour: () => {
                 document.getElementById('onboarding-welcome-modal').classList.remove('active');
                 document.getElementById('onboarding-backdrop').classList.add('active');
-                onboarding.currentStep = 0;
-                onboarding.isActive = true;
-                onboarding.showStep();
+                onboarding.currentStep = 0; onboarding.isActive = true; onboarding.showStep();
             },
             showStep: () => {
                 const step = onboarding.steps[onboarding.currentStep];
@@ -1430,16 +1274,12 @@
 
                 setTimeout(() => {
                     const targetEl = document.querySelector(step.target);
-                    if(!targetEl) return onboarding.next(); // Skip if target missing
+                    if(!targetEl) return onboarding.next();
 
-                    // Remove highlight from previous
                     document.querySelectorAll('.onboarding-spotlight').forEach(el => el.classList.remove('onboarding-spotlight'));
-                    
-                    // Add highlight
                     targetEl.classList.add('onboarding-spotlight');
                     targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-                    // Position Tooltip
                     const tooltip = document.getElementById('onboarding-tooltip');
                     const rect = targetEl.getBoundingClientRect();
                     const ttRect = tooltip.getBoundingClientRect();
@@ -1447,56 +1287,31 @@
                     let top, left;
                     const spacing = 20;
 
-                    if (step.position === 'right') {
-                        top = rect.top;
-                        left = rect.right + spacing;
-                    } else if (step.position === 'bottom') {
-                        top = rect.bottom + spacing;
-                        left = rect.left;
-                    } else if (step.position === 'top') {
-                        top = rect.top - ttRect.height - spacing;
-                        left = rect.left;
-                    } else if (step.position === 'left') {
-                        top = rect.top;
-                        left = rect.left - ttRect.width - spacing;
-                    } else if (step.position === 'bottomLeft') {
-                        top = rect.bottom + spacing;
-                        left = rect.right - ttRect.width;
-                    }
+                    if (step.position === 'right') { top = rect.top; left = rect.right + spacing; } 
+                    else if (step.position === 'bottom') { top = rect.bottom + spacing; left = rect.left; } 
+                    else if (step.position === 'top') { top = rect.top - ttRect.height - spacing; left = rect.left; } 
+                    else if (step.position === 'left') { top = rect.top; left = rect.left - ttRect.width - spacing; } 
+                    else if (step.position === 'bottomLeft') { top = rect.bottom + spacing; left = rect.right - ttRect.width; }
 
-                    // Boundary Check
-                    if (left < 10) left = 10;
-                    if (top < 10) top = 10;
+                    if (left < 10) left = 10; if (top < 10) top = 10;
                     if (left + ttRect.width > window.innerWidth) left = window.innerWidth - ttRect.width - 10;
 
-                    tooltip.style.top = top + 'px';
-                    tooltip.style.left = left + 'px';
-                    tooltip.style.transform = 'translate(0, 0)'; // Reset transform from CSS default
-
-                    // Update Content
+                    tooltip.style.top = top + 'px'; tooltip.style.left = left + 'px';
+                    
                     document.getElementById('onboarding-title').innerText = app.t(step.titleKey);
                     document.getElementById('onboarding-desc').innerText = app.t(step.descKey);
                     document.getElementById('onboarding-next-btn').innerText = onboarding.currentStep === onboarding.steps.length - 1 ? app.t('finish') : app.t('next');
 
-                    // Progress Dots
-                    const prog = document.getElementById('onboarding-progress');
-                    prog.innerHTML = '';
+                    const prog = document.getElementById('onboarding-progress'); prog.innerHTML = '';
                     onboarding.steps.forEach((s, i) => {
-                        const d = document.createElement('div');
-                        d.className = `onboarding-dot ${i === onboarding.currentStep ? 'active' : ''}`;
-                        prog.appendChild(d);
+                        const d = document.createElement('div'); d.className = `onboarding-dot ${i === onboarding.currentStep ? 'active' : ''}`; prog.appendChild(d);
                     });
-
                     tooltip.classList.add('active');
-                }, 400); // Delay for view transition
+                }, 400);
             },
             next: () => {
                 onboarding.currentStep++;
-                if (onboarding.currentStep >= onboarding.steps.length) {
-                    onboarding.finish();
-                } else {
-                    onboarding.showStep();
-                }
+                if (onboarding.currentStep >= onboarding.steps.length) { onboarding.finish(); } else { onboarding.showStep(); }
             },
             skip: () => { onboarding.finish(); },
             finish: () => {
@@ -1509,11 +1324,7 @@
                 app.toast("Learning Complete!");
                 app.router('dashboard');
             },
-            reposition: () => {
-                if(!onboarding.isActive) return;
-                // Simple re-run of current step to recalculate position
-                onboarding.showStep(); 
-            }
+            reposition: () => { if(onboarding.isActive) onboarding.showStep(); }
         };
 
         const pos = {
@@ -1524,7 +1335,6 @@
                 const grid = document.getElementById('pos-grid');
                 grid.className = 'product-grid custom-scroll ' + size;
             },
-            // REMOVED TOGGLE MOBILE CART - DESKTOP ONLY
             populateCategories: () => {
                 const cats = [...new Set(db.products.map(p => p.category))];
                 const sel = document.getElementById('pos-category');
@@ -1556,25 +1366,13 @@
                     const ph = `<div class="prod-img-placeholder" ${db.settings.showImages && p.image ? 'style="display:none"' : ''}><i class="fas fa-box"></i></div>`;
                     
                     let barColor;
-                    if (p.stock <= p.minStock) {
-                        barColor = 'var(--danger)';
-                    } else if (p.stock <= p.minStock * 2.5) {
-                        barColor = 'var(--warning)';
-                    } else {
-                        barColor = 'var(--accent)';
-                    }
+                    if (p.stock <= p.minStock) { barColor = 'var(--danger)'; } else if (p.stock <= p.minStock * 2.5) { barColor = 'var(--warning)'; } else { barColor = 'var(--accent)'; }
 
                     const baseMin = p.minStock > 0 ? p.minStock : 10;
                     const maxCapacity = baseMin * 5; 
-                    
                     let pct = (p.stock / maxCapacity) * 100;
-                    
-                    if (pct > 100) pct = 100;
-                    if (pct < 5 && p.stock > 0) pct = 5; 
-                    if (p.stock === 0) pct = 0;
-
+                    if (pct > 100) pct = 100; if (pct < 5 && p.stock > 0) pct = 5; if (p.stock === 0) pct = 0;
                     let barWidth = pct + '%';
-                    
                     if(!db.settings.showImages) { barWidth = '0%'; } 
 
                     el.innerHTML = `
@@ -1628,7 +1426,6 @@
                 document.getElementById('cart-subtotal').innerText = app.formatMoney(subtotal);
                 document.getElementById('cart-tax').innerText = app.formatMoney(tax);
                 document.getElementById('cart-total').innerText = app.formatMoney(total);
-                // REMOVED MOBILE UPDATES
                 pos.currentTotal = total;
             },
             updateQty: (idx, change) => {
@@ -1683,7 +1480,6 @@
                 app.save(); app.toast("Transaction Completed");
                 document.getElementById('checkout-modal').classList.remove('active');
                 pos.cart = []; pos.renderCart(); pos.renderGrid(); inventoryManager.render(); customerManager.render(); app.updateDashboard();
-                // REMOVED MOBILE PANEL TOGGLE
                 document.getElementById('cart-panel').classList.remove('expanded'); 
             }
         };
@@ -1712,14 +1508,12 @@
                 [...new Set(db.products.map(p => p.category))].sort().forEach(c => list.innerHTML += `<option value="${c}">`);
             },
             closeModal: () => document.getElementById('product-modal').classList.remove('active'),
-            
             updatePreview: () => {
                 const url = document.getElementById('prod-image').value;
                 const img = document.getElementById('prod-preview');
                 const txt = document.getElementById('prod-preview-text');
                 if(url) { img.src = url; img.style.display = 'block'; txt.style.display = 'none'; } else { img.style.display = 'none'; txt.style.display = 'block'; }
             },
-
             edit: (id) => {
                 const p = db.products.find(x => x.id == id);
                 document.getElementById('prod-id').value = p.id; document.getElementById('prod-name').value = p.name;
@@ -1743,7 +1537,6 @@
                 app.save(); inventoryManager.render(); pos.init(); inventoryManager.closeModal(); app.toast("Inventory Updated");
             },
             del: (id) => { if(confirm("Are you sure?")) { db.products = db.products.filter(x => x.id != id); app.save(); inventoryManager.render(); pos.init(); app.toast("Deleted"); } },
-            
             downloadTXTTemplate: () => {
                 let txt = "NAME - BARCODE - CATEGORY - PRICE - COST - STOCK - MINSTOCK - IMAGEURL\n";
                 if (db.products.length > 0) {
@@ -1752,11 +1545,9 @@
                     txt += "Krem Banane 17gr - 049585195F - Qokollad - 0.25 - 0.15 - 50 - 25 - https://maxiks.shop/storage/2019/05/3850102127252.png\n";
                 }
                 const blob = new Blob([txt], { type: 'text/plain;charset=utf-8;' });
-                const link = document.createElement("a");
-                const url = URL.createObjectURL(blob);
+                const link = document.createElement("a"); const url = URL.createObjectURL(blob);
                 link.setAttribute("href", url); link.setAttribute("download", "inventory_export.txt"); link.click();
             },
-            
             importTXT: (input) => {
                 const file = input.files[0]; if(!file) return; 
                 const r = new FileReader();
@@ -1830,6 +1621,7 @@
             }
         };
 
+        // FIXED REPORTS LOGIC (SAFE MODE)
         const reports = {
             filter: 'today',
             setFilter: (f) => {
@@ -1839,7 +1631,9 @@
             getFiltered: () => {
                 const now = new Date(); const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
                 return db.sales.filter(s => {
+                    if(!s.date) return false;
                     const d = new Date(s.date);
+                    if(isNaN(d.getTime())) return false; 
                     if(reports.filter === 'today') return d >= start;
                     if(reports.filter === 'week') { const w = new Date(start); w.setDate(w.getDate() - 7); return d >= w; }
                     if(reports.filter === 'month') return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
@@ -1848,66 +1642,110 @@
             },
             render: () => {
                 const data = reports.getFiltered();
-                const total = data.reduce((a,b) => a + b.total, 0);
+                const total = data.reduce((a,b) => a + (parseFloat(b.total)||0), 0);
                 document.getElementById('report-total').innerText = app.formatMoney(total);
                 document.getElementById('report-count').innerText = data.length;
                 document.getElementById('report-avg').innerText = app.formatMoney(data.length ? total/data.length : 0);
                 
                 const tbody = document.querySelector('#sales-table tbody'); tbody.innerHTML = '';
+                if(data.length === 0) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px; color:var(--text-tertiary);">No sales found</td></tr>'; return; }
+
                 data.forEach(s => {
-                    const cust = s.customerId ? (db.customers.find(c=>c.id==s.customerId)?.name||'Unknown') : 'Guest';
-                    const items = s.items.reduce((a,b) => a+b.qty, 0);
+                    let custName = 'Guest';
+                    if(s.customerId) { const c = db.customers.find(cust => cust.id == s.customerId); custName = c ? c.name : 'Unknown'; }
+                    else if (s.customer) { custName = s.customer; }
+                    
+                    // Handle hybrid item structure
+                    const itemCount = s.items.reduce((a,b) => a + (b.qty || 0), 0);
+
                     const tr = document.createElement('tr');
-                    tr.innerHTML = `<td class="font-mono text-secondary">#${s.id}</td><td class="text-muted">${new Date(s.date).toLocaleTimeString()}</td><td>${cust}</td><td>${items}</td><td class="font-mono font-bold">${app.formatMoney(s.total)}</td><td><span style="font-size:10px; border:1px solid var(--border); padding:2px 4px; border-radius:4px;">${s.method}</span></td><td><button class="btn btn-secondary hover-scale" style="padding:4px 8px;" onclick="reports.view(${s.id})">View</button></td>`;
+                    tr.innerHTML = `<td class="font-mono text-secondary">#${s.id}</td><td class="text-muted">${new Date(s.date).toLocaleTimeString()}</td><td>${custName}</td><td>${itemCount}</td><td class="font-mono font-bold">${app.formatMoney(s.total)}</td><td><span style="font-size:10px; border:1px solid var(--border); padding:2px 4px; border-radius:4px;">${s.method || 'Cash'}</span></td><td><button class="btn btn-secondary hover-scale" style="padding:4px 8px;" onclick="reports.view(${s.id})">View</button></td>`;
                     tbody.appendChild(tr);
                 });
             },
             exportPDF: () => {
                 const data = reports.getFiltered();
-                const total = data.reduce((a,b) => a + b.total, 0);
-                const prodStats = {};
-                data.forEach(s => s.items.forEach(i => {
-                    if(!prodStats[i.product.name]) prodStats[i.product.name] = {qty:0, rev:0};
-                    prodStats[i.product.name].qty += i.qty; prodStats[i.product.name].rev += i.qty * i.product.price;
-                }));
-                const sortedProds = Object.entries(prodStats).sort((a,b) => b[1].qty - a[1].qty).slice(0, 5);
-                const paperSize = db.settings.paperSize || 'a4';
-                
-                const printArea = document.getElementById('printable-area');
-                printArea.innerHTML = `
-                    <style>@page { size: ${paperSize}; margin: 20mm; }</style>
-                    <div class="print-header"><h1>${db.settings.storeName}</h1><h3>Sales Report - ${reports.filter.toUpperCase()}</h3><p>Generated: ${new Date().toLocaleString()}</p></div>
-                    <div class="print-stats">
-                        <div class="print-stat-box"><div>REVENUE</div><h2>${app.formatMoney(total)}</h2></div>
-                        <div class="print-stat-box"><div>TRANSACTIONS</div><h2>${data.length}</h2></div>
-                        <div class="print-stat-box"><div>AVG VALUE</div><h2>${app.formatMoney(data.length ? total/data.length : 0)}</h2></div>
-                    </div>
-                    <h3>Top Selling Products</h3>
-                    <table class="print-table">
-                        <tr><th>Product</th><th>Qty Sold</th><th>Revenue</th></tr>
-                        ${sortedProds.map(([n, s]) => `<tr><td>${n}</td><td>${s.qty}</td><td>${app.formatMoney(s.rev)}</td></tr>`).join('')}
-                    </table>
-                    <h3>Transaction Log</h3>
-                    <table class="print-table">
-                        <tr><th>ID</th><th>Date</th><th>Customer</th><th>Total</th></tr>
-                        ${data.map(s => `<tr><td>#${s.id}</td><td>${new Date(s.date).toLocaleString()}</td><td>${s.customerId ? (db.customers.find(c=>c.id==s.customerId)?.name||'Unknown') : 'Guest'}</td><td>${app.formatMoney(s.total)}</td></tr>`).join('')}
-                    </table>
-                `;
+                const total = data.reduce((a,b) => a + (parseFloat(b.total)||0), 0);
+                const area = document.getElementById('printable-area');
+                area.innerHTML = `<style>@page { size: A4; margin: 20mm; }</style><div class="print-header"><h1>${db.settings.storeName}</h1><h3>Sales Report - ${reports.filter.toUpperCase()}</h3><p>Generated: ${new Date().toLocaleString()}</p></div><div class="print-stats"><div class="print-stat-box"><div>REVENUE</div><h2>${app.formatMoney(total)}</h2></div></div><table class="print-table"><tr><th>ID</th><th>Time</th><th>Customer</th><th>Total</th></tr>${data.map(s => `<tr><td>#${s.id}</td><td>${new Date(s.date).toLocaleString()}</td><td>${s.customerId||s.customer||'Guest'}</td><td>${app.formatMoney(s.total)}</td></tr>`).join('')}</table>`;
                 setTimeout(() => window.print(), 200);
             },
             view: (id) => {
                 const s = db.sales.find(x => x.id === id);
+                if(!s) return;
                 document.getElementById('detail-id').innerText = '#' + s.id;
                 document.getElementById('detail-date').innerText = new Date(s.date).toLocaleString();
-                document.getElementById('detail-cust').innerText = s.customerId ? (db.customers.find(c=>c.id==s.customerId)?.name) : 'Guest';
+                
+                let custName = 'Guest';
+                if(s.customerId) custName = db.customers.find(c=>c.id==s.customerId)?.name || 'Guest';
+                else if(s.customer) custName = s.customer;
+                document.getElementById('detail-cust').innerText = custName;
+
                 const list = document.getElementById('detail-items'); list.innerHTML = '';
-                s.items.forEach(i => { list.innerHTML += `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.05);"><div><div>${i.product.name}</div><div class="text-muted" style="font-size:11px;">${i.product.category}</div></div><div style="text-align:right;"><div class="font-mono">${i.qty} x ${app.formatMoney(i.product.price)}</div><div class="font-mono text-primary">${app.formatMoney(i.qty * i.product.price)}</div></div></div>`; });
-                document.getElementById('detail-subtotal').innerText = app.formatMoney(s.subtotal);
-                document.getElementById('detail-tax').innerText = app.formatMoney(s.total - s.subtotal);
+                s.items.forEach(i => { 
+                    const pName = i.product ? i.product.name : (i.name || 'Item');
+                    const pPrice = i.product ? i.product.price : (i.price || 0);
+                    const pCat = i.product ? i.product.category : 'General';
+                    list.innerHTML += `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.05);"><div><div>${pName}</div><div class="text-muted" style="font-size:11px;">${pCat}</div></div><div style="text-align:right;"><div class="font-mono">${i.qty} x ${app.formatMoney(pPrice)}</div><div class="font-mono text-primary">${app.formatMoney(i.qty * pPrice)}</div></div></div>`; 
+                });
+                
+                const sub = s.subtotal || (s.total / 1.1);
+                document.getElementById('detail-subtotal').innerText = app.formatMoney(sub);
+                document.getElementById('detail-tax').innerText = app.formatMoney(s.total - sub);
                 document.getElementById('detail-total').innerText = app.formatMoney(s.total);
                 document.getElementById('sale-detail-modal').classList.add('active');
             },
             closeModal: () => document.getElementById('sale-detail-modal').classList.remove('active')
+        };
+
+        // --- SYNC ENGINE (PeerJS) ---
+        const syncApp = {
+            peer: null, conn: null,
+            open: () => {
+                document.getElementById('sync-modal').classList.add('active');
+                document.getElementById('sync-step-1').classList.remove('hidden');
+                document.getElementById('sync-step-host').classList.add('hidden');
+                document.getElementById('sync-step-client').classList.add('hidden');
+            },
+            startHost: () => {
+                const code = Math.floor(1000 + Math.random() * 9000);
+                syncApp.peer = new Peer('likapos-sync-' + code);
+                syncApp.peer.on('open', (id) => {
+                    document.getElementById('sync-step-1').classList.add('hidden');
+                    document.getElementById('sync-step-host').classList.remove('hidden');
+                    document.getElementById('sync-code-display').innerText = code;
+                });
+                syncApp.peer.on('connection', (conn) => {
+                    conn.on('open', () => {
+                        app.toast("Device Connected! Sending data...");
+                        conn.send({ type: 'SYNC_DATA', data: db });
+                        setTimeout(() => { app.toast("Sync Complete!"); document.getElementById('sync-modal').classList.remove('active'); syncApp.peer.destroy(); }, 1000);
+                    });
+                });
+                syncApp.peer.on('error', (err) => alert("Sync Error: " + err.type));
+            },
+            startClient: () => {
+                document.getElementById('sync-step-1').classList.add('hidden');
+                document.getElementById('sync-step-client').classList.remove('hidden');
+            },
+            connectToHost: () => {
+                const code = document.getElementById('sync-code-input').value;
+                if(!code) return alert("Enter code");
+                syncApp.peer = new Peer(); 
+                syncApp.peer.on('open', () => {
+                    const conn = syncApp.peer.connect('likapos-sync-' + code);
+                    conn.on('open', () => { app.toast("Connected! Waiting for data..."); });
+                    conn.on('data', (msg) => {
+                        if(msg.type === 'SYNC_DATA') {
+                            if(confirm("Incoming Data received! Overwrite current data?")) {
+                                Object.assign(db, msg.data);
+                                app.save(); alert("Sync Successful! App will reload."); location.reload();
+                            }
+                        }
+                    });
+                });
+                syncApp.peer.on('error', (err) => { alert("Connection Failed. Check code or internet."); document.getElementById('sync-step-client').classList.add('hidden'); document.getElementById('sync-step-1').classList.remove('hidden'); });
+            }
         };
 
         window.addEventListener('keydown', (e) => {
