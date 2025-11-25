@@ -272,6 +272,25 @@
         .cust-info-row { font-size: 12px; color: var(--text-secondary); display: flex; gap: 12px; align-items: center; }
         .cust-info-row i { width: 16px; text-align: center; color: var(--text-tertiary); }
 
+        /* --- REPORT SPECIFIC STYLES --- */
+        .report-filters { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 16px; padding-bottom: 4px; }
+        .report-filters .btn { white-space: nowrap; padding: 8px 16px; font-size: 12px; }
+        .report-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+        .report-stat-card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px; text-align: center; }
+        .report-stat-label { font-size: 10px; color: var(--text-tertiary); margin-bottom: 4px; text-transform: uppercase; }
+        .report-stat-val { font-size: 14px; font-weight: 700; font-family: 'JetBrains Mono'; }
+        
+        .report-list-item {
+            background: var(--bg-surface); border-radius: 12px; padding: 12px; border: 1px solid var(--border); margin-bottom: 8px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .report-item-left { display: flex; flex-direction: column; gap: 4px; }
+        .report-item-right { text-align: right; display: flex; flex-direction: column; gap: 4px; }
+        .report-id { font-size: 11px; color: var(--text-tertiary); font-family: 'JetBrains Mono'; }
+        .report-cust { font-size: 13px; font-weight: 600; }
+        .report-total { font-size: 14px; font-weight: 700; color: var(--text-primary); font-family: 'JetBrains Mono'; }
+        .report-meta { font-size: 10px; color: var(--text-secondary); }
+
         /* --- OVERLAYS (Cart, Checkout) --- */
         .overlay { position: fixed; inset: 0; background: var(--bg-app); z-index: 2000; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); display: flex; flex-direction: column; padding-top: var(--safe-top); padding-bottom: var(--safe-bottom); }
         .overlay.active { transform: translateY(0); }
@@ -307,6 +326,29 @@
         .text-warning { color: var(--warning); }
         
         .list-item { background: var(--bg-surface); padding: 16px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); margin-bottom: 8px; }
+        
+        /* Print Styles */
+        @media print {
+            body { background: white; color: black; }
+            #app, .overlay, .drawer-overlay { display: none !important; }
+            #printable-area { display: block !important; padding: 20px; font-family: sans-serif; }
+            table { width: 100%; border-collapse: collapse; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background: #eee; }
+        }
+
+        /* --- SUPPORT MODAL STYLES --- */
+        .support-item {
+            display: flex; align-items: center; gap: 16px; padding: 16px; background: var(--bg-app); border: 1px solid var(--border);
+            border-radius: 12px; margin-bottom: 12px; text-decoration: none; color: var(--text-primary); transition: background 0.2s;
+        }
+        .support-item:active { background: var(--bg-nav); }
+        .support-icon {
+            width: 40px; height: 40px; border-radius: 50%; background: var(--bg-surface); border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--secondary);
+        }
+        .support-info h4 { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+        .support-info p { font-size: 11px; color: var(--text-tertiary); }
 
     </style>
 </head>
@@ -316,6 +358,7 @@
         <header>
             <h3 id="header-title" style="font-size: 18px; font-weight: 700;">Dashboard</h3>
             <div style="display:flex; gap:12px;">
+                <button class="nav-btn" style="width:auto; color:var(--text-primary);" onclick="app.openSupport()"><i class="fas fa-headset"></i></button>
                 <button class="nav-btn" style="width:auto; color:var(--text-primary);" onclick="app.toggleTheme()"><i class="fas fa-moon" id="theme-icon"></i></button>
             </div>
         </header>
@@ -409,8 +452,39 @@
             </div>
         </div>
 
-        <!-- REPORTS -->
-        <div id="reports-view" class="view-container"><div class="scroll-content"><div id="report-list"></div></div></div>
+        <!-- REPORTS (DESKTOP MATCHED) -->
+        <div id="reports-view" class="view-container">
+            <div class="scroll-content">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                    <h3 data-i18n="sales_performance">Sales Performance</h3>
+                    <button class="btn btn-primary" style="width:auto; padding: 6px 12px; font-size:11px;" onclick="reports.exportPDF()"><i class="fas fa-file-pdf"></i> <span data-i18n="export_pdf">Export PDF</span></button>
+                </div>
+                
+                <div class="report-filters">
+                    <button class="btn btn-secondary active" id="filter-today" onclick="reports.setFilter('today')" data-i18n="today">Today</button>
+                    <button class="btn btn-secondary" id="filter-week" onclick="reports.setFilter('week')" data-i18n="week">Week</button>
+                    <button class="btn btn-secondary" id="filter-month" onclick="reports.setFilter('month')" data-i18n="month">Month</button>
+                    <button class="btn btn-secondary" id="filter-all" onclick="reports.setFilter('all')" data-i18n="all">All</button>
+                </div>
+
+                <div class="report-stats-grid">
+                    <div class="report-stat-card">
+                        <div class="report-stat-label" data-i18n="total_revenue">Revenue</div>
+                        <div class="report-stat-val text-secondary" id="rep-revenue">€0.00</div>
+                    </div>
+                    <div class="report-stat-card">
+                        <div class="report-stat-label" data-i18n="total_orders">Orders</div>
+                        <div class="report-stat-val text-accent" id="rep-orders">0</div>
+                    </div>
+                    <div class="report-stat-card">
+                        <div class="report-stat-label" data-i18n="avg_order">Avg Value</div>
+                        <div class="report-stat-val" id="rep-avg">€0.00</div>
+                    </div>
+                </div>
+
+                <div id="report-list"></div>
+            </div>
+        </div>
         
         <!-- SETTINGS -->
         <div id="settings-view" class="view-container">
@@ -562,6 +636,53 @@
             </div>
         </div>
 
+        <!-- SUPPORT MODAL -->
+        <div id="support-modal" class="drawer-overlay">
+            <div class="drawer">
+                <div style="display:flex; justify-content:space-between; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border);">
+                    <h3 id="support-title" style="font-size:18px; font-weight:700;">Support</h3>
+                    <button onclick="document.getElementById('support-modal').classList.remove('active')" style="border:none; background:none; color:var(--text-primary); font-size:18px;"><i class="fas fa-times"></i></button>
+                </div>
+                <div id="support-content" style="flex:1; overflow-y:auto; padding-bottom:24px;">
+                    <a href="https://likaapps.com" target="_blank" class="support-item">
+                        <div class="support-icon"><i class="fas fa-globe"></i></div>
+                        <div class="support-info">
+                            <h4>Website</h4>
+                            <p>likaapps.com</p>
+                        </div>
+                    </a>
+                    <a href="https://chat.whatsapp.com/Ie2Hcd3p4KkG2FtNsOk3rS" target="_blank" class="support-item">
+                        <div class="support-icon" style="color:#25D366;"><i class="fab fa-whatsapp"></i></div>
+                        <div class="support-info">
+                            <h4>WhatsApp Support</h4>
+                            <p>Realtime chat support</p>
+                        </div>
+                    </a>
+                    <a href="https://instagram.com/lika.apps" target="_blank" class="support-item">
+                        <div class="support-icon" style="color:#E1306C;"><i class="fab fa-instagram"></i></div>
+                        <div class="support-info">
+                            <h4>Instagram</h4>
+                            <p>@lika.apps</p>
+                        </div>
+                    </a>
+                    <a href="https://tiktok.com/@lika.apps" target="_blank" class="support-item">
+                        <div class="support-icon" style="color:var(--text-primary);"><i class="fab fa-tiktok"></i></div>
+                        <div class="support-info">
+                            <h4>TikTok</h4>
+                            <p>@lika.apps</p>
+                        </div>
+                    </a>
+                    <a href="mailto:lika.apps@proton.me" class="support-item">
+                        <div class="support-icon" style="color:#0077CC;"><i class="fas fa-envelope"></i></div>
+                        <div class="support-info">
+                            <h4>Email</h4>
+                            <p>lika.apps@proton.me</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
         <!-- MODAL DRAWER (Add/Edit Product/Customer) -->
         <div id="general-modal" class="drawer-overlay">
             <div class="drawer">
@@ -570,6 +691,26 @@
                     <button onclick="document.getElementById('general-modal').classList.remove('active')" style="border:none; background:none; color:var(--text-primary); font-size:18px;"><i class="fas fa-times"></i></button>
                 </div>
                 <div id="modal-content" style="flex:1; overflow-y:auto; padding-bottom:24px;"></div>
+            </div>
+        </div>
+        
+        <!-- SALE DETAIL MODAL -->
+        <div id="detail-modal" class="drawer-overlay">
+            <div class="drawer">
+                 <div style="display:flex; justify-content:space-between; margin-bottom:16px; border-bottom:1px solid var(--border); padding-bottom:12px;">
+                    <div>
+                        <h3 id="detail-id" class="font-mono text-secondary">#1000</h3>
+                        <div id="detail-date" class="text-muted" style="font-size:11px;"></div>
+                    </div>
+                    <button onclick="document.getElementById('detail-modal').classList.remove('active')" style="background:none; border:none; color:var(--text-primary); font-size:18px;"><i class="fas fa-times"></i></button>
+                </div>
+                <div id="detail-list" style="flex:1; overflow-y:auto;"></div>
+                <div style="border-top:1px solid var(--border); padding-top:16px; margin-top:16px;">
+                     <div style="display:flex; justify-content:space-between; font-weight:700; font-size:18px;">
+                        <span data-i18n="total">Total</span>
+                        <span id="detail-total" class="font-mono text-accent"></span>
+                     </div>
+                </div>
             </div>
         </div>
         
@@ -592,6 +733,9 @@
             </div>
         </div>
 
+        <!-- PRINTABLE AREA -->
+        <div id="printable-area" class="hidden"></div>
+
         <!-- TOAST -->
         <div id="toast" style="position:fixed; top:20px; left:50%; transform:translateX(-50%) translateY(-100px); background:var(--bg-surface); color:#fff; padding:12px 24px; border-radius:50px; z-index:3000; border:1px solid var(--secondary); transition:transform 0.4s;">
             <i class="fas fa-check"></i> <span id="toast-msg">Success</span>
@@ -606,7 +750,8 @@
                 quick_actions: "Quick Actions", add_product: "Add Product", add_customer: "Add Customer", reports: "Reports",
                 search_ph: "Search products...", items: "Items", view_cart: "VIEW CART",
                 search_inventory: "Search Inventory...", search_customers: "Search Customers...",
-                total_revenue: "Total Revenue", today: "Today", week: "Week", month: "Month",
+                total_revenue: "Total Revenue", total_orders: "Total Orders", avg_order: "Avg. Order", today: "Today", week: "Week", month: "Month", all: "All",
+                sales_performance: "Sales Performance", export_pdf: "Export PDF",
                 general_config: "General Configuration", store_name: "Store Name", tax_rate: "Tax Rate (%)", tax_type: "Tax Type", currency: "Currency Symbol",
                 system_language: "System Language", select_language: "Select Language",
                 system_preferences: "System Preferences", paper_format: "Paper Format", show_photos: "Show Product Photos",
@@ -622,7 +767,8 @@
                 quick_actions: "Veprime të shpejta", add_product: "Shto Produkt", add_customer: "Shto Klient", reports: "Raporte",
                 search_ph: "Kërko produkte...", items: "Artikuj", view_cart: "SHIKO SHPORTËN",
                 search_inventory: "Kërko Stokun...", search_customers: "Kërko Klientët...",
-                total_revenue: "Totali i të Ardhurave", today: "Sot", week: "Javë", month: "Muaj",
+                total_revenue: "Totali i të Ardhurave", total_orders: "Totali i Porosive", avg_order: "Mesatarja", today: "Sot", week: "Javë", month: "Muaj", all: "Të gjitha",
+                sales_performance: "Performanca e Shitjeve", export_pdf: "Eksporto PDF",
                 general_config: "Konfigurimi i Përgjithshëm", store_name: "Emri i Dyqanit", tax_rate: "Taksa (%)", tax_type: "Lloji i Taksës", currency: "Monedha",
                 system_language: "Gjuha e Sistemit", select_language: "Zgjidh Gjuhën",
                 system_preferences: "Preferencat e Sistemit", paper_format: "Formati i Letrës", show_photos: "Shfaq Fotot e Produkteve",
@@ -686,6 +832,7 @@
                 if(v === 'pos') pos.renderGrid();
                 if(v === 'inventory') inventoryManager.render();
                 if(v === 'customers') customerManager.render();
+                if(v === 'reports') reports.render();
                 if(v === 'settings') {
                     document.getElementById('st-name').value = db.settings.storeName;
                     document.getElementById('st-tax').value = db.settings.taxRate;
@@ -706,6 +853,7 @@
             },
             openMore: () => document.getElementById('more-drawer').classList.add('active'),
             closeMore: () => document.getElementById('more-drawer').classList.remove('active'),
+            openSupport: () => document.getElementById('support-modal').classList.add('active'),
             toggleTheme: () => {
                 const h = document.documentElement;
                 h.setAttribute('data-theme', h.getAttribute('data-theme')==='dark'?'light':'dark');
@@ -844,7 +992,6 @@
                 if(tend < total - 0.01) return app.toast("Insufficient Cash!");
                 pos.cart.forEach(i => { const p = db.products.find(x=>x.id===i.id); p.stock -= i.qty; });
                 
-                // Update Customer Stats
                 const custName = document.getElementById('pos-customer').value;
                 if(custName && custName !== "") {
                     const c = db.customers.find(x=>x.name === custName);
@@ -852,7 +999,7 @@
                 }
 
                 db.sales.push({ id: db.settings.nextSaleId++, date: new Date().toISOString(), total: total, items: [...pos.cart], customer: custName || "Guest" });
-                app.save(); app.toast("Payment Successful!"); pos.cart = []; pos.renderGrid(); pos.updateTotals(); pos.closeCheckout(); customerManager.render(); // Refresh customers
+                app.save(); app.toast("Payment Successful!"); pos.cart = []; pos.renderGrid(); pos.updateTotals(); pos.closeCheckout(); customerManager.render(); reports.render();
             }
         };
 
@@ -1005,87 +1152,131 @@
                     const isVIP = (c.totalSpent || 0) > 500;
                     const badgeClass = isVIP ? 'vip' : 'regular';
                     const badgeText = isVIP ? app.t('vip') : app.t('regular');
-                    
-                    list.innerHTML += `
-                        <div class="cust-card" onclick="customerManager.edit(${c.id})">
-                            <div class="cust-header">
-                                <div style="font-weight:600; font-size:14px;">${c.name}</div>
-                                <div class="cust-badge ${badgeClass}">${badgeText}</div>
-                            </div>
-                            <div style="display:flex; flex-direction:column; gap:4px; margin-bottom:8px;">
-                                <div class="cust-info-row"><i class="fas fa-phone"></i> ${c.phone || 'N/A'}</div>
-                                <div class="cust-info-row"><i class="fas fa-envelope"></i> ${c.email || 'N/A'}</div>
-                            </div>
-                            <div class="cust-stats">
-                                <div><div class="cust-stat-label">${app.t('points')}</div><div class="cust-stat-val text-accent">${c.points || 0}</div></div>
-                                <div><div class="cust-stat-label">${app.t('ltv')}</div><div class="cust-stat-val">${app.fmt(c.totalSpent || 0)}</div></div>
-                            </div>
-                        </div>
-                    `;
+                    list.innerHTML += `<div class="cust-card" onclick="customerManager.edit(${c.id})"><div class="cust-header"><div style="font-weight:600; font-size:14px;">${c.name}</div><div class="cust-badge ${badgeClass}">${badgeText}</div></div><div style="display:flex; flex-direction:column; gap:4px; margin-bottom:8px;"><div class="cust-info-row"><i class="fas fa-phone"></i> ${c.phone || 'N/A'}</div><div class="cust-info-row"><i class="fas fa-envelope"></i> ${c.email || 'N/A'}</div></div><div class="cust-stats"><div><div class="cust-stat-label">${app.t('points')}</div><div class="cust-stat-val text-accent">${c.points || 0}</div></div><div><div class="cust-stat-label">${app.t('ltv')}</div><div class="cust-stat-val">${app.fmt(c.totalSpent || 0)}</div></div></div></div>`;
                 });
             },
             showAddModal: () => {
                 const d = document.getElementById('modal-content');
                 document.getElementById('modal-title').innerText = app.t("add_customer");
-                d.innerHTML = `
-                    <div style="display:flex; flex-direction:column; gap:16px;">
-                        <div class="form-group"><label class="form-label">${app.t('name')}</label><input id="nc-name" placeholder="Full Name"></div>
-                        <div class="form-group"><label class="form-label">${app.t('phone')}</label><input id="nc-phone" placeholder="Phone Number"></div>
-                        <div class="form-group"><label class="form-label">${app.t('email')}</label><input id="nc-email" placeholder="Email Address"></div>
-                        <button class="btn btn-primary" onclick="customerManager.save()">${app.t('save_customer')}</button>
-                    </div>`;
+                d.innerHTML = `<div style="display:flex; flex-direction:column; gap:16px;"><div class="form-group"><label class="form-label">${app.t('name')}</label><input id="nc-name" placeholder="Full Name"></div><div class="form-group"><label class="form-label">${app.t('phone')}</label><input id="nc-phone" placeholder="Phone Number"></div><div class="form-group"><label class="form-label">${app.t('email')}</label><input id="nc-email" placeholder="Email Address"></div><button class="btn btn-primary" onclick="customerManager.save()">${app.t('save_customer')}</button></div>`;
                 document.getElementById('general-modal').classList.add('active');
             },
             edit: (id) => {
                 const c = db.customers.find(x => x.id == id);
                 customerManager.showAddModal();
                 document.getElementById('modal-title').innerText = app.t("customer_profile");
-                
                 const hidden = document.createElement('input'); hidden.type='hidden'; hidden.id='nc-id'; hidden.value=c.id;
                 document.getElementById('modal-content').appendChild(hidden);
-                
-                document.getElementById('nc-name').value = c.name;
-                document.getElementById('nc-phone').value = c.phone;
-                document.getElementById('nc-email').value = c.email || '';
-                
+                document.getElementById('nc-name').value = c.name; document.getElementById('nc-phone').value = c.phone; document.getElementById('nc-email').value = c.email || '';
                 const btnContainer = document.querySelector('#modal-content .btn-primary').parentNode;
-                const delBtn = document.createElement('button'); 
-                delBtn.className = 'btn btn-danger'; delBtn.innerText = app.t('delete'); delBtn.style.marginTop = '12px';
-                delBtn.onclick = () => customerManager.del(c.id);
+                const delBtn = document.createElement('button'); delBtn.className = 'btn btn-danger'; delBtn.innerText = app.t('delete'); delBtn.style.marginTop = '12px'; delBtn.onclick = () => customerManager.del(c.id);
                 btnContainer.appendChild(delBtn);
             },
             save: () => {
                 const id = document.getElementById('nc-id')?.value;
                 const name = document.getElementById('nc-name').value;
                 if(!name) return app.toast("Name Required");
-                
-                const data = {
-                    id: id ? parseInt(id) : Date.now(),
-                    name: name,
-                    phone: document.getElementById('nc-phone').value,
-                    email: document.getElementById('nc-email').value,
-                    points: 0,
-                    totalSpent: 0
-                };
-                
-                if(id) {
-                    const idx = db.customers.findIndex(x => x.id == id);
-                    data.points = db.customers[idx].points; // Preserve stats
-                    data.totalSpent = db.customers[idx].totalSpent;
-                    db.customers[idx] = data;
-                } else {
-                    db.customers.push(data);
-                }
-                app.save(); customerManager.render(); pos.init(); // Refresh pos dropdown
-                document.getElementById('general-modal').classList.remove('active');
-                app.toast("Customer Saved");
+                const data = { id: id ? parseInt(id) : Date.now(), name: name, phone: document.getElementById('nc-phone').value, email: document.getElementById('nc-email').value, points: 0, totalSpent: 0 };
+                if(id) { const idx = db.customers.findIndex(x => x.id == id); data.points = db.customers[idx].points; data.totalSpent = db.customers[idx].totalSpent; db.customers[idx] = data; } 
+                else { db.customers.push(data); }
+                app.save(); customerManager.render(); pos.init(); document.getElementById('general-modal').classList.remove('active'); app.toast("Customer Saved");
             },
-            del: (id) => {
-                if(confirm("Delete Customer?")) {
-                    db.customers = db.customers.filter(x => x.id != id);
-                    app.save(); customerManager.render(); pos.init();
-                    document.getElementById('general-modal').classList.remove('active');
-                }
+            del: (id) => { if(confirm("Delete Customer?")) { db.customers = db.customers.filter(x => x.id != id); app.save(); customerManager.render(); pos.init(); document.getElementById('general-modal').classList.remove('active'); } }
+        };
+
+        const reports = {
+            filter: 'today',
+            setFilter: (f) => {
+                reports.filter = f;
+                document.querySelectorAll('.report-filters .btn').forEach(b => b.classList.remove('active'));
+                document.getElementById('filter-'+f).classList.add('active');
+                reports.render();
+            },
+            getFiltered: () => {
+                const now = new Date();
+                const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                return db.sales.filter(s => {
+                    const d = new Date(s.date);
+                    if(reports.filter === 'today') return d >= start;
+                    if(reports.filter === 'week') { const w = new Date(start); w.setDate(w.getDate() - 7); return d >= w; }
+                    if(reports.filter === 'month') return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+                    return true;
+                }).reverse();
+            },
+            render: () => {
+                const data = reports.getFiltered();
+                const total = data.reduce((a,b) => a + b.total, 0);
+                const count = data.length;
+                const avg = count > 0 ? total / count : 0;
+
+                document.getElementById('rep-revenue').innerText = app.fmt(total);
+                document.getElementById('rep-orders').innerText = count;
+                document.getElementById('rep-avg').innerText = app.fmt(avg);
+
+                const list = document.getElementById('report-list');
+                list.innerHTML = '';
+                
+                data.forEach(s => {
+                    const itemCount = s.items.reduce((a, b) => a + b.qty, 0);
+                    list.innerHTML += `
+                        <div class="report-list-item" onclick="reports.view(${s.id})">
+                            <div class="report-item-left">
+                                <div class="report-cust">${s.customer}</div>
+                                <div class="report-id">#${s.id} • ${new Date(s.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                            </div>
+                            <div class="report-item-right">
+                                <div class="report-total">${app.fmt(s.total)}</div>
+                                <div class="report-meta">${itemCount} items • Cash</div>
+                            </div>
+                        </div>
+                    `;
+                });
+            },
+            view: (id) => {
+                const s = db.sales.find(x => x.id === id);
+                if(!s) return;
+                document.getElementById('detail-id').innerText = "#" + s.id;
+                document.getElementById('detail-date').innerText = new Date(s.date).toLocaleString();
+                document.getElementById('detail-total').innerText = app.fmt(s.total);
+                const list = document.getElementById('detail-list'); list.innerHTML = '';
+                s.items.forEach(i => {
+                    list.innerHTML += `<div style="padding:12px 0; border-bottom:1px solid var(--border); display:flex; justify-content:space-between;"><div><div style="font-weight:500;">${i.name}</div><div class="text-muted" style="font-size:11px;">${i.qty} x ${app.fmt(i.price)}</div></div><div class="font-mono">${app.fmt(i.qty * i.price)}</div></div>`;
+                });
+                document.getElementById('detail-modal').classList.add('active');
+            },
+            exportPDF: () => {
+                const data = reports.getFiltered();
+                const total = data.reduce((a,b) => a + b.total, 0);
+                const printArea = document.getElementById('printable-area');
+                
+                let html = `
+                    <div style="text-align:center; margin-bottom:20px;">
+                        <h1>${db.settings.storeName}</h1>
+                        <h3>Sales Report - ${reports.filter.toUpperCase()}</h3>
+                        <p>Generated: ${new Date().toLocaleString()}</p>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:20px; border:1px solid #000; padding:10px;">
+                        <div><strong>Revenue:</strong> ${app.fmt(total)}</div>
+                        <div><strong>Orders:</strong> ${data.length}</div>
+                        <div><strong>Avg:</strong> ${app.fmt(data.length ? total/data.length : 0)}</div>
+                    </div>
+                    <table>
+                        <thead><tr><th>ID</th><th>Date</th><th>Customer</th><th>Total</th></tr></thead>
+                        <tbody>
+                `;
+                
+                data.forEach(s => {
+                    html += `<tr>
+                        <td>#${s.id}</td>
+                        <td>${new Date(s.date).toLocaleString()}</td>
+                        <td>${s.customer}</td>
+                        <td>${app.fmt(s.total)}</td>
+                    </tr>`;
+                });
+                
+                html += `</tbody></table>`;
+                printArea.innerHTML = html;
+                window.print();
             }
         };
 
