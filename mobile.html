@@ -254,6 +254,24 @@
         .stock-indicator { position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: rgba(0,0,0,0.5); }
         .stock-fill { height: 100%; transition: width 0.3s ease, background-color 0.3s ease; }
 
+        /* --- INVENTORY & CUSTOMER RICH LISTS --- */
+        .inv-card, .cust-card {
+            background: var(--bg-surface); border-radius: 12px; padding: 16px; border: 1px solid var(--border); margin-bottom: 12px;
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .inv-header, .cust-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .inv-badge, .cust-badge { font-size: 10px; padding: 2px 6px; border-radius: 4px; background: var(--bg-nav); border: 1px solid var(--border); color: var(--text-secondary); }
+        .cust-badge.vip { color: #FFD700; border-color: #FFD700; background: rgba(255, 215, 0, 0.1); }
+        
+        .inv-stats, .cust-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center; background: var(--bg-app); border-radius: 8px; padding: 8px; }
+        .cust-stats { grid-template-columns: repeat(2, 1fr); } /* Customers only need 2 cols */
+        
+        .inv-stat-label, .cust-stat-label { font-size: 10px; color: var(--text-tertiary); margin-bottom: 2px; text-transform: uppercase; }
+        .inv-stat-val, .cust-stat-val { font-size: 12px; font-weight: 600; font-family: 'JetBrains Mono'; }
+        
+        .cust-info-row { font-size: 12px; color: var(--text-secondary); display: flex; gap: 12px; align-items: center; }
+        .cust-info-row i { width: 16px; text-align: center; color: var(--text-tertiary); }
+
         /* --- OVERLAYS (Cart, Checkout) --- */
         .overlay { position: fixed; inset: 0; background: var(--bg-app); z-index: 2000; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); display: flex; flex-direction: column; padding-top: var(--safe-top); padding-bottom: var(--safe-bottom); }
         .overlay.active { transform: translateY(0); }
@@ -280,12 +298,13 @@
         /* Drawer & Utils */
         .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 150; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
         .drawer-overlay.active { opacity: 1; pointer-events: auto; }
-        .drawer { position: absolute; bottom: 0; left: 0; width: 100%; background: var(--bg-surface); border-radius: 24px 24px 0 0; padding: 24px; transform: translateY(100%); transition: transform 0.3s; padding-bottom: calc(24px + var(--safe-bottom)); }
+        .drawer { position: absolute; bottom: 0; left: 0; width: 100%; background: var(--bg-surface); border-radius: 24px 24px 0 0; padding: 24px; transform: translateY(100%); transition: transform 0.3s; padding-bottom: calc(24px + var(--safe-bottom)); max-height: 90vh; display: flex; flex-direction: column; }
         .drawer-overlay.active .drawer { transform: translateY(0); }
         
         .hidden { display: none !important; }
         .text-accent { color: var(--accent); }
         .text-danger { color: var(--danger); }
+        .text-warning { color: var(--warning); }
         
         .list-item { background: var(--bg-surface); padding: 16px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); margin-bottom: 8px; }
 
@@ -368,25 +387,34 @@
         <!-- INVENTORY -->
         <div id="inventory-view" class="view-container">
             <div class="scroll-content">
-                <div style="display:flex; gap:10px; margin-bottom:16px;">
-                    <input type="text" data-i18n-placeholder="search_inventory" placeholder="Search..." onkeyup="inventoryManager.render(this.value)">
-                    <button class="btn btn-secondary" style="width:50px;" onclick="document.getElementById('txt-import').click()"><i class="fas fa-file-import"></i></button>
+                <div style="display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap;">
+                    <input type="text" data-i18n-placeholder="search_inventory" placeholder="Search..." onkeyup="inventoryManager.render(this.value)" style="flex:1;">
+                    <button class="btn btn-secondary" style="width:40px; padding:0;" onclick="inventoryManager.downloadTXTTemplate()"><i class="fas fa-file-export"></i></button>
+                    <button class="btn btn-secondary" style="width:40px; padding:0;" onclick="document.getElementById('txt-import').click()"><i class="fas fa-file-import"></i></button>
                     <input type="file" id="txt-import" class="hidden" accept=".txt" onchange="inventoryManager.importTXT(this)">
-                    <button class="btn btn-primary" style="width:50px;" onclick="inventoryManager.showAddModal()"><i class="fas fa-plus"></i></button>
+                    <button class="btn btn-primary" style="width:40px; padding:0;" onclick="inventoryManager.showAddModal()"><i class="fas fa-plus"></i></button>
                 </div>
                 <div id="inventory-list"></div>
             </div>
         </div>
 
-        <!-- REPORTS, CUSTOMERS -->
-        <div id="customers-view" class="view-container"><div class="scroll-content"><div id="customer-list"></div></div></div>
+        <!-- CUSTOMERS -->
+        <div id="customers-view" class="view-container">
+            <div class="scroll-content">
+                <div style="display:flex; gap:10px; margin-bottom:16px;">
+                    <input type="text" data-i18n-placeholder="search_customers" placeholder="Search Customers..." onkeyup="customerManager.render(this.value)">
+                    <button class="btn btn-primary" style="width:50px;" onclick="customerManager.showAddModal()"><i class="fas fa-user-plus"></i></button>
+                </div>
+                <div id="customer-list"></div>
+            </div>
+        </div>
+
+        <!-- REPORTS -->
         <div id="reports-view" class="view-container"><div class="scroll-content"><div id="report-list"></div></div></div>
         
-        <!-- SETTINGS (DESKTOP MATCHED) -->
+        <!-- SETTINGS -->
         <div id="settings-view" class="view-container">
             <div class="scroll-content">
-                
-                <!-- 1. System Language -->
                 <div class="card">
                     <h3 data-i18n="system_language">System Language</h3>
                     <div style="margin-top:16px;">
@@ -399,8 +427,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- 2. General Configuration -->
                 <div class="card">
                     <h3 data-i18n="general_config">General Configuration</h3>
                     <div style="margin-top:16px;">
@@ -432,8 +458,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- 3. System Preferences -->
                 <div class="card">
                     <h3 data-i18n="system_preferences">System Preferences</h3>
                     <div style="margin-top:16px;">
@@ -457,8 +481,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- 4. Danger Zone -->
                 <div class="card">
                     <h3 data-i18n="danger_zone">Danger Zone</h3>
                     <div style="margin-top:16px; display:flex; flex-direction:column; gap:12px;">
@@ -468,7 +490,6 @@
                         <button class="btn btn-danger" onclick="app.reset()"><i class="fas fa-trash"></i> <span data-i18n="factory_reset">Factory Reset</span></button>
                     </div>
                 </div>
-
             </div>
         </div>
 
@@ -541,14 +562,14 @@
             </div>
         </div>
 
-        <!-- MODAL DRAWER -->
+        <!-- MODAL DRAWER (Add/Edit Product/Customer) -->
         <div id="general-modal" class="drawer-overlay">
             <div class="drawer">
-                <div style="display:flex; justify-content:space-between; margin-bottom:16px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border);">
                     <h3 id="modal-title">Edit</h3>
-                    <button onclick="document.getElementById('general-modal').classList.remove('active')" style="border:none; background:none; color:#fff;"><i class="fas fa-times"></i></button>
+                    <button onclick="document.getElementById('general-modal').classList.remove('active')" style="border:none; background:none; color:var(--text-primary); font-size:18px;"><i class="fas fa-times"></i></button>
                 </div>
-                <div id="modal-content"></div>
+                <div id="modal-content" style="flex:1; overflow-y:auto; padding-bottom:24px;"></div>
             </div>
         </div>
         
@@ -591,7 +612,9 @@
                 system_preferences: "System Preferences", paper_format: "Paper Format", show_photos: "Show Product Photos",
                 danger_zone: "Danger Zone", import_db: "Import Database", backup_data: "Backup Data", factory_reset: "Factory Reset",
                 current_order: "Current Order", guest_customer: "Guest Customer", tax: "Tax", total: "Total", checkout: "CHECKOUT",
-                total_due: "Total Due", amount_tendered: "Amount Tendered", change_due: "Change Due", complete_tx: "COMPLETE TRANSACTION"
+                total_due: "Total Due", amount_tendered: "Amount Tendered", change_due: "Change Due", complete_tx: "COMPLETE TRANSACTION",
+                name: "Name", price: "Price", cost: "Cost", stock: "Stock", min_stock: "Min Stock", barcode: "Barcode", category: "Category", image_url: "Image URL", save: "Save", update: "Update", delete: "Delete",
+                phone: "Phone", email: "Email", points: "Points", ltv: "LTV", status: "Status", vip: "Gold VIP", regular: "Regular", customer_profile: "Customer Profile", save_customer: "Save Customer"
             },
             "Albanian": {
                 dashboard: "Ballina", pos: "Arka", inventory: "Stoku", customers: "Klientët", analytics: "Analitika", settings: "Cilësimet", more: "Më shumë",
@@ -605,7 +628,9 @@
                 system_preferences: "Preferencat e Sistemit", paper_format: "Formati i Letrës", show_photos: "Shfaq Fotot e Produkteve",
                 danger_zone: "Zona e Rrezikut", import_db: "Importo Bazën e të Dhënave", backup_data: "Ruaj të Dhënat", factory_reset: "Rivendos Sistemin",
                 current_order: "Porosia Aktuale", guest_customer: "Klient Mysafir", tax: "Taksa", total: "Totali", checkout: "PAGUAJ",
-                total_due: "Totali për të paguar", amount_tendered: "Shuma e marrë", change_due: "Kusuri", complete_tx: "PËRFUNDO TRANSAKSIONIN"
+                total_due: "Totali për të paguar", amount_tendered: "Shuma e marrë", change_due: "Kusuri", complete_tx: "PËRFUNDO TRANSAKSIONIN",
+                name: "Emri", price: "Çmimi", cost: "Kosto", stock: "Stoku", min_stock: "Stok Minimal", barcode: "Barkodi", category: "Kategoria", image_url: "Linku i Fotos", save: "Ruaj", update: "Përditëso", delete: "Fshij",
+                phone: "Tel", email: "Email", points: "Pikët", ltv: "LTV", status: "Statusi", vip: "Gold VIP", regular: "I rregullt", customer_profile: "Profili i Klientit", save_customer: "Ruaj Klientin"
             }
         };
 
@@ -630,12 +655,12 @@
             },
             seed: () => {
                 db.products = [
-                    { id: 1, name: "Espresso Macchiato", price: 1.20, stock: 100, category: "Coffee", image: "https://images.unsplash.com/photo-1485808191679-5f8c7c835587?w=300" },
-                    { id: 2, name: "Cappuccino", price: 1.50, stock: 50, category: "Coffee", image: "https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=300" },
-                    { id: 3, name: "Fresh Croissant", price: 2.00, stock: 12, category: "Food", image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=300" },
-                    { id: 4, name: "Orange Juice", price: 2.50, stock: 5, category: "Drinks", image: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=300" }
+                    { id: 1, name: "Espresso Macchiato", price: 1.20, cost: 0.50, stock: 100, minStock: 20, barcode: "1001", category: "Coffee", image: "https://images.unsplash.com/photo-1485808191679-5f8c7c835587?w=300" },
+                    { id: 2, name: "Cappuccino", price: 1.50, cost: 0.60, stock: 50, minStock: 15, barcode: "1002", category: "Coffee", image: "https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=300" },
+                    { id: 3, name: "Fresh Croissant", price: 2.00, cost: 0.80, stock: 12, minStock: 10, barcode: "2001", category: "Food", image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=300" },
+                    { id: 4, name: "Orange Juice", price: 2.50, cost: 1.00, stock: 5, minStock: 10, barcode: "3001", category: "Drinks", image: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=300" }
                 ];
-                db.customers = [{id:1, name:"Guest", phone:""}];
+                db.customers = [{id:1, name:"Guest", phone:"", email:"", points:0, totalSpent:0}];
                 app.save();
             },
             save: () => localStorage.setItem('likapos_mob_v2', JSON.stringify(db)),
@@ -660,6 +685,7 @@
                 if(v === 'dashboard') app.dash();
                 if(v === 'pos') pos.renderGrid();
                 if(v === 'inventory') inventoryManager.render();
+                if(v === 'customers') customerManager.render();
                 if(v === 'settings') {
                     document.getElementById('st-name').value = db.settings.storeName;
                     document.getElementById('st-tax').value = db.settings.taxRate;
@@ -676,7 +702,7 @@
                 const total = sales.reduce((a,b) => a+b.total,0);
                 document.getElementById('dash-sales').innerText = app.fmt(total);
                 document.getElementById('dash-tx').innerText = sales.length;
-                document.getElementById('dash-lowstock').innerText = db.products.filter(p=>p.stock<5).length;
+                document.getElementById('dash-lowstock').innerText = db.products.filter(p=>p.stock<=p.minStock).length;
             },
             openMore: () => document.getElementById('more-drawer').classList.add('active'),
             closeMore: () => document.getElementById('more-drawer').classList.remove('active'),
@@ -722,73 +748,41 @@
         };
 
         const pos = {
-            cart: [],
-            tenderedInput: "",
-            viewMode: 'grid',
-            
+            cart: [], tenderedInput: "", viewMode: 'grid',
             init: () => {
                 const sel = document.getElementById('pos-category');
                 const cats = [...new Set(db.products.map(p=>p.category))];
                 cats.forEach(c => sel.innerHTML += `<option value="${c}">${c}</option>`);
+                
+                // Customers
+                const cSel = document.getElementById('pos-customer');
+                cSel.innerHTML = `<option value="">${app.t('guest_customer')}</option>`;
+                db.customers.forEach(c => cSel.innerHTML += `<option value="${c.name}">${c.name}</option>`);
             },
-            
             toggleView: () => {
                 pos.viewMode = pos.viewMode === 'grid' ? 'list' : 'grid';
                 const grid = document.getElementById('pos-grid');
                 const icon = document.getElementById('view-icon');
-                
-                if(pos.viewMode === 'grid') {
-                    grid.classList.remove('list-view');
-                    grid.classList.add('grid-view');
-                    icon.className = 'fas fa-list';
-                } else {
-                    grid.classList.remove('grid-view');
-                    grid.classList.add('list-view');
-                    icon.className = 'fas fa-th';
-                }
+                if(pos.viewMode === 'grid') { grid.classList.remove('list-view'); grid.classList.add('grid-view'); icon.className = 'fas fa-list'; } 
+                else { grid.classList.remove('grid-view'); grid.classList.add('list-view'); icon.className = 'fas fa-th'; }
             },
-
             renderGrid: () => {
                 const term = document.getElementById('pos-search').value.toLowerCase();
                 const cat = document.getElementById('pos-category').value;
-                const grid = document.getElementById('pos-grid');
-                grid.innerHTML = '';
-                
+                const grid = document.getElementById('pos-grid'); grid.innerHTML = '';
                 const showImg = db.settings.showImages;
-                
-                db.products.filter(p => (p.name.toLowerCase().includes(term)) && (cat===""||p.category===cat)).forEach(p => {
+                db.products.filter(p => (p.name.toLowerCase().includes(term) || (p.barcode && p.barcode.includes(term))) && (cat===""||p.category===cat)).forEach(p => {
                     const inCart = pos.cart.find(i => i.id === p.id);
                     const cartQty = inCart ? inCart.qty : 0;
                     const realStock = p.stock - cartQty;
-                    
                     let barColor = 'var(--accent)';
-                    if(realStock < 10) barColor = 'var(--warning)';
+                    if(realStock <= p.minStock) barColor = 'var(--warning)';
                     if(realStock <= 0) barColor = 'var(--danger)';
-                    let pct = Math.min(100, (realStock/20)*100); 
-
-                    const el = document.createElement('div');
-                    el.className = 'prod-card';
-                    el.onclick = () => pos.addToCart(p.id);
-                    
+                    let pct = Math.min(100, (realStock/(p.minStock*3 || 20))*100); 
+                    const el = document.createElement('div'); el.className = 'prod-card'; el.onclick = () => pos.addToCart(p.id);
                     let imgHTML = '';
-                    if(showImg) {
-                        imgHTML = `
-                        <div class="prod-img-container">
-                            <img src="${p.image}" class="prod-img">
-                            <div class="stock-indicator"><div class="stock-fill" style="width:${pct}%; background:${barColor};"></div></div>
-                        </div>`;
-                    }
-
-                    el.innerHTML = `
-                        ${imgHTML}
-                        <div class="prod-info">
-                            <div class="prod-name">${p.name}</div>
-                            <div class="prod-meta">
-                                <span class="prod-price">${app.fmt(p.price)}</span>
-                                <span class="prod-stock-badge">${realStock} left</span>
-                            </div>
-                        </div>
-                    `;
+                    if(showImg) { imgHTML = `<div class="prod-img-container"><img src="${p.image}" class="prod-img"><div class="stock-indicator"><div class="stock-fill" style="width:${pct}%; background:${barColor};"></div></div></div>`; }
+                    el.innerHTML = `${imgHTML}<div class="prod-info"><div class="prod-name">${p.name}</div><div class="prod-meta"><span class="prod-price">${app.fmt(p.price)}</span><span class="prod-stock-badge">${realStock}</span></div></div>`;
                     grid.appendChild(el);
                 });
             },
@@ -796,220 +790,302 @@
                 const p = db.products.find(x=>x.id===id);
                 const existing = pos.cart.find(i=>i.id===id);
                 const currentQty = existing ? existing.qty : 0;
-                
                 if(p.stock <= currentQty) return app.toast("Out of stock!");
-                
-                if(existing) existing.qty++;
-                else pos.cart.push({id:id, qty:1, price:p.price, name:p.name});
-                
-                pos.renderGrid(); 
-                pos.updateTotals();
+                if(existing) existing.qty++; else pos.cart.push({id:id, qty:1, price:p.price, name:p.name});
+                pos.renderGrid(); pos.updateTotals();
             },
             updateTotals: () => {
                 const rawTotal = pos.cart.reduce((a,b)=>a+(b.price*b.qty),0);
                 const count = pos.cart.reduce((a,b)=>a+b.qty,0);
-                
-                let subtotal, tax, total; 
-                const rate = parseFloat(db.settings.taxRate);
-
-                if (db.settings.taxType === 'inclusive') { 
-                    total = rawTotal; 
-                    subtotal = total / (1 + (rate / 100)); 
-                    tax = total - subtotal; 
-                } else { 
-                    subtotal = rawTotal; 
-                    tax = subtotal * (rate / 100); 
-                    total = subtotal + tax; 
-                }
-                
+                let subtotal, tax, total; const rate = parseFloat(db.settings.taxRate);
+                if (db.settings.taxType === 'inclusive') { total = rawTotal; subtotal = total / (1 + (rate / 100)); tax = total - subtotal; } 
+                else { subtotal = rawTotal; tax = subtotal * (rate / 100); total = subtotal + tax; }
                 pos.currentTotal = total;
-
-                document.getElementById('float-count').innerText = count;
-                document.getElementById('float-total').innerText = app.fmt(total);
-                
-                const bar = document.getElementById('pos-float-bar');
-                if(count>0) bar.classList.add('visible'); else bar.classList.remove('visible');
-                
-                document.getElementById('cart-total').innerText = app.fmt(total);
-                document.getElementById('cart-tax').innerText = app.fmt(tax);
-                
+                document.getElementById('float-count').innerText = count; document.getElementById('float-total').innerText = app.fmt(total);
+                const bar = document.getElementById('pos-float-bar'); if(count>0) bar.classList.add('visible'); else bar.classList.remove('visible');
+                document.getElementById('cart-total').innerText = app.fmt(total); document.getElementById('cart-tax').innerText = app.fmt(tax);
                 pos.renderCartList();
             },
             renderCartList: () => {
                 const l = document.getElementById('cart-items-list'); l.innerHTML = '';
                 pos.cart.forEach((i, idx) => {
-                    l.innerHTML += `
-                        <div class="list-item">
-                            <div><div style="font-weight:600;">${i.name}</div><div class="text-muted" style="font-size:12px;">${app.fmt(i.price)}</div></div>
-                            <div style="display:flex; gap:12px; align-items:center;">
-                                <button class="btn btn-secondary" style="width:30px; height:30px; padding:0;" onclick="pos.modQty(${idx},-1)">-</button>
-                                <span class="font-mono">${i.qty}</span>
-                                <button class="btn btn-secondary" style="width:30px; height:30px; padding:0;" onclick="pos.modQty(${idx},1)">+</button>
-                            </div>
-                        </div>
-                    `;
+                    l.innerHTML += `<div class="list-item"><div><div style="font-weight:600;">${i.name}</div><div class="text-muted" style="font-size:12px;">${app.fmt(i.price)}</div></div><div style="display:flex; gap:12px; align-items:center;"><button class="btn btn-secondary" style="width:30px; height:30px; padding:0;" onclick="pos.modQty(${idx},-1)">-</button><span class="font-mono">${i.qty}</span><button class="btn btn-secondary" style="width:30px; height:30px; padding:0;" onclick="pos.modQty(${idx},1)">+</button></div></div>`;
                 });
             },
             modQty: (idx, d) => {
-                const i = pos.cart[idx];
-                const p = db.products.find(x=>x.id===i.id);
+                const i = pos.cart[idx]; const p = db.products.find(x=>x.id===i.id);
                 if(d>0 && i.qty >= p.stock) return app.toast("Max stock");
-                
-                i.qty += d;
-                if(i.qty<=0) pos.cart.splice(idx,1);
-                
-                pos.renderGrid();
-                pos.updateTotals();
+                i.qty += d; if(i.qty<=0) pos.cart.splice(idx,1);
+                pos.renderGrid(); pos.updateTotals();
             },
             clearCart: () => { pos.cart=[]; pos.renderGrid(); pos.updateTotals(); pos.closeCart(); },
             openCart: () => document.getElementById('cart-overlay').classList.add('active'),
             closeCart: () => document.getElementById('cart-overlay').classList.remove('active'),
-            
             showCheckout: () => {
-                pos.closeCart();
-                document.getElementById('checkout-overlay').classList.add('active');
-                const total = pos.currentTotal;
-                document.getElementById('co-total').innerText = app.fmt(total);
-                pos.tenderedInput = "";
-                pos.updateChange();
-                
-                const grid = document.getElementById('quick-cash-grid');
-                grid.innerHTML = `<button class="cash-btn" onclick="pos.setCash(${total})">Exact</button>`;
-                
+                pos.closeCart(); document.getElementById('checkout-overlay').classList.add('active');
+                const total = pos.currentTotal; document.getElementById('co-total').innerText = app.fmt(total);
+                pos.tenderedInput = ""; pos.updateChange();
+                const grid = document.getElementById('quick-cash-grid'); grid.innerHTML = `<button class="cash-btn" onclick="pos.setCash(${total})">Exact</button>`;
                 const suggestions = [Math.ceil(total), Math.ceil(total/5)*5, Math.ceil(total/10)*10, 20, 50, 100];
-                const unique = [...new Set(suggestions)].filter(x => x >= total).sort((a,b)=>a-b);
-                
-                unique.slice(0, 7).forEach(amt => {
-                    grid.innerHTML += `<button class="cash-btn" onclick="pos.setCash(${amt})">${app.fmt(amt)}</button>`;
-                });
+                [...new Set(suggestions)].filter(x => x >= total).sort((a,b)=>a-b).slice(0,7).forEach(amt => { grid.innerHTML += `<button class="cash-btn" onclick="pos.setCash(${amt})">${app.fmt(amt)}</button>`; });
             },
             closeCheckout: () => document.getElementById('checkout-overlay').classList.remove('active'),
-            pad: (k) => {
-                if(k==='C') pos.tenderedInput = "";
-                else if(k==='.') { if(!pos.tenderedInput.includes('.')) pos.tenderedInput += '.'; }
-                else pos.tenderedInput += k;
-                pos.updateChange();
-            },
+            pad: (k) => { if(k==='C') pos.tenderedInput = ""; else if(k==='.') { if(!pos.tenderedInput.includes('.')) pos.tenderedInput += '.'; } else pos.tenderedInput += k; pos.updateChange(); },
             setCash: (v) => { pos.tenderedInput = v.toString(); pos.updateChange(); },
             updateChange: () => {
-                const t = document.getElementById('co-tendered');
-                t.innerText = pos.tenderedInput || "0";
-                
-                const total = pos.currentTotal;
-                const tend = parseFloat(pos.tenderedInput)||0;
+                const t = document.getElementById('co-tendered'); t.innerText = pos.tenderedInput || "0";
+                const total = pos.currentTotal; const tend = parseFloat(pos.tenderedInput)||0;
                 const change = Math.max(0, tend - total);
-                const cEl = document.getElementById('co-change');
-                cEl.innerText = app.fmt(change);
-                
-                if(change > 0) {
-                    cEl.style.color = "var(--accent)";
-                } else {
-                    cEl.style.color = "var(--text-tertiary)";
-                }
+                const cEl = document.getElementById('co-change'); cEl.innerText = app.fmt(change);
+                if(change > 0) cEl.style.color = "var(--accent)"; else cEl.style.color = "var(--text-tertiary)";
             },
             finalize: () => {
-                const total = pos.currentTotal;
-                const tend = parseFloat(pos.tenderedInput)||0;
-                
+                const total = pos.currentTotal; const tend = parseFloat(pos.tenderedInput)||0;
                 if(tend < total - 0.01) return app.toast("Insufficient Cash!");
+                pos.cart.forEach(i => { const p = db.products.find(x=>x.id===i.id); p.stock -= i.qty; });
                 
-                pos.cart.forEach(i => {
-                    const p = db.products.find(x=>x.id===i.id);
-                    p.stock -= i.qty;
-                });
-                
-                db.sales.push({
-                    id: db.settings.nextSaleId++,
-                    date: new Date().toISOString(),
-                    total: total,
-                    items: [...pos.cart],
-                    customer: document.getElementById('pos-customer').value || "Guest"
-                });
-                
-                app.save();
-                app.toast("Payment Successful!");
-                pos.cart = [];
-                pos.renderGrid();
-                pos.updateTotals();
-                pos.closeCheckout();
+                // Update Customer Stats
+                const custName = document.getElementById('pos-customer').value;
+                if(custName && custName !== "") {
+                    const c = db.customers.find(x=>x.name === custName);
+                    if(c) { c.totalSpent += total; c.points += Math.floor(total); }
+                }
+
+                db.sales.push({ id: db.settings.nextSaleId++, date: new Date().toISOString(), total: total, items: [...pos.cart], customer: custName || "Guest" });
+                app.save(); app.toast("Payment Successful!"); pos.cart = []; pos.renderGrid(); pos.updateTotals(); pos.closeCheckout(); customerManager.render(); // Refresh customers
             }
         };
 
         const inventoryManager = {
             render: (filter="") => {
                 const l = document.getElementById('inventory-list'); l.innerHTML = '';
-                db.products.filter(p=>p.name.toLowerCase().includes(filter.toLowerCase())).forEach(p => {
+                const term = filter.toLowerCase();
+                db.products.filter(p=>(p.name.toLowerCase().includes(term) || (p.barcode && p.barcode.includes(term)))).forEach(p => {
+                    const isLow = p.stock <= p.minStock;
+                    const stockColor = isLow ? 'var(--danger)' : 'var(--accent)';
+                    const badgeText = isLow ? 'Low Stock' : 'In Stock';
                     l.innerHTML += `
-                        <div class="list-item" onclick="inventoryManager.edit(${p.id})">
-                            <div style="display:flex; gap:12px; align-items:center;">
-                                <img src="${p.image}" style="width:40px; height:40px; border-radius:8px; object-fit:cover;">
-                                <div><div style="font-weight:600;">${p.name}</div><div class="text-muted" style="font-size:11px;">Stock: ${p.stock}</div></div>
+                        <div class="inv-card" onclick="inventoryManager.edit(${p.id})">
+                            <div class="inv-header">
+                                <div><div style="font-weight:600; font-size:14px;">${p.name}</div><div style="font-size:12px; color:var(--text-tertiary); font-family:'JetBrains Mono';">${p.barcode || 'No Barcode'}</div></div>
+                                <div class="inv-badge" style="color:${stockColor}; border-color:${stockColor};">${badgeText}</div>
                             </div>
-                            <div class="font-mono">${app.fmt(p.price)}</div>
+                            <div class="inv-stats">
+                                <div><div class="inv-stat-label">Price</div><div class="inv-stat-val">${app.fmt(p.price)}</div></div>
+                                <div><div class="inv-stat-label">Cost</div><div class="inv-stat-val">${app.fmt(p.cost||0)}</div></div>
+                                <div><div class="inv-stat-label">Stock</div><div class="inv-stat-val" style="color:${stockColor}">${p.stock}</div></div>
+                                <div><div class="inv-stat-label">Min</div><div class="inv-stat-val">${p.minStock||0}</div></div>
+                            </div>
                         </div>
                     `;
                 });
             },
+            updatePreview: () => {
+                const url = document.getElementById('np-img').value;
+                const img = document.getElementById('preview-img');
+                if(url) { img.src = url; img.style.display = 'block'; } else { img.style.display = 'none'; }
+            },
             showAddModal: () => {
                 const d = document.getElementById('modal-content');
-                document.getElementById('modal-title').innerText = "Add Product";
-                d.innerHTML = `<div style="display:flex; flex-direction:column; gap:12px;">
-                    <input id="np-name" placeholder="Name">
-                    <input id="np-price" type="number" placeholder="Price">
-                    <input id="np-stock" type="number" placeholder="Stock">
-                    <input id="np-cat" placeholder="Category">
-                    <input id="np-img" placeholder="Image URL">
-                    <button class="btn btn-primary" onclick="inventoryManager.save()">Save</button>
-                </div>`;
+                document.getElementById('modal-title').innerText = app.t("add_product");
+                d.innerHTML = `
+                    <div style="display:flex; flex-direction:column; gap:16px;">
+                        <div class="form-group"><label class="form-label">${app.t('name')}</label><input id="np-name" placeholder="Enter product name"></div>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+                            <div class="form-group"><label class="form-label">${app.t('barcode')}</label><input id="np-barcode" placeholder="Scan/Type"></div>
+                            <div class="form-group"><label class="form-label">${app.t('category')}</label><input id="np-cat" list="cat-list" placeholder="Select"><datalist id="cat-list"></datalist></div>
+                        </div>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+                            <div class="form-group"><label class="form-label">${app.t('price')}</label><input id="np-price" type="number" placeholder="0.00"></div>
+                            <div class="form-group"><label class="form-label">${app.t('cost')}</label><input id="np-cost" type="number" placeholder="0.00"></div>
+                        </div>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+                            <div class="form-group"><label class="form-label">${app.t('stock')}</label><input id="np-stock" type="number" placeholder="0"></div>
+                            <div class="form-group"><label class="form-label">${app.t('min_stock')}</label><input id="np-min" type="number" placeholder="0"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">${app.t('image_url')}</label><input id="np-img" placeholder="https://..." oninput="inventoryManager.updatePreview()">
+                            <div style="margin-top:8px; height:150px; background:#000; border-radius:8px; display:flex; align-items:center; justify-content:center; overflow:hidden; border:1px solid var(--border);">
+                                <img id="preview-img" style="width:100%; height:100%; object-fit:contain; display:none;">
+                                <span style="color:var(--text-tertiary); font-size:12px;">Preview</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="inventoryManager.save()">${app.t('save')}</button>
+                    </div>`;
+                
+                const list = document.getElementById('cat-list');
+                [...new Set(db.products.map(p=>p.category))].forEach(c => list.innerHTML += `<option value="${c}">`);
                 document.getElementById('general-modal').classList.add('active');
             },
             edit: (id) => {
                 const p = db.products.find(x=>x.id===id);
-                const d = document.getElementById('modal-content');
-                document.getElementById('modal-title').innerText = "Edit Product";
-                d.innerHTML = `<div style="display:flex; flex-direction:column; gap:12px;">
-                    <input type="hidden" id="np-id" value="${p.id}">
-                    <input id="np-name" value="${p.name}">
-                    <input id="np-price" type="number" value="${p.price}">
-                    <input id="np-stock" type="number" value="${p.stock}">
-                    <input id="np-cat" value="${p.category}">
-                    <input id="np-img" value="${p.image}">
-                    <button class="btn btn-primary" onclick="inventoryManager.save()">Update</button>
-                    <button class="btn btn-danger" onclick="inventoryManager.del(${p.id})">Delete</button>
-                </div>`;
-                document.getElementById('general-modal').classList.add('active');
+                inventoryManager.showAddModal(); 
+                document.getElementById('modal-title').innerText = app.t("update");
+                const hidden = document.createElement('input'); hidden.type='hidden'; hidden.id='np-id'; hidden.value=p.id;
+                document.getElementById('modal-content').appendChild(hidden);
+                
+                document.getElementById('np-name').value = p.name;
+                document.getElementById('np-barcode').value = p.barcode || '';
+                document.getElementById('np-cat').value = p.category;
+                document.getElementById('np-price').value = p.price;
+                document.getElementById('np-cost').value = p.cost || 0;
+                document.getElementById('np-stock').value = p.stock;
+                document.getElementById('np-min').value = p.minStock || 0;
+                document.getElementById('np-img').value = p.image || '';
+                inventoryManager.updatePreview();
+                
+                const btnContainer = document.querySelector('#modal-content .btn-primary').parentNode;
+                const delBtn = document.createElement('button'); delBtn.className = 'btn btn-danger'; delBtn.innerText = app.t('delete'); delBtn.style.marginTop = '12px'; delBtn.onclick = () => inventoryManager.del(p.id);
+                btnContainer.appendChild(delBtn);
             },
             save: () => {
                 const id = document.getElementById('np-id')?.value;
                 const obj = {
                     id: id ? parseInt(id) : Date.now(),
                     name: document.getElementById('np-name').value,
-                    price: parseFloat(document.getElementById('np-price').value),
-                    stock: parseInt(document.getElementById('np-stock').value),
+                    barcode: document.getElementById('np-barcode').value,
                     category: document.getElementById('np-cat').value,
+                    price: parseFloat(document.getElementById('np-price').value)||0,
+                    cost: parseFloat(document.getElementById('np-cost').value)||0,
+                    stock: parseInt(document.getElementById('np-stock').value)||0,
+                    minStock: parseInt(document.getElementById('np-min').value)||0,
                     image: document.getElementById('np-img').value || 'https://placehold.co/300'
                 };
+                if(!obj.name) return app.toast("Name required");
                 if(id) { const i = db.products.findIndex(x=>x.id==id); db.products[i] = obj; }
                 else db.products.push(obj);
                 app.save(); inventoryManager.render(); document.getElementById('general-modal').classList.remove('active'); pos.init();
             },
-            del: (id) => { if(confirm("Delete?")) { db.products=db.products.filter(x=>x.id!=id); app.save(); inventoryManager.render(); document.getElementById('general-modal').classList.remove('active'); pos.init(); } }
+            del: (id) => { if(confirm("Delete?")) { db.products=db.products.filter(x=>x.id!=id); app.save(); inventoryManager.render(); document.getElementById('general-modal').classList.remove('active'); pos.init(); } },
+            importTXT: (input) => {
+                const file = input.files[0]; if(!file) return;
+                const r = new FileReader();
+                r.onload = (e) => {
+                    const lines = e.target.result.split('\n'); let count=0;
+                    lines.forEach(line => {
+                        const parts = line.split(' - ');
+                        if(parts.length >= 4) {
+                            const name = parts[0].trim();
+                            if(!db.products.some(p=>p.name === name)) {
+                                db.products.push({
+                                    id: Date.now() + Math.floor(Math.random()*1000),
+                                    name: name,
+                                    barcode: parts[1]?.trim()||"",
+                                    category: parts[2]?.trim() || "General",
+                                    price: parseFloat(parts[3]) || 0,
+                                    cost: parseFloat(parts[4]) || 0,
+                                    stock: parseInt(parts[5]) || 0,
+                                    minStock: parseInt(parts[6]) || 0,
+                                    image: parts[7]?.trim() || ""
+                                });
+                                count++;
+                            }
+                        }
+                    });
+                    app.save(); inventoryManager.render(); app.toast(`Imported ${count} items`);
+                };
+                r.readAsText(file);
+            },
+            downloadTXTTemplate: () => {
+                let txt = "NAME - BARCODE - CATEGORY - PRICE - COST - STOCK - MINSTOCK - IMAGEURL\n";
+                db.products.forEach(p => { txt += `${p.name} - ${p.barcode||''} - ${p.category} - ${p.price} - ${p.cost||0} - ${p.stock} - ${p.minStock||0} - ${p.image||''}\n`; });
+                const blob = new Blob([txt], { type: 'text/plain;charset=utf-8;' });
+                const link = document.createElement("a");
+                const url = URL.createObjectURL(blob);
+                link.setAttribute("href", url); link.setAttribute("download", "inventory_export.txt"); 
+                document.body.appendChild(link); link.click(); document.body.removeChild(link);
+            }
         };
 
         const customerManager = {
+            render: (filter = "") => {
+                const list = document.getElementById('customer-list'); list.innerHTML = '';
+                const term = filter.toLowerCase();
+                db.customers.filter(c => c.name.toLowerCase().includes(term) || c.phone.includes(term)).forEach(c => {
+                    const isVIP = (c.totalSpent || 0) > 500;
+                    const badgeClass = isVIP ? 'vip' : 'regular';
+                    const badgeText = isVIP ? app.t('vip') : app.t('regular');
+                    
+                    list.innerHTML += `
+                        <div class="cust-card" onclick="customerManager.edit(${c.id})">
+                            <div class="cust-header">
+                                <div style="font-weight:600; font-size:14px;">${c.name}</div>
+                                <div class="cust-badge ${badgeClass}">${badgeText}</div>
+                            </div>
+                            <div style="display:flex; flex-direction:column; gap:4px; margin-bottom:8px;">
+                                <div class="cust-info-row"><i class="fas fa-phone"></i> ${c.phone || 'N/A'}</div>
+                                <div class="cust-info-row"><i class="fas fa-envelope"></i> ${c.email || 'N/A'}</div>
+                            </div>
+                            <div class="cust-stats">
+                                <div><div class="cust-stat-label">${app.t('points')}</div><div class="cust-stat-val text-accent">${c.points || 0}</div></div>
+                                <div><div class="cust-stat-label">${app.t('ltv')}</div><div class="cust-stat-val">${app.fmt(c.totalSpent || 0)}</div></div>
+                            </div>
+                        </div>
+                    `;
+                });
+            },
             showAddModal: () => {
                 const d = document.getElementById('modal-content');
-                document.getElementById('modal-title').innerText = "Add Customer";
-                d.innerHTML = `<div style="display:flex; flex-direction:column; gap:12px;">
-                    <input id="nc-name" placeholder="Name">
-                    <input id="nc-phone" placeholder="Phone">
-                    <button class="btn btn-primary" onclick="customerManager.save()">Save</button>
-                </div>`;
+                document.getElementById('modal-title').innerText = app.t("add_customer");
+                d.innerHTML = `
+                    <div style="display:flex; flex-direction:column; gap:16px;">
+                        <div class="form-group"><label class="form-label">${app.t('name')}</label><input id="nc-name" placeholder="Full Name"></div>
+                        <div class="form-group"><label class="form-label">${app.t('phone')}</label><input id="nc-phone" placeholder="Phone Number"></div>
+                        <div class="form-group"><label class="form-label">${app.t('email')}</label><input id="nc-email" placeholder="Email Address"></div>
+                        <button class="btn btn-primary" onclick="customerManager.save()">${app.t('save_customer')}</button>
+                    </div>`;
                 document.getElementById('general-modal').classList.add('active');
             },
+            edit: (id) => {
+                const c = db.customers.find(x => x.id == id);
+                customerManager.showAddModal();
+                document.getElementById('modal-title').innerText = app.t("customer_profile");
+                
+                const hidden = document.createElement('input'); hidden.type='hidden'; hidden.id='nc-id'; hidden.value=c.id;
+                document.getElementById('modal-content').appendChild(hidden);
+                
+                document.getElementById('nc-name').value = c.name;
+                document.getElementById('nc-phone').value = c.phone;
+                document.getElementById('nc-email').value = c.email || '';
+                
+                const btnContainer = document.querySelector('#modal-content .btn-primary').parentNode;
+                const delBtn = document.createElement('button'); 
+                delBtn.className = 'btn btn-danger'; delBtn.innerText = app.t('delete'); delBtn.style.marginTop = '12px';
+                delBtn.onclick = () => customerManager.del(c.id);
+                btnContainer.appendChild(delBtn);
+            },
             save: () => {
-                db.customers.push({id:Date.now(), name:document.getElementById('nc-name').value, phone:document.getElementById('nc-phone').value});
-                app.save(); document.getElementById('general-modal').classList.remove('active');
+                const id = document.getElementById('nc-id')?.value;
+                const name = document.getElementById('nc-name').value;
+                if(!name) return app.toast("Name Required");
+                
+                const data = {
+                    id: id ? parseInt(id) : Date.now(),
+                    name: name,
+                    phone: document.getElementById('nc-phone').value,
+                    email: document.getElementById('nc-email').value,
+                    points: 0,
+                    totalSpent: 0
+                };
+                
+                if(id) {
+                    const idx = db.customers.findIndex(x => x.id == id);
+                    data.points = db.customers[idx].points; // Preserve stats
+                    data.totalSpent = db.customers[idx].totalSpent;
+                    db.customers[idx] = data;
+                } else {
+                    db.customers.push(data);
+                }
+                app.save(); customerManager.render(); pos.init(); // Refresh pos dropdown
+                document.getElementById('general-modal').classList.remove('active');
+                app.toast("Customer Saved");
+            },
+            del: (id) => {
+                if(confirm("Delete Customer?")) {
+                    db.customers = db.customers.filter(x => x.id != id);
+                    app.save(); customerManager.render(); pos.init();
+                    document.getElementById('general-modal').classList.remove('active');
+                }
             }
         };
 
