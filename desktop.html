@@ -1,839 +1,1915 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
+    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-8XSLX790TS"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
+    
       gtag('config', 'G-8XSLX790TS');
     </script>
 
     <meta charset="UTF-8">
+    <!-- Adjusted viewport for standard desktop scaling behavior on all devices -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIKApos Pro Desktop</title>
+    <title>LIKApos</title>
     
-    <link rel="icon" type="image/png" href="https://realfavicongenerator.net/files/56477a3f-ceaa-4bcb-8de8-c8c79a099f2d/favicon-96x96.png" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- RealFaviconGenerator Markups -->
+    <link rel="icon" type="image/png" href="https://realfavicongenerator.net/files/56477a3f-ceaa-4bcb-8de8-c8c79a099f2d/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="https://realfavicongenerator.net/files/56477a3f-ceaa-4bcb-8de8-c8c79a099f2d/favicon.svg" />
+    <link rel="shortcut icon" href="https://realfavicongenerator.net/files/56477a3f-ceaa-4bcb-8de8-c8c79a099f2d/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="https://realfavicongenerator.net/files/56477a3f-ceaa-4bcb-8de8-c8c79a099f2d/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="LIKApos" />
+    <link rel="manifest" href="https://realfavicongenerator.net/files/56477a3f-ceaa-4bcb-8de8-c8c79a099f2d/site.webmanifest" />
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         :root {
-            /* MILLION DOLLAR DARK THEME */
-            --bg-app: #0F111A;
-            --bg-sidebar: rgba(20, 23, 33, 0.85);
-            --bg-card: #1A1D26;
-            --bg-surface: #232732;
-            --bg-input: #14161F;
-            
-            --primary: #6366f1;
-            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-            --secondary: #06b6d4;
-            --accent: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            
-            --text-main: #F3F4F6;
-            --text-muted: #9CA3AF;
-            
-            --border: rgba(255, 255, 255, 0.06);
-            --border-hover: rgba(255, 255, 255, 0.12);
-            
-            --glass: blur(20px);
-            --shadow-card: 0 10px 30px -5px rgba(0, 0, 0, 0.3);
-            --radius: 14px;
-            --ease: cubic-bezier(0.23, 1, 0.32, 1);
+            --bg-app: #1A1D23;
+            --bg-surface: #252A34;
+            --bg-sidebar: #0F1A2F;
+            --bg-input: #1A1D23;
+            --primary: #0F1A2F;
+            --secondary: #00D4FF;
+            --accent: #00E5A0;
+            --danger: #FF4B55;
+            --warning: #FFB84C;
+            --info: #8B5CF6;
+            --text-primary: rgba(255, 255, 255, 0.95);
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-tertiary: rgba(255, 255, 255, 0.5);
+            --text-inverse: #111827;
+            --border: rgba(255, 255, 255, 0.08);
+            --hover-overlay: rgba(255,255,255,0.05);
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.2);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.4);
+            --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+            --safe-top: 0px;
+            --safe-bottom: 0px;
+            --safe-left: 0px;
+            --safe-right: 0px;
         }
 
         [data-theme="light"] {
-            --bg-app: #F1F5F9;
-            --bg-sidebar: rgba(255, 255, 255, 0.9);
-            --bg-card: #FFFFFF;
-            --bg-surface: #F8FAFC;
-            --bg-input: #F1F5F9;
-            --text-main: #0F172A;
-            --text-muted: #64748B;
-            --border: #E2E8F0;
-            --border-hover: #CBD5E1;
-            --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+            --bg-app: #F3F4F6;
+            --bg-surface: #FFFFFF;
+            --bg-sidebar: #FFFFFF;
+            --bg-input: #FFFFFF;
+            --primary: #FFFFFF; 
+            --secondary: #0077CC; 
+            --accent: #00A86B;    
+            --danger: #DC2626;
+            --warning: #D97706;
+            --info: #7C3AED;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --text-tertiary: #9CA3AF;
+            --text-inverse: #FFFFFF;
+            --border: #E5E7EB;
+            --hover-overlay: rgba(0,0,0,0.05);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; font-family: 'Inter', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
         
         body {
             background-color: var(--bg-app);
-            color: var(--text-main);
-            height: 100vh; overflow: hidden;
-            transition: background 0.3s;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            height: 100dvh; 
+            font-size: 14px;
+            line-height: 1.5;
+            transition: background-color 0.3s var(--ease-smooth), color 0.3s var(--ease-smooth);
         }
 
-        /* --- TYPOGRAPHY & UTILS --- */
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
-        .text-accent { color: var(--accent); }
-        .text-danger { color: var(--danger); }
-        .text-muted { color: var(--text-muted); }
-        .hidden { display: none !important; }
-        
-        /* --- SCROLLBAR --- */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 10px; }
-        
-        /* --- LAYOUT --- */
-        #app { display: flex; height: 100vh; width: 100vw; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
 
-        /* SIDEBAR */
+        h1, h2, h3, h4 { font-weight: 600; letter-spacing: -0.02em; color: var(--text-primary); }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .text-accent { color: var(--accent); }
+        .text-secondary { color: var(--secondary); }
+        .text-muted { color: var(--text-tertiary); }
+        .text-danger { color: var(--danger); }
+        .text-warning { color: var(--warning); }
+        .text-info { color: var(--info); }
+        
+        /* Utility Class - Always visible now as mobile mode is removed */
+        .mobile-hidden { display: inline-flex; }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        @keyframes bounceInUp { 0% { opacity: 0; transform: translateY(50px); } 60% { opacity: 1; transform: translateY(-10px); } 80% { transform: translateY(5px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse-soft { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+        @keyframes rollUp { 0% { transform: translateY(100%); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+        @keyframes rollDown { 0% { transform: translateY(-100%); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+        
+        /* CONNECTION DOT ANIMATION */
+        @keyframes pulse-red {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 75, 85, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(255, 75, 85, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 75, 85, 0); }
+        }
+
+        .animate-slide { animation: slideInRight 0.4s var(--ease-smooth); }
+        .animate-fade-up { animation: fadeInUp 0.4s var(--ease-smooth); }
+        .animate-scale { animation: scaleIn 0.3s var(--ease-spring); }
+        .hover-scale { transition: transform 0.2s var(--ease-spring); }
+        .hover-scale:active { transform: scale(0.95); }
+
+        #app { display: flex; height: 100dvh; width: 100vw; }
+        
         #sidebar {
             width: 260px;
             background: var(--bg-sidebar);
-            backdrop-filter: var(--glass);
             border-right: 1px solid var(--border);
-            display: flex; flex-direction: column;
-            z-index: 50; transition: all 0.4s var(--ease);
+            display: flex; flex-direction: column; z-index: 50;
+            transition: all 0.4s var(--ease-spring);
+            padding-top: var(--safe-top); 
         }
         #sidebar.closed { margin-left: -260px; }
 
-        .brand { 
-            height: 80px; display: flex; align-items: center; padding: 0 24px; 
-            border-bottom: 1px solid var(--border); gap: 12px;
+        .brand { padding: 24px; font-size: 20px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); }
+        
+        /* STATUS DOT STYLE */
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-left: 4px; /* Slight spacing from text */
+            transition: background-color 0.3s ease;
         }
-        .brand-logo { 
-            width: 36px; height: 36px; background: var(--primary-gradient); 
-            border-radius: 10px; display: grid; place-items: center; color: white; font-weight: 800; font-size: 18px;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        .status-dot.online {
+            background-color: var(--accent);
+            box-shadow: 0 0 6px rgba(0, 229, 160, 0.4);
         }
-        .brand-text { font-weight: 700; font-size: 18px; letter-spacing: -0.03em; }
+        .status-dot.offline {
+            background-color: var(--danger);
+            animation: pulse-red 1.5s infinite;
+        }
 
-        .nav-list { flex: 1; padding: 24px 12px; display: flex; flex-direction: column; gap: 6px; }
+        .nav-container { padding: 16px 0; flex: 1; }
         .nav-item {
-            display: flex; align-items: center; gap: 14px; padding: 12px 16px;
-            color: var(--text-muted); text-decoration: none; border-radius: var(--radius);
-            cursor: pointer; transition: all 0.2s; font-weight: 500; font-size: 14px; position: relative;
+            position: relative; display: flex; align-items: center; gap: 12px; padding: 14px 24px; color: var(--text-secondary);
+            text-decoration: none; cursor: pointer; transition: all 0.2s ease; font-weight: 500; overflow: hidden;
         }
-        .nav-item:hover { background: var(--bg-surface); color: var(--text-main); transform: translateX(4px); }
-        .nav-item.active { background: rgba(99, 102, 241, 0.15); color: var(--primary); }
-        .nav-item.active i { color: var(--primary); }
-        .shortcut-badge { 
-            margin-left: auto; font-size: 10px; font-family: 'JetBrains Mono'; 
-            background: var(--border); padding: 2px 6px; border-radius: 4px; opacity: 0.7;
+        .nav-item:hover { color: var(--text-primary); background: var(--hover-overlay); padding-left: 28px; }
+        .nav-item::before {
+            content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%) scaleY(0); width: 3px; height: 0%;
+            background: var(--secondary); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 0 4px 4px 0;
         }
+        .nav-item.active { color: var(--text-primary); background: var(--hover-overlay); }
+        .nav-item.active::before { transform: translateY(-50%) scaleY(1); height: 60%; }
+        .nav-item.active i { color: var(--secondary); }
+        .shortcut-badge { margin-left: auto; font-size: 10px; font-family: 'JetBrains Mono'; background: var(--border); padding: 2px 6px; border-radius: 4px; color: var(--text-secondary); }
 
-        /* MAIN */
-        #main { flex: 1; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+        #main { flex: 1; display: flex; flex-direction: column; background: var(--bg-app); position: relative; overflow: hidden; }
 
         header {
-            height: 80px; padding: 0 32px; display: flex; align-items: center; justify-content: space-between;
-            border-bottom: 1px solid var(--border); background: var(--bg-app);
+            min-height: calc(70px + var(--safe-top)); padding: var(--safe-top) 32px 0 32px;
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid var(--border); background: var(--bg-surface); z-index: 40; transition: background 0.3s;
         }
 
-        .view-container { display: none; padding: 32px; height: calc(100vh - 80px); overflow-y: auto; animation: fadeIn 0.3s ease; }
-        .view-container.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* --- UI COMPONENTS --- */
         .btn {
-            padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer;
-            border: 1px solid transparent; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
+            border: none; border-radius: var(--radius-sm); padding: 10px 20px; font-weight: 600; font-size: 13px; cursor: pointer;
+            transition: all 0.2s var(--ease-spring); display: inline-flex; align-items: center; justify-content: center; gap: 8px; position: relative; overflow: hidden;
         }
-        .btn:active { transform: scale(0.96); }
-        
-        .btn-primary { background: var(--primary-gradient); color: white; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3); }
-        .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
-        
-        .btn-secondary { background: var(--bg-surface); border-color: var(--border); color: var(--text-main); }
-        .btn-secondary:hover { border-color: var(--text-muted); background: var(--bg-card); }
-        
-        .btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); border-color: rgba(239, 68, 68, 0.2); }
-        .btn-danger:hover { background: rgba(239, 68, 68, 0.2); }
+        .btn:active { transform: scale(0.95); }
+        .btn-primary { background: linear-gradient(135deg, var(--secondary) 0%, #00A3FF 100%); color: #fff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0, 212, 255, 0.3); }
+        .btn-secondary { background: var(--bg-app); color: var(--text-primary); border: 1px solid var(--border); }
+        .btn-secondary:hover { background: var(--hover-overlay); border-color: var(--text-tertiary); }
+        .btn-secondary.active { background: var(--secondary); color: #fff; border-color: var(--secondary); }
+        .btn-danger { background: rgba(255, 75, 85, 0.1); color: var(--danger); border: 1px solid rgba(255, 75, 85, 0.2); }
+        .btn-danger:hover { background: rgba(255, 75, 85, 0.2); transform: translateY(-1px); }
+        .btn-success { background: var(--accent); color: #fff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+        .btn-success:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0, 229, 160, 0.3); }
 
         input, select {
-            background: var(--bg-input); border: 1px solid var(--border); color: var(--text-main);
-            padding: 12px; border-radius: 8px; width: 100%; font-size: 14px; transition: all 0.2s;
+            background: var(--bg-input); border: 1px solid var(--border); color: var(--text-primary); padding: 12px 16px; border-radius: var(--radius-sm);
+            width: 100%; transition: all 0.2s;
         }
-        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
+        input:focus, select:focus { border-color: var(--secondary); box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.15); transform: translateY(-1px); }
 
-        /* --- DASHBOARD CARDS --- */
-        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 32px; }
-        .stat-box { 
-            background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; 
-            position: relative; overflow: hidden; transition: transform 0.3s;
+        /* Helper for labels above inputs */
+        .input-label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            letter-spacing: 0.02em;
         }
-        .stat-box:hover { transform: translateY(-4px); border-color: var(--primary); }
-        
-        .stat-icon { width: 48px; height: 48px; border-radius: 12px; display: grid; place-items: center; font-size: 20px; margin-bottom: 16px; }
-        
-        /* --- POS LAYOUT --- */
-        .pos-layout { display: grid; grid-template-columns: 1fr 420px; gap: 24px; height: 100%; overflow: hidden; }
-        
-        /* Category Tabs (Pills) */
-        .category-bar { 
-            display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 16px; 
-            scrollbar-width: none;
-        }
-        .cat-pill {
-            background: var(--bg-surface); border: 1px solid var(--border); padding: 10px 20px; border-radius: 30px;
-            white-space: nowrap; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s; color: var(--text-muted);
-        }
-        .cat-pill:hover { color: var(--text-main); border-color: var(--text-muted); }
-        .cat-pill.active { background: var(--primary); border-color: var(--primary); color: white; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); }
 
-        /* Product Grid */
-        .product-grid { display: grid; gap: 16px; padding-bottom: 80px; }
-        .product-grid.medium { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
-        .product-grid.list { grid-template-columns: 1fr; }
+        .card {
+            background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 24px; position: relative;
+            overflow: hidden; transition: all 0.3s var(--ease-smooth);
+        }
+        .card:hover { border-color: rgba(255,255,255,0.1); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
         
+        .view-container { 
+            display: none; padding: 32px; height: 100%; overflow-y: auto; 
+            padding-left: calc(32px + var(--safe-left)); padding-right: calc(32px + var(--safe-right));
+        }
+        .view-container.active { display: block; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin-bottom: 32px; }
+        .stat-card { display: flex; flex-direction: column; gap: 8px; }
+        .stat-icon-wrap {
+            width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            font-size: 20px; margin-bottom: 8px; transition: transform 0.3s var(--ease-spring);
+        }
+        .stat-card:hover .stat-icon-wrap { transform: scale(1.1) rotate(5deg); }
+        .stat-val { font-size: 28px; font-weight: 700; font-family: 'JetBrains Mono'; letter-spacing: -1px; }
+        
+        .pos-layout { display: grid; grid-template-columns: 1fr 380px; gap: 24px; height: 100%; overflow: hidden; }
+        .product-grid { display: grid; gap: 16px; padding-right: 8px; overflow-y: auto; align-content: start; }
+        
+        .product-grid.tiny   { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+        .product-grid.small  { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+        .product-grid.medium { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
+        .product-grid.large  { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+        .product-grid.huge   { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+        .product-grid.list   { grid-template-columns: 1fr; } 
+
         .prod-card {
-            background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
-            overflow: hidden; cursor: pointer; transition: all 0.2s; position: relative;
+            background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0; cursor: pointer;
+            transition: all 0.2s var(--ease-spring); display: flex; flex-direction: column; overflow: hidden; height: 100%; position: relative; min-height: 44px;
         }
-        .prod-card:hover { transform: translateY(-4px); border-color: var(--primary); box-shadow: var(--shadow-card); }
+        .prod-card:hover { border-color: var(--secondary); transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+        .prod-card:active { transform: scale(0.98); }
         
-        .prod-img-box { height: 140px; background: #000; position: relative; overflow: hidden; }
-        .prod-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+        .prod-img-container {
+            width: 100%; background-color: var(--bg-app); display: flex; align-items: center; justify-content: center; overflow: hidden;
+            border-bottom: 1px solid var(--border); position: relative; transition: height 0.3s;
+        }
+        .product-grid.tiny .prod-img-container   { height: 80px; }
+        .product-grid.small .prod-img-container  { height: 100px; }
+        .product-grid.medium .prod-img-container { height: 140px; }
+        .product-grid.large .prod-img-container  { height: 180px; }
+        .product-grid.huge .prod-img-container   { height: 240px; }
+        
+        .product-grid.list .prod-card { flex-direction: row; height: auto; min-height: 80px; }
+        .product-grid.list .prod-img-container { width: 80px; height: auto; border-bottom: none; border-right: 1px solid var(--border); }
+        .product-grid.list .prod-info { justify-content: center; }
+
+        .prod-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
         .prod-card:hover .prod-img { transform: scale(1.1); }
-        
-        .stock-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: rgba(0,0,0,0.5); }
-        .stock-fill { height: 100%; transition: width 0.3s; }
+        .prod-img-placeholder { font-size: 24px; color: var(--text-tertiary); }
 
-        /* Cart Panel */
-        .cart-panel { 
-            background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
-            display: flex; flex-direction: column; height: 100%; overflow: hidden;
-        }
-        .cart-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); }
-        .cart-list { flex: 1; overflow-y: auto; padding: 16px; }
-        
-        .cart-item {
-            background: var(--bg-surface); padding: 12px; border-radius: 8px; margin-bottom: 8px;
-            display: flex; justify-content: space-between; align-items: center; animation: slideInRight 0.2s;
-            border: 1px solid transparent;
-        }
-        @keyframes slideInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-        
-        .cart-footer { padding: 24px; background: var(--bg-surface); border-top: 1px solid var(--border); }
-        .summary-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; color: var(--text-muted); }
-        .total-row { display: flex; justify-content: space-between; margin: 16px 0 24px 0; font-size: 24px; font-weight: 800; color: var(--text-main); }
+        .stock-health-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: var(--bg-surface); }
+        .stock-health-fill { height: 100%; transition: width 0.3s ease; }
 
-        /* --- MODALS --- */
+        .prod-info { padding: 12px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+        .prod-price { 
+            background: var(--hover-overlay); color: var(--secondary); padding: 4px 8px; border-radius: 4px; align-self: flex-start;
+            font-family: 'JetBrains Mono'; font-weight: 600; font-size: 12px;
+        }
+        
+        .cart-panel {
+            background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-lg); display: flex; flex-direction: column;
+            overflow: hidden; transition: all 0.3s;
+        }
+        .cart-items { flex: 1; overflow-y: auto; padding: 16px; }
+        .cart-item { 
+            background: var(--bg-app); margin-bottom: 8px; padding: 12px; border-radius: 8px; border: 1px solid transparent;
+            display: flex; justify-content: space-between; align-items: center; animation: slideInRight 0.3s var(--ease-spring);
+        }
+        .cart-item:hover { border-color: var(--secondary); }
+        
+        .qty-container { display: inline-block; width: 24px; height: 20px; overflow: hidden; position: relative; vertical-align: middle; text-align: center; }
+        .qty-val { display: block; font-family: 'JetBrains Mono', monospace; }
+        .qty-val.animate-up { animation: rollUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .qty-val.animate-down { animation: rollDown 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+        .table-container { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { background: var(--hover-overlay); padding: 16px 24px; color: var(--text-secondary); font-weight: 500; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+        td { padding: 16px 24px; border-top: 1px solid var(--border); color: var(--text-primary); transition: background 0.2s; }
+        tr:hover td { background: var(--hover-overlay); }
+
+        .row-low-stock td { background: rgba(255, 184, 76, 0.15) !important; color: var(--text-primary); }
+        .row-low-stock td:first-child { border-left: 3px solid var(--warning); }
+        .stock-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 4px; font-weight: 600; font-size: 12px; }
+        .stock-badge.low { background: rgba(255, 75, 85, 0.1); color: var(--danger); border: 1px solid rgba(255, 75, 85, 0.2); animation: pulse-soft 2s infinite; }
+
         .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
-            z-index: 100; display: flex; align-items: center; justify-content: center;
-            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 2000; display: flex; align-items: center;
+            justify-content: center; opacity: 0; pointer-events: none; 
+            transition: opacity 0.3s, visibility 0.3s; visibility: hidden;
+            padding: var(--safe-top) var(--safe-right) var(--safe-bottom) var(--safe-left);
         }
-        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        .modal-overlay.active { opacity: 1; pointer-events: all; visibility: visible; transition: opacity 0.3s; }
+        
         .modal {
-            background: #111827; border: 1px solid var(--border); border-radius: 24px;
-            padding: 32px; width: 500px; max-width: 90vw; transform: scale(0.95); transition: var(--ease) 0.3s;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; width: 90%; max-width: 500px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); transform: scale(0.8); opacity: 0; transition: all 0.4s var(--ease-spring); color: var(--text-primary);
         }
-        .modal-overlay.active .modal { transform: scale(1); }
-
-        /* Checkout Specific */
-        .checkout-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 32px; }
-        .num-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px; }
-        .num-btn { 
-            background: var(--bg-surface); border: 1px solid var(--border); height: 60px; border-radius: 12px;
-            font-size: 22px; font-weight: 600; color: var(--text-main); cursor: pointer; transition: all 0.1s;
+        .modal-overlay.active .modal { transform: scale(1); opacity: 1; }
+        
+        #toast {
+            position: fixed; bottom: calc(32px + var(--safe-bottom)); right: calc(32px + var(--safe-right)); background: var(--bg-surface);
+            border: 1px solid var(--secondary); color: var(--text-primary); padding: 16px 24px; border-radius: var(--radius-sm);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); transform: translateY(200%); display: flex; align-items: center; gap: 12px; z-index: 2100;
+            opacity: 0; transition: opacity 0.3s, transform 0.6s var(--ease-spring);
         }
-        .num-btn:hover { background: var(--bg-input); border-color: var(--text-muted); }
-        .num-btn:active { transform: scale(0.95); }
-        .pay-btn { grid-column: span 3; background: var(--primary-gradient); color: white; border: none; }
+        #toast.show { animation: bounceInUp 0.6s var(--ease-spring) forwards; opacity: 1; }
+        
+        /* --- ONBOARDING STYLES --- */
+        .onboarding-backdrop {
+            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); z-index: 9000;
+            opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+        }
+        .onboarding-backdrop.active { opacity: 1; pointer-events: auto; }
+        
+        /* The spotlight effect simply raises the z-index of the target */
+        .onboarding-spotlight {
+            position: relative; z-index: 9001 !important;
+            box-shadow: 0 0 0 4px var(--accent), 0 0 0 5000px rgba(0,0,0,0.75);
+            transition: all 0.3s ease;
+            pointer-events: none !important; /* Prevent interaction during tour */
+        }
 
-        /* Table Styles */
-        .table-wrap { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 16px 24px; background: rgba(255,255,255,0.02); color: var(--text-muted); font-size: 12px; text-transform: uppercase; }
-        td { padding: 16px 24px; border-top: 1px solid var(--border); font-size: 14px; }
-        tr:hover td { background: var(--bg-surface); }
+        .onboarding-tooltip {
+            position: fixed; z-index: 9005;
+            background: var(--bg-surface); border: 1px solid var(--accent);
+            width: 320px; max-width: 90vw; padding: 24px; border-radius: 16px;
+            box-shadow: 0 20px 60px -10px rgba(0,0,0,0.5);
+            opacity: 0; transform: translateY(10px) scale(0.95);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .onboarding-tooltip.active { opacity: 1; transform: translateY(0) scale(1); }
+        
+        .onboarding-progress {
+            display: flex; gap: 4px; margin-bottom: 16px;
+        }
+        .onboarding-dot {
+            height: 4px; flex: 1; background: var(--border); border-radius: 2px; transition: background 0.3s;
+        }
+        .onboarding-dot.active { background: var(--accent); }
+        
+        .onboarding-actions {
+            display: flex; justify-content: space-between; align-items: center; margin-top: 20px;
+        }
+        
+        .onboarding-timer {
+            font-size: 11px; font-weight: 600; color: var(--secondary);
+            margin-top: 8px; text-align: right; font-family: 'JetBrains Mono', monospace;
+        }
+        
+        /* PREVIEW & IMPORT STYLES */
+        .preview-box {
+            width: 100%;
+            aspect-ratio: 1/1; /* Make it square like POS grid */
+            background: var(--bg-app);
+            border: 2px dashed var(--border);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            margin-top: 8px;
+        }
+        .preview-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Crucial for 'perfect' pos crop preview */
+        }
+        .import-row-dupe {
+            background: rgba(255, 75, 85, 0.15) !important;
+            border-left: 3px solid var(--danger) !important;
+        }
+        .import-row-new {
+            background: rgba(0, 229, 160, 0.15) !important;
+            border-left: 3px solid var(--accent) !important;
+        }
+        
+        /* --- OPTIMIZED PRINT ENGINE --- */
+        @media print { 
+            #app, .modal-overlay, #toast, #sidebar, header, .onboarding-backdrop, .onboarding-tooltip { display: none !important; }
+            body { background: white !important; color: black !important; height: auto !important; overflow: visible !important; font-size: 12px !important; }
+            #printable-area { display: block !important; position: absolute; left: 0; top: 0; width: 100%; background: white; z-index: 9999; visibility: visible; }
+            #printable-area * { visibility: visible; }
+            .print-table { width: 100%; border-collapse: collapse; margin-top: 20px; page-break-inside: auto; }
+            .print-table th, .print-table td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 11px; }
+            .print-table th { background-color: #f3f4f6 !important; color: #000 !important; font-weight: bold; }
+            .print-table tr { page-break-inside: avoid; page-break-after: auto; }
+            .print-header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 10px; }
+            .print-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 20px; page-break-inside: avoid; }
+            .print-stat-box { border: 1px solid #000; padding: 10px; text-align: center; }
+            .print-stat-box h2 { font-size: 18px; margin-top: 5px; }
+            h3 { border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-bottom: 10px; margin-top: 20px; color: #000 !important; }
+        }
+        
+        .hidden { display: none !important; }
+        .settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
 
-        /* Status Dot */
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 8px; }
-        .status-dot.online { background: var(--accent); box-shadow: 0 0 10px var(--accent); }
-        .status-dot.offline { background: var(--danger); box-shadow: 0 0 10px var(--danger); }
-
+        /* ALL MOBILE & TABLET MEDIA QUERIES REMOVED TO FORCE DESKTOP VIEW */
     </style>
 </head>
 <body>
     <div id="app">
+        <!-- SIDEBAR (DESKTOP) -->
         <nav id="sidebar">
             <div class="brand">
-                <div class="brand-logo">L</div>
-                <div class="brand-text">LIKApos <span style="font-weight:400; opacity:0.5; font-size:14px;">Pro</span></div>
-                <div style="flex:1"></div>
-                <div id="connection-status" class="status-dot online" title="Online"></div>
+                <span>LIKApos</span>
+                <!-- NEW CONNECTION STATUS DOT -->
+                <div id="connection-status" class="status-dot online" title="System Online"></div>
             </div>
-            <div class="nav-list">
-                <a onclick="app.router('dashboard')" class="nav-item active" id="nav-dashboard">
-                    <i class="fas fa-home"></i> Dashboard
-                </a>
-                <a onclick="app.router('pos')" class="nav-item" id="nav-pos">
-                    <i class="fas fa-cash-register"></i> Terminal <span class="shortcut-badge">F1</span>
-                </a>
-                <a onclick="app.router('inventory')" class="nav-item" id="nav-inventory">
-                    <i class="fas fa-box"></i> Inventory <span class="shortcut-badge">F4</span>
-                </a>
-                <a onclick="app.router('customers')" class="nav-item" id="nav-customers">
-                    <i class="fas fa-users"></i> Customers <span class="shortcut-badge">F3</span>
-                </a>
-                <a onclick="app.router('reports')" class="nav-item" id="nav-reports">
-                    <i class="fas fa-chart-bar"></i> Reports <span class="shortcut-badge">F12</span>
-                </a>
-                <div style="flex:1"></div>
-                <a onclick="app.router('settings')" class="nav-item" id="nav-settings">
-                    <i class="fas fa-cog"></i> Settings <span class="shortcut-badge">F5</span>
-                </a>
+            <div class="nav-container">
+                <a onclick="app.router('dashboard')" class="nav-item active" id="nav-dashboard"><i class="fas fa-chart-pie"></i> <span data-i18n="dashboard">Dashboard</span></a>
+                <a onclick="app.router('pos')" class="nav-item" id="nav-pos"><i class="fas fa-calculator"></i> <span data-i18n="pos">POS Terminal</span><span class="shortcut-badge">F1</span></a>
+                <a onclick="app.router('inventory')" class="nav-item" id="nav-inventory"><i class="fas fa-boxes"></i> <span data-i18n="inventory">Inventory</span><span class="shortcut-badge">F4</span></a>
+                <a onclick="app.router('customers')" class="nav-item" id="nav-customers"><i class="fas fa-users"></i> <span data-i18n="customers">Customers</span><span class="shortcut-badge">F3</span></a>
+                <a onclick="app.router('reports')" class="nav-item" id="nav-reports"><i class="fas fa-chart-bar"></i> <span data-i18n="analytics">Analytics</span><span class="shortcut-badge">F12</span></a>
+                <div style="height: 24px;"></div>
+                <a onclick="app.router('settings')" class="nav-item" id="nav-settings"><i class="fas fa-cog"></i> <span data-i18n="settings">Settings</span><span class="shortcut-badge">F5</span></a>
+            </div>
+            <div style="padding: 24px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                <div style="font-size: 12px; font-weight: 600; color: var(--text-secondary);">v3.1</div>
+                <button class="btn btn-secondary hover-scale" style="padding: 4px 8px; font-size: 10px;" onclick="document.getElementById('version-modal').classList.add('active')">Info</button>
             </div>
         </nav>
 
+        <!-- MAIN CONTENT -->
         <main id="main">
             <header>
                 <div style="display: flex; align-items: center; gap: 16px;">
-                    <button class="btn btn-secondary" onclick="document.getElementById('sidebar').classList.toggle('closed')"><i class="fas fa-bars"></i></button>
-                    <h2 id="page-title">Dashboard</h2>
+                    <button class="btn btn-secondary hover-scale" style="padding: 8px;" onclick="app.toggleSidebar()"><i class="fas fa-bars"></i></button>
+                    <h2 id="header-title" class="animate-fade-up" data-i18n="dashboard">Dashboard</h2>
                 </div>
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <button class="btn btn-secondary" onclick="app.toggleTheme()"><i class="fas fa-moon" id="theme-icon"></i></button>
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <button id="header-theme-btn" class="btn btn-secondary hover-scale" onclick="app.toggleTheme()" title="Toggle Theme"><i class="fas fa-moon" id="theme-icon"></i></button>
+                    <button id="header-settings-btn" class="btn btn-secondary hover-scale" onclick="app.router('settings')" title="Settings"><i class="fas fa-cog"></i></button>
+                    <button id="header-help-btn" class="btn btn-secondary hover-scale" onclick="document.getElementById('help-modal').classList.add('active')" title="Help"><i class="fas fa-question"></i></button>
                 </div>
             </header>
 
-            <div id="dashboard-view" class="view-container active">
-                <div class="stats-row">
-                    <div class="stat-box">
-                        <div class="stat-icon" style="background:rgba(99, 102, 241, 0.1); color:var(--primary)"><i class="fas fa-wallet"></i></div>
-                        <div class="text-muted" style="font-size:12px; text-transform:uppercase;">Today's Revenue</div>
-                        <div class="font-mono" style="font-size:32px; font-weight:700; margin-top:4px;" id="dash-revenue">€0.00</div>
+            <!-- VIEWS -->
+            <div id="dashboard-view" class="view-container active animate-slide">
+                <div class="stats-grid">
+                    <div class="card stat-card">
+                        <div class="stat-icon-wrap" style="background: rgba(0, 212, 255, 0.1); color: var(--secondary);"><i class="fas fa-dollar-sign"></i></div>
+                        <span class="text-muted" style="font-size: 12px; text-transform: uppercase;" data-i18n="today_revenue">Today's Revenue</span>
+                        <div class="stat-val" id="dash-sales">€0.00</div>
                     </div>
-                    <div class="stat-box">
-                        <div class="stat-icon" style="background:rgba(16, 185, 129, 0.1); color:var(--accent)"><i class="fas fa-receipt"></i></div>
-                        <div class="text-muted" style="font-size:12px; text-transform:uppercase;">Transactions</div>
-                        <div class="font-mono" style="font-size:32px; font-weight:700; margin-top:4px;" id="dash-tx">0</div>
+                    <div class="card stat-card">
+                        <div class="stat-icon-wrap" style="background: rgba(0, 229, 160, 0.1); color: var(--accent);"><i class="fas fa-receipt"></i></div>
+                        <span class="text-muted" style="font-size: 12px; text-transform: uppercase;" data-i18n="transactions">Transactions</span>
+                        <div class="stat-val" id="dash-tx">0</div>
                     </div>
-                    <div class="stat-box">
-                        <div class="stat-icon" style="background:rgba(6, 182, 212, 0.1); color:var(--secondary)"><i class="fas fa-cubes"></i></div>
-                        <div class="text-muted" style="font-size:12px; text-transform:uppercase;">Inventory Value</div>
-                        <div class="font-mono" style="font-size:32px; font-weight:700; margin-top:4px;" id="dash-value">€0.00</div>
+                    <div class="card stat-card">
+                        <div class="stat-icon-wrap" style="background: rgba(139, 92, 246, 0.1); color: var(--info);"><i class="fas fa-warehouse"></i></div>
+                        <span class="text-muted" style="font-size: 12px; text-transform: uppercase;" data-i18n="inventory_value">Inventory Value</span>
+                        <div class="stat-val text-info" id="dash-value">€0.00</div>
                     </div>
-                    <div class="stat-box">
-                        <div class="stat-icon" style="background:rgba(245, 158, 11, 0.1); color:var(--warning)"><i class="fas fa-exclamation-triangle"></i></div>
-                        <div class="text-muted" style="font-size:12px; text-transform:uppercase;">Low Stock</div>
-                        <div class="font-mono" style="font-size:32px; font-weight:700; margin-top:4px;" id="dash-low">0</div>
+                    <div class="card stat-card" style="cursor: pointer;" onclick="inventoryManager.filterLowStock()">
+                        <div class="stat-icon-wrap" style="background: rgba(255, 184, 76, 0.1); color: var(--warning);"><i class="fas fa-exclamation-triangle"></i></div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span class="text-muted" style="font-size: 12px; text-transform: uppercase;" data-i18n="low_stock_alerts">Low Stock Alerts</span>
+                            <span class="text-warning" style="font-size: 10px;"><span data-i18n="click_view">Click to View</span> <i class="fas fa-arrow-right"></i></span>
+                        </div>
+                        <div class="stat-val" id="dash-lowstock">0</div>
                     </div>
                 </div>
 
-                <h3 style="margin-bottom:16px;">Live Activity Feed</h3>
-                <div class="table-wrap">
-                    <table id="recent-tx-table">
-                        <thead><tr><th>ID</th><th>Time</th><th>Customer</th><th>Amount</th><th>Method</th></tr></thead>
-                        <tbody></tbody>
-                    </table>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+                    <div class="card">
+                        <h3 style="margin-bottom: 24px;" data-i18n="quick_actions">Quick Actions</h3>
+                        <div id="dash-quick-actions" style="display: flex; gap: 12px; flex-wrap: wrap;">
+                            <button class="btn btn-primary" onclick="app.router('pos')"><i class="fas fa-cash-register"></i> <span data-i18n="new_sale">New Sale</span></button>
+                            <button class="btn btn-secondary" onclick="inventoryManager.showAddModal()"><i class="fas fa-plus"></i> <span data-i18n="add_product">Add Product</span></button>
+                            <button class="btn btn-secondary" onclick="customerManager.showAddModal()"><i class="fas fa-user-plus"></i> <span data-i18n="add_customer">Add Customer</span></button>
+                            <button class="btn btn-secondary mobile-hidden" onclick="onboarding.start(true)"><i class="fas fa-play-circle"></i> <span data-i18n="replay_tour">Replay Learning</span></button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div id="pos-view" class="view-container">
                 <div class="pos-layout">
-                    <div style="display: flex; flex-direction: column; overflow: hidden;">
-                        <div style="display: flex; gap: 12px; margin-bottom: 16px;">
-                            <div style="flex:1; position: relative;">
-                                <i class="fas fa-search" style="position:absolute; left:12px; top:12px; color:var(--text-muted)"></i>
-                                <input type="text" id="pos-search" placeholder="Scan barcode or search..." style="padding-left:36px;" onkeyup="pos.renderGrid()">
+                    <div style="display: flex; flex-direction: column; gap: 16px; overflow: hidden;">
+                        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                            <div style="flex: 1; position: relative; min-width: 200px;">
+                                <i class="fas fa-search" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-tertiary);"></i>
+                                <input type="text" id="pos-search" data-i18n-placeholder="search_products_ph" placeholder="Scan barcode or search products..." style="padding-left: 40px;" onkeyup="pos.filterProducts()">
                             </div>
-                            <select id="pos-grid-size" style="width:120px;" onchange="pos.changeGridSize(this.value)">
-                                <option value="medium">Grid</option>
-                                <option value="list">List</option>
+                            <select id="pos-category" style="width: 130px;" onchange="pos.filterProducts()">
+                                <option value="" data-i18n="all_categories">All Categories</option>
+                            </select>
+                            <select id="pos-grid-size" style="width: 120px;" onchange="pos.changeGridSize(this.value)">
+                                <option value="tiny">Tiny</option>
+                                <option value="small">Small</option>
+                                <option value="medium">Medium</option>
+                                <option value="large">Large</option>
+                                <option value="huge">Huge</option>
+                                <option value="list">List View</option>
                             </select>
                         </div>
-                        <div class="category-bar" id="category-tabs"></div>
                         <div id="pos-grid" class="product-grid medium custom-scroll"></div>
                     </div>
 
-                    <div class="cart-panel">
-                        <div class="cart-header">
-                            <span style="font-weight:600;">Current Order</span>
-                            <div style="display:flex; gap:8px;">
-                                <button class="btn btn-secondary" onclick="pos.holdOrder()" title="Park (F6)"><i class="fas fa-pause"></i></button>
-                                <button class="btn btn-secondary" onclick="pos.showHeldOrders()" title="Recall"><i class="fas fa-history"></i></button>
-                                <button class="btn btn-danger" onclick="pos.clearCart()"><i class="fas fa-trash"></i></button>
-                            </div>
+                    <div class="cart-panel" id="cart-panel">
+                        <!-- MOBILE TOGGLE REMOVED - DESKTOP ONLY -->
+
+                        <div style="padding: 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--hover-overlay);">
+                            <div style="font-weight: 600; color: var(--text-secondary);" data-i18n="current_order">Current Order</div>
+                            <button id="cart-clear-btn" class="btn btn-danger" style="padding: 6px 12px; font-size: 12px;" onclick="pos.clearCart()"><i class="fas fa-trash"></i> <span data-i18n="clear">Clear</span></button>
                         </div>
-                        <div style="padding: 12px; border-bottom:1px solid var(--border); background:var(--bg-app);">
-                            <select id="pos-customer" style="border:none; background:transparent; padding:0;" onchange="pos.updateCartUI()"><option value="">Walk-in Customer</option></select>
+                        <div style="padding: 12px; background: var(--bg-app); border-bottom: 1px solid var(--border);">
+                             <select id="pos-customer" style="padding: 8px; font-size: 13px; border: none; background: transparent;">
+                                <option value="" data-i18n="guest_customer">Guest Customer</option>
+                             </select>
                         </div>
-                        <div id="cart-items" class="cart-list custom-scroll"></div>
-                        <div class="cart-footer">
-                            <div class="summary-row"><span>Subtotal</span><span class="font-mono" id="cart-subtotal">€0.00</span></div>
-                            <div class="summary-row"><span>Tax</span><span class="font-mono" id="cart-tax">€0.00</span></div>
-                            <div class="summary-row" style="color:var(--accent); cursor:pointer;" onclick="pos.toggleDiscount()">
-                                <span>Discount <i class="fas fa-tag" style="font-size:10px;"></i></span>
-                                <span class="font-mono" id="cart-discount">-€0.00</span>
+                        <div id="cart-items" class="cart-items custom-scroll"></div>
+                        <div style="padding: 24px; background: var(--hover-overlay); border-top: 1px solid var(--border);">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; color: var(--text-secondary);">
+                                <span data-i18n="subtotal">Subtotal</span>
+                                <span id="cart-subtotal" class="font-mono">€0.00</span>
                             </div>
-                            <div class="total-row"><span>Total</span><span class="font-mono" style="color:var(--primary);" id="cart-total">€0.00</span></div>
-                            <button class="btn btn-primary" style="width:100%; height:60px; font-size:18px; justify-content:center;" onclick="pos.showCheckout()">
-                                CHARGE (F9)
-                            </button>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 16px; font-size: 13px; color: var(--text-secondary);">
+                                <span data-i18n="tax">Tax</span>
+                                <span id="cart-tax" class="font-mono">€0.00</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 24px; font-size: 20px; font-weight: 700;">
+                                <span data-i18n="total">Total</span>
+                                <span id="cart-total" class="font-mono text-accent">€0.00</span>
+                            </div>
+                            <button id="cart-pay-btn" class="btn btn-success" style="width: 100%; padding: 16px; font-size: 16px;" onclick="pos.showCheckout()"><span data-i18n="pay_now">PAY NOW</span> <i class="fas fa-chevron-right"></i></button>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div id="inventory-view" class="view-container">
-                <div style="display:flex; justify-content:space-between; margin-bottom:24px;">
-                    <div style="display:flex; gap:12px;">
-                        <input type="text" id="inv-search" placeholder="Search inventory..." style="width:300px;" onkeyup="inventory.render()">
-                        <button class="btn btn-secondary" onclick="inventory.importBtn()"><i class="fas fa-file-import"></i> Import</button>
-                        <input type="file" id="import-file" hidden onchange="inventory.processImport(this)">
+                <div class="card" style="height: 100%; display: flex; flex-direction: column; padding: 0; border: none; background: transparent;">
+                    <div style="margin-bottom: 24px; display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between;">
+                        <div id="inventory-actions" style="display: flex; gap: 12px; flex: 1; flex-wrap: wrap;">
+                            <input type="text" id="inventory-search" data-i18n-placeholder="search_inventory_ph" placeholder="Search inventory..." style="min-width: 200px;" onkeyup="inventoryManager.render(this.value)">
+                            
+                            <button class="btn btn-secondary" onclick="inventoryManager.downloadTXTTemplate()" data-i18n="export_template">Export / Template (.txt)</button>
+                            <button class="btn btn-secondary" onclick="document.getElementById('txt-import').click()" data-i18n="import_txt">Import (.txt)</button>
+                            <input type="file" id="txt-import" accept=".txt" class="hidden" onchange="inventoryManager.importTXT(this)">
+                        </div>
+                        <button id="inventory-add-btn" class="btn btn-primary" onclick="inventoryManager.showAddModal()"><i class="fas fa-plus"></i> <span data-i18n="add_product">Add Product</span></button>
                     </div>
-                    <button class="btn btn-primary" onclick="inventory.showModal()"><i class="fas fa-plus"></i> Add Item</button>
+                    <div class="table-container" style="flex: 1; overflow-y: auto;">
+                        <table id="inventory-table">
+                            <thead><tr><th data-i18n="product">Product</th><th data-i18n="barcode">Barcode</th><th data-i18n="category">Category</th><th data-i18n="stock">Stock</th><th data-i18n="price">Price</th><th data-i18n="cost">Cost</th><th data-i18n="actions">Actions</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="table-wrap">
-                    <table id="inventory-table">
-                        <thead><tr><th>Product</th><th>Category</th><th>Stock</th><th>Price</th><th>Actions</th></tr></thead>
+            </div>
+
+            <div id="customers-view" class="view-container">
+                <div style="margin-bottom: 24px; display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between;">
+                    <input type="text" data-i18n-placeholder="search_customers_ph" placeholder="Search customers..." style="min-width: 200px;" onkeyup="customerManager.render(this.value)">
+                    <button id="customer-add-btn" class="btn btn-primary" onclick="customerManager.showAddModal()"><i class="fas fa-user-plus"></i> <span data-i18n="new_customer">New Customer</span></button>
+                </div>
+                <div class="table-container">
+                    <table id="customer-table">
+                        <thead><tr><th data-i18n="name">Name</th><th data-i18n="phone">Phone</th><th data-i18n="status">Status</th><th data-i18n="points">Points</th><th data-i18n="ltv">LTV</th><th data-i18n="actions">Actions</th></tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
             </div>
 
-            <div id="customers-view" class="view-container">
-                <div style="display:flex; justify-content:space-between; margin-bottom:24px;">
-                    <input type="text" id="cust-search" placeholder="Search customers..." style="width:300px;" onkeyup="customers.render()">
-                    <button class="btn btn-primary" onclick="customers.showModal()"><i class="fas fa-user-plus"></i> New Customer</button>
+            <div id="reports-view" class="view-container">
+                <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; margin-bottom: 32px; align-items: center;">
+                    <h3 data-i18n="sales_performance">Sales Performance</h3>
+                    <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                        <button id="report-export-btn" class="btn btn-primary" onclick="reports.exportPDF()"><i class="fas fa-file-pdf"></i> <span data-i18n="export_pdf">Export PDF</span></button>
+                        <div id="report-filters" style="background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 4px; display: flex; gap: 4px; overflow-x: auto;">
+                            <button id="filter-today" class="btn btn-secondary" style="padding: 6px 12px; border: none;" onclick="reports.setFilter('today')" data-i18n="today">Today</button>
+                            <button id="filter-week" class="btn btn-secondary" style="padding: 6px 12px; border: none;" onclick="reports.setFilter('week')" data-i18n="week">Week</button>
+                            <button id="filter-month" class="btn btn-secondary" style="padding: 6px 12px; border: none;" onclick="reports.setFilter('month')" data-i18n="month">Month</button>
+                            <button id="filter-all" class="btn btn-secondary" style="padding: 6px 12px; border: none;" onclick="reports.setFilter('all')" data-i18n="all">All</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="table-wrap">
-                    <table id="customer-table">
-                        <thead><tr><th>Name</th><th>Phone</th><th>Points</th><th>Total Spent</th></tr></thead>
+
+                <div class="stats-grid">
+                    <div class="card stat-card hover-scale">
+                        <span class="text-muted" data-i18n="total_revenue">Total Revenue</span>
+                        <div class="stat-val text-secondary" id="report-total">€0.00</div>
+                    </div>
+                    <div class="card stat-card hover-scale">
+                        <span class="text-muted" data-i18n="total_orders">Total Orders</span>
+                        <div class="stat-val text-accent" id="report-count">0</div>
+                    </div>
+                    <div class="card stat-card hover-scale">
+                        <span class="text-muted" data-i18n="avg_order_value">Avg. Order Value</span>
+                        <div class="stat-val" id="report-avg">€0.00</div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table id="sales-table">
+                        <thead><tr><th>ID</th><th data-i18n="date">Date</th><th data-i18n="customer">Customer</th><th data-i18n="items">Items</th><th data-i18n="total">Total</th><th data-i18n="type">Type</th><th></th></tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
             </div>
 
             <div id="settings-view" class="view-container">
-                <div class="card" style="max-width:600px;">
-                    <h3 style="margin-bottom:24px;">Store Configuration</h3>
-                    <div style="display:grid; gap:16px;">
-                        <label>Store Name <input type="text" id="set-name" onchange="settings.save()"></label>
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
-                            <label>Currency <select id="set-curr" onchange="settings.save()"><option value="€">EUR (€)</option><option value="$">USD ($)</option></select></label>
-                            <label>Tax Rate % <input type="number" id="set-tax" onchange="settings.save()"></label>
+                <div class="settings-grid">
+                    
+                    <!-- NEW LANGUAGE CARD -->
+                    <div class="card">
+                         <h3 style="margin-bottom: 24px;" data-i18n="system_language">System Language</h3>
+                         <div style="display: flex; flex-direction: column; gap: 16px;">
+                             <div>
+                                 <label style="display: block; margin-bottom: 8px; color: var(--text-secondary);" data-i18n="select_language">Select Language</label>
+                                 <select id="setting-language-select" onchange="app.updateLanguage(this.value)">
+                                     <option value="English">English</option>
+                                     <option value="Albanian">Albanian (Shqip)</option>
+                                 </select>
+                             </div>
+                         </div>
+                    </div>
+
+                    <div class="card">
+                        <h3 style="margin-bottom: 24px;" data-i18n="general_config">General Configuration</h3>
+                        <div id="settings-general" style="display: flex; flex-direction: column; gap: 16px;">
+                            <div>
+                                <label style="display: block; margin-bottom: 8px; color: var(--text-secondary);" data-i18n="store_name">Store Name</label>
+                                <input type="text" id="setting-store-name" onchange="app.updateSetting('storeName', this.value)">
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 8px; color: var(--text-secondary);" data-i18n="currency_symbol">Currency Symbol</label>
+                                <select id="setting-currency" onchange="app.updateSetting('currency', this.value)">
+                                    <option value="€">EUR (€)</option>
+                                    <option value="$">USD ($)</option>
+                                    <option value="£">GBP (£)</option>
+                                    <option value="¥">JPY (¥)</option>
+                                </select>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                                <div>
+                                    <label style="display: block; margin-bottom: 8px; color: var(--text-secondary);" data-i18n="tax_rate">Tax Rate (%)</label>
+                                    <input type="number" id="setting-tax" onchange="app.updateSetting('taxRate', this.value)">
+                                </div>
+                                <div>
+                                    <label style="display: block; margin-bottom: 8px; color: var(--text-secondary);" data-i18n="tax_type">Tax Type</label>
+                                    <select id="setting-tax-type" onchange="app.updateSetting('taxType', this.value)">
+                                        <option value="exclusive">Exclusive</option>
+                                        <option value="inclusive">Inclusive</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-                        <label>Language <select id="set-lang" onchange="settings.setLang(this.value)"><option value="English">English</option><option value="Albanian">Albanian</option></select></label>
-                        <button class="btn btn-danger" onclick="app.reset()">Factory Reset Data</button>
+                    </div>
+                    
+                    <div class="card">
+                        <h3 style="margin-bottom: 24px;" data-i18n="system_preferences">System Preferences</h3>
+                        <div style="display: flex; flex-direction: column; gap: 16px;">
+                            <div>
+                                <label style="display: block; margin-bottom: 8px; color: var(--text-secondary);" data-i18n="paper_format">Paper Format (for Printing)</label>
+                                <select id="setting-paper" onchange="app.updateSetting('paperSize', this.value)">
+                                    <option value="a4">A4 (International)</option>
+                                    <option value="letter">Letter (USA)</option>
+                                    <option value="legal">Legal</option>
+                                </select>
+                            </div>
+                            <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: var(--bg-app); border-radius: 8px;">
+                                <div>
+                                    <label style="display: block; color: var(--text-primary); font-weight: 500;" data-i18n="show_photos">Show Product Photos</label>
+                                    <span class="text-muted" style="font-size: 12px;" data-i18n="show_photos_desc">Display images in POS grid</span>
+                                </div>
+                                <input type="checkbox" id="setting-images" onchange="app.updateSetting('showImages', this.checked)" style="width: auto;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3 style="margin-bottom: 24px;" data-i18n="danger_zone">Danger Zone</h3>
+                        <div id="settings-danger" style="display: flex; flex-direction: column; gap: 12px;">
+                            <button class="btn btn-primary hover-scale" onclick="document.getElementById('file-import').click()"><i class="fas fa-file-import"></i> <span data-i18n="import_db">Import Database</span></button>
+                            <button class="btn btn-secondary hover-scale" onclick="app.exportData()"><i class="fas fa-download"></i> <span data-i18n="backup_data">Backup Data</span></button>
+                            <button class="btn btn-danger hover-scale" onclick="app.resetData()"><i class="fas fa-trash"></i> <span data-i18n="factory_reset">Factory Reset System</span></button>
+                        </div>
                     </div>
                 </div>
             </div>
         </main>
+        
+        <!-- REMOVED MOBILE BOTTOM NAVIGATION -->
+    </div>
+
+    <!-- ONBOARDING OVERLAY ELEMENTS -->
+    <div id="onboarding-backdrop" class="onboarding-backdrop"></div>
+    <div id="onboarding-tooltip" class="onboarding-tooltip">
+        <div class="onboarding-progress" id="onboarding-progress"></div>
+        <h3 id="onboarding-title" style="margin-bottom: 8px; color: var(--text-primary);"></h3>
+        <p id="onboarding-desc" class="text-muted" style="margin-bottom: 20px; font-size: 14px; line-height: 1.5;"></p>
+        <div class="onboarding-actions">
+            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="onboarding.skip()" data-i18n="skip">Skip</button>
+            <button class="btn btn-primary" id="onboarding-next-btn" onclick="onboarding.next()" data-i18n="next">Next</button>
+        </div>
+        <div id="onboarding-timer" class="onboarding-timer"></div>
+    </div>
+
+    <!-- MODALS -->
+
+    <!-- NEW LANGUAGE MODAL (FIRST START) -->
+    <div id="language-modal" class="modal-overlay">
+        <div class="modal" style="text-align: center; max-width: 400px;">
+            <div style="margin-bottom: 24px; color: var(--accent); font-size: 48px;">
+                <i class="fas fa-globe"></i>
+            </div>
+            <h2 style="margin-bottom: 8px;">Select Language</h2>
+            <p class="text-muted" style="margin-bottom: 32px;">Zgjidhni gjuhën tuaj / Choose your language</p>
+            
+            <div style="display: grid; gap: 16px;">
+                <button class="btn btn-secondary hover-scale" style="height: 60px; font-size: 16px; justify-content: space-between; padding: 0 24px;" onclick="app.setInitialLanguage('Albanian')">
+                    <span>Albanian (Shqip)</span>
+                    <span style="font-size: 20px;">🇦🇱</span>
+                </button>
+                <button class="btn btn-secondary hover-scale" style="height: 60px; font-size: 16px; justify-content: space-between; padding: 0 24px;" onclick="app.setInitialLanguage('English')">
+                    <span>English</span>
+                    <span style="font-size: 20px;">🇺🇸</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="onboarding-welcome-modal" class="modal-overlay">
+        <div class="modal" style="text-align: center; max-width: 450px;">
+            <h2 style="margin-bottom: 12px;" data-i18n="welcome_title">Welcome to LIKApos</h2>
+            <p class="text-muted" style="margin-bottom: 32px;" data-i18n="welcome_desc">Let's get you set up with a quick guided tour of your new retail system.</p>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <button class="btn btn-primary hover-scale" style="height: 50px; font-size: 16px;" onclick="onboarding.beginTour()" data-i18n="start_tour">Start Learning</button>
+                <button class="btn btn-secondary hover-scale" onclick="onboarding.skip()" data-i18n="skip_for_now">Skip for Now</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="startup-modal" class="modal-overlay">
+        <div class="modal" style="text-align: center;">
+            <h1 style="margin-bottom: 8px;">LIKApos</h1>
+            <p class="text-muted" style="margin-bottom: 32px;" data-i18n="app_tagline">Professional Point of Sale. Free Forever.</p>
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                <button class="btn btn-secondary hover-scale" style="height: 60px; border-style: dashed;" onclick="document.getElementById('file-import').click()"><i class="fas fa-upload"></i> <span data-i18n="restore_backup">Restore from Backup</span></button>
+                <input type="file" id="file-import" accept=".db,.json" class="hidden" onchange="app.importData(this)">
+                <button class="btn btn-primary hover-scale" style="height: 50px;" onclick="app.init(true)" data-i18n="start_fresh">Start Fresh System</button>
+            </div>
+        </div>
     </div>
 
     <div id="checkout-modal" class="modal-overlay">
-        <div class="modal" style="width:900px; height:650px; display:grid; grid-template-columns:1fr 1fr; gap:40px;">
-            <div style="display:flex; flex-direction:column; justify-content:center;">
-                <h2 style="margin-bottom:32px;">Payment Gateway</h2>
-                <div class="text-muted" style="font-size:14px; text-transform:uppercase; letter-spacing:1px;">Total Due</div>
-                <div class="font-mono" style="font-size:56px; font-weight:800; color:var(--text-main);" id="pay-total">€0.00</div>
-                
-                <div style="margin-top:32px; background:var(--bg-input); padding:24px; border-radius:16px; border:1px solid var(--border); text-align:right;">
-                    <div class="text-muted" style="font-size:12px; text-transform:uppercase; margin-bottom:8px;">Cash Received</div>
-                    <div class="font-mono" style="font-size:40px; color:var(--primary);" id="pay-input">0.00</div>
-                </div>
-
-                <div style="margin-top:24px; display:flex; justify-content:space-between; align-items:center;">
-                    <span class="text-muted">Change Due</span>
-                    <span class="font-mono text-accent" style="font-size:32px;" id="pay-change">€0.00</span>
-                </div>
-                
-                <div id="smart-suggestions" style="margin-top:24px; display:flex; gap:8px; flex-wrap:wrap;"></div>
+        <div class="modal" style="max-width: 800px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
+                <h3 data-i18n="payment_gateway">Payment Gateway</h3>
+                <button class="btn btn-secondary hover-scale" style="padding: 4px 8px;" onclick="document.getElementById('checkout-modal').classList.remove('active')"><i class="fas fa-times"></i></button>
             </div>
-
-            <div class="num-grid">
-                <button class="num-btn" onclick="pos.numpad('7')">7</button>
-                <button class="num-btn" onclick="pos.numpad('8')">8</button>
-                <button class="num-btn" onclick="pos.numpad('9')">9</button>
-                <button class="num-btn" onclick="pos.numpad('4')">4</button>
-                <button class="num-btn" onclick="pos.numpad('5')">5</button>
-                <button class="num-btn" onclick="pos.numpad('6')">6</button>
-                <button class="num-btn" onclick="pos.numpad('1')">1</button>
-                <button class="num-btn" onclick="pos.numpad('2')">2</button>
-                <button class="num-btn" onclick="pos.numpad('3')">3</button>
-                <button class="num-btn text-danger" onclick="pos.numpad('C')">C</button>
-                <button class="num-btn" onclick="pos.numpad('0')">0</button>
-                <button class="num-btn" onclick="pos.numpad('.')">.</button>
-                <button class="num-btn pay-btn" style="grid-column:span 3;" onclick="pos.finish()">COMPLETE SALE</button>
+            <div style="display: grid; grid-template-columns: 1fr 300px; gap: 32px; flex: 1;">
+                <div>
+                    <div class="card" style="background: var(--bg-app); margin-bottom: 24px; text-align: right;">
+                        <span class="text-muted" style="font-size: 12px;" data-i18n="total_due">TOTAL DUE</span>
+                        <div class="font-mono text-accent" style="font-size: 36px; font-weight: 700;" id="checkout-total">€0.00</div>
+                    </div>
+                    <div style="margin-bottom: 24px;">
+                        <label class="text-secondary" style="font-size: 12px; margin-bottom: 8px; display: block;" data-i18n="amount_tendered">AMOUNT TENDERED</label>
+                        <div style="display: flex; gap: 12px;">
+                            <!-- FIX: Changed type="text" and added inputmode="decimal" for better mobile/numpad handling -->
+                            <input type="text" inputmode="decimal" id="checkout-cash" class="font-mono" style="font-size: 24px; height: 60px;" placeholder="0.00" onkeyup="pos.calcChange()">
+                            <button id="checkout-exact-btn" class="btn btn-secondary hover-scale" onclick="pos.setCash(null)" data-i18n="exact">EXACT</button>
+                        </div>
+                    </div>
+                    <div id="quick-cash-suggestions" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px;"></div>
+                    <div style="text-align: right;">
+                        <span class="text-muted" style="font-size: 12px;" data-i18n="change_due">CHANGE DUE</span>
+                        <div id="checkout-change" class="font-mono" style="font-size: 24px; font-weight: 600;">€0.00</div>
+                    </div>
+                </div>
+                <div id="checkout-numpad" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; height: 350px;">
+                    <button class="btn btn-secondary hover-scale" style="font-size: 18px;" onclick="pos.numpadInput('7')">7</button>
+                    <button class="btn btn-secondary hover-scale" style="font-size: 18px;" onclick="pos.numpadInput('8')">8</button>
+                    <button class="btn btn-secondary hover-scale" style="font-size: 18px;" onclick="pos.numpadInput('9')">9</button>
+                    <button class="btn btn-secondary hover-scale" style="font-size: 18px;" onclick="pos.numpadInput('4')">4</button>
+                    <button class="btn btn-secondary hover-scale" style="font-size: 18px;" onclick="pos.numpadInput('5')">5</button>
+                    <button class="btn btn-secondary hover-scale" style="font-size: 18px;" onclick="pos.numpadInput('6')">6</button>
+                    <button class="btn btn-secondary hover-scale" style="font-size: 18px;" onclick="pos.numpadInput('1')">1</button>
+                    <button class="btn btn-secondary hover-scale" style="font-size: 18px;" onclick="pos.numpadInput('2')">2</button>
+                    <button class="btn btn-secondary hover-scale" style="font-size: 18px;" onclick="pos.numpadInput('3')">3</button>
+                    <button class="btn btn-danger hover-scale" onclick="pos.numpadInput('C')">C</button>
+                    <button class="btn btn-secondary hover-scale" style="font-size: 18px;" onclick="pos.numpadInput('0')">0</button>
+                    <button class="btn btn-secondary hover-scale" style="font-size: 18px;" onclick="pos.numpadInput('.')">.</button>
+                </div>
+            </div>
+            <div id="checkout-actions" style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border);">
+                <button class="btn btn-success hover-scale" style="width: 100%; padding: 16px; font-size: 16px;" onclick="pos.finalizeSale()" data-i18n="complete_tx">COMPLETE TRANSACTION</button>
             </div>
         </div>
     </div>
 
-    <div id="receipt-modal" class="modal-overlay">
-        <div class="modal" style="text-align:center; width:400px;">
-            <div style="width:80px; height:80px; background:var(--accent); border-radius:50%; margin:0 auto 24px; display:grid; place-items:center; font-size:40px; color:white;"><i class="fas fa-check"></i></div>
-            <h2>Sale Successful!</h2>
-            <p class="text-muted" style="margin-bottom:24px;">Change Due: <span class="text-accent font-mono" id="receipt-change" style="font-size:18px; font-weight:700;">€0.00</span></p>
-            <div style="display:flex; gap:12px;">
-                <button class="btn btn-secondary" style="flex:1" onclick="window.print()">Print Receipt</button>
-                <button class="btn btn-primary" style="flex:1" onclick="document.getElementById('receipt-modal').classList.remove('active')">New Sale</button>
+    <!-- IMPORT PREVIEW MODAL -->
+    <div id="import-preview-modal" class="modal-overlay">
+        <div class="modal" style="max-width: 600px; display:flex; flex-direction:column; height:80vh;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                <h3 data-i18n="import_preview">Import Preview</h3>
+                <button class="btn btn-secondary hover-scale" style="padding: 4px 8px;" onclick="inventoryManager.closeImportModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="text-muted" style="font-size: 13px; margin-bottom: 16px;" data-i18n="import_desc">Review items before importing. Duplicates are marked in red.</div>
+            
+            <div class="table-container" style="flex:1; overflow-y:auto; margin-bottom:16px;">
+                <table id="import-table">
+                    <thead>
+                        <tr>
+                            <th style="width:40px;"><input type="checkbox" id="import-select-all" checked onchange="inventoryManager.toggleImportSelectAll(this)"></th>
+                            <th data-i18n="product">Product</th>
+                            <th data-i18n="barcode">Barcode</th>
+                            <th data-i18n="status">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="import-tbody"></tbody>
+                </table>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:12px;">
+                <button class="btn btn-secondary" onclick="inventoryManager.closeImportModal()" data-i18n="cancel">Cancel</button>
+                <button class="btn btn-primary" onclick="inventoryManager.confirmImport()" data-i18n="confirm_import">Confirm Import</button>
             </div>
         </div>
     </div>
 
-    <div id="prod-modal" class="modal-overlay"><div class="modal"><h3>Product Details</h3><input type="hidden" id="p-id"><div style="display:grid; gap:16px; margin-top:20px;"><input type="text" id="p-name" placeholder="Product Name"><div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;"><input type="text" id="p-barcode" placeholder="Barcode"><input type="text" id="p-cat" placeholder="Category" list="cat-list"><datalist id="cat-list"></datalist></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;"><input type="number" id="p-price" placeholder="Sell Price"><input type="number" id="p-cost" placeholder="Cost Price"></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;"><input type="number" id="p-stock" placeholder="Stock Qty"><input type="number" id="p-min" placeholder="Min Alert"></div><input type="text" id="p-img" placeholder="Image URL"></div><div style="margin-top:24px; display:flex; justify-content:flex-end; gap:12px;"><button class="btn btn-secondary" onclick="document.getElementById('prod-modal').classList.remove('active')">Cancel</button><button class="btn btn-primary" onclick="inventory.save()">Save Product</button></div></div></div>
+    <div id="product-modal" class="modal-overlay">
+        <div class="modal">
+            <h3 id="product-modal-title" style="margin-bottom: 24px;">ADD PRODUCT</h3>
+            <input type="hidden" id="prod-id">
+            <div style="display: flex; flex-direction: column; gap: 16px; overflow-y: auto; flex: 1; padding-right: 4px;">
+                <div>
+                    <label class="input-label">Product Name</label>
+                    <input type="text" id="prod-name" placeholder="Enter name...">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div>
+                        <label class="input-label">Barcode</label>
+                        <input type="text" id="prod-barcode" placeholder="Scan/Type...">
+                    </div>
+                    <div>
+                        <label class="input-label">Category</label>
+                        <input type="text" id="prod-category" placeholder="Select..." list="category-list">
+                        <datalist id="category-list"></datalist>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="input-label">Image (URL or Paste)</label>
+                    <input type="text" id="prod-image" placeholder="Image URL..." oninput="inventoryManager.updatePreview()">
+                    <div class="preview-box">
+                         <img id="prod-preview" src="" onerror="this.style.display='none'" style="display:none;">
+                         <span class="text-muted" id="prod-preview-text" style="font-size:12px;">POS View Preview</span>
+                    </div>
+                </div>
 
-    <div id="cust-modal" class="modal-overlay"><div class="modal"><h3>Customer Profile</h3><input type="hidden" id="c-id"><div style="display:grid; gap:16px; margin-top:20px;"><input type="text" id="c-name" placeholder="Full Name"><input type="text" id="c-phone" placeholder="Phone Number"></div><div style="margin-top:24px; display:flex; justify-content:flex-end; gap:12px;"><button class="btn btn-secondary" onclick="document.getElementById('cust-modal').classList.remove('active')">Cancel</button><button class="btn btn-primary" onclick="customers.save()">Save Customer</button></div></div></div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div>
+                        <label class="input-label">Selling Price</label>
+                        <input type="number" id="prod-price" placeholder="0.00">
+                    </div>
+                    <div>
+                        <label class="input-label">Cost Price</label>
+                        <input type="number" id="prod-cost" placeholder="0.00">
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div>
+                        <label class="input-label">Current Stock</label>
+                        <input type="number" id="prod-stock" placeholder="0">
+                    </div>
+                    <div>
+                        <label class="input-label">Min Stock Alert</label>
+                        <input type="number" id="prod-min" placeholder="0">
+                    </div>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 32px;">
+                <button class="btn btn-secondary hover-scale" onclick="inventoryManager.closeModal()" data-i18n="cancel">Cancel</button>
+                <button class="btn btn-primary hover-scale" onclick="inventoryManager.saveProduct()" data-i18n="save_changes">Save Changes</button>
+            </div>
+        </div>
+    </div>
 
-    <div id="discount-modal" class="modal-overlay"><div class="modal" style="width:350px;"><h3>Apply Discount</h3><div style="margin:20px 0;"><input type="number" id="disc-input" placeholder="Percentage %"></div><div style="display:flex; justify-content:flex-end; gap:12px;"><button class="btn btn-secondary" onclick="document.getElementById('discount-modal').classList.remove('active')">Cancel</button><button class="btn btn-primary" onclick="pos.applyDiscount()">Apply Discount</button></div></div></div>
+    <div id="customer-modal" class="modal-overlay">
+        <div class="modal">
+            <h3 style="margin-bottom: 24px;" data-i18n="customer_profile">Customer Profile</h3>
+            <input type="hidden" id="cust-id">
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                <div>
+                    <label class="input-label">Full Name</label>
+                    <input type="text" id="cust-name" placeholder="Enter name...">
+                </div>
+                <div>
+                    <label class="input-label">Phone Number</label>
+                    <input type="text" id="cust-phone" placeholder="Enter phone...">
+                </div>
+                <div>
+                    <label class="input-label">Email Address</label>
+                    <input type="email" id="cust-email" placeholder="Enter email...">
+                </div>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 32px;">
+                <button class="btn btn-secondary hover-scale" onclick="customerManager.closeModal()" data-i18n="cancel">Cancel</button>
+                <button class="btn btn-primary hover-scale" onclick="customerManager.saveCustomer()" data-i18n="save_customer">Save Customer</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="sale-detail-modal" class="modal-overlay">
+         <div class="modal">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
+                <h3 id="detail-id" class="font-mono text-secondary">#0000</h3>
+                <button class="btn btn-secondary hover-scale" style="padding: 4px 8px;" onclick="reports.closeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div style="background: var(--bg-app); padding: 12px; border-radius: 8px; margin-bottom: 24px; display: flex; justify-content: space-between; font-size: 12px;">
+                <span id="detail-date" class="text-muted"></span>
+                <span id="detail-cust"></span>
+            </div>
+            <div id="detail-items" class="custom-scroll" style="max-height: 250px; overflow-y: auto; margin-bottom: 24px;"></div>
+            <div style="border-top: 1px solid var(--border); padding-top: 16px; display: flex; flex-direction: column; gap: 8px;">
+                <div style="display: flex; justify-content: space-between;"><span class="text-muted" data-i18n="subtotal">Subtotal</span><span id="detail-subtotal" class="font-mono"></span></div>
+                <div style="display: flex; justify-content: space-between;"><span class="text-muted" data-i18n="tax">Tax</span><span id="detail-tax" class="font-mono"></span></div>
+                <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 18px; margin-top: 8px;"><span data-i18n="total">Total</span><span id="detail-total" class="font-mono text-accent"></span></div>
+            </div>
+        </div>
+    </div>
 
-    <div id="held-modal" class="modal-overlay"><div class="modal"><h3>Parked Orders</h3><div id="held-list" style="margin:20px 0; max-height:300px; overflow-y:auto; display:grid; gap:10px;"></div><button class="btn btn-secondary" style="width:100%" onclick="document.getElementById('held-modal').classList.remove('active')">Close</button></div></div>
+    <!-- VERSION MODAL -->
+    <div id="version-modal" class="modal-overlay">
+        <div class="modal" style="max-width: 500px; max-height: 80vh; display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
+                <h3 data-i18n="changelog">System Changelog</h3>
+                <button class="btn btn-secondary hover-scale" style="padding: 4px 8px;" onclick="document.getElementById('version-modal').classList.remove('active')"><i class="fas fa-times"></i></button>
+            </div>
+            <div style="flex: 1; overflow-y: auto; padding-right: 8px;">
+                <div style="margin-bottom: 24px;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                        <h4 class="text-accent">Version 3.1</h4>
+                    </div>
+                    <ul style="padding-left: 20px; color: var(--text-secondary); font-size: 13px; line-height: 1.6;">
+                        <li>ADDED: Real-time Connection Status Indicator in sidebar.</li>
+                        <li>FIXED: Learning / Onboarding module is now fully interactive and functional on Desktop.</li>
+                        <li>IMPROVED: Tooltip positioning during the learning tour.</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- NEW WEBSITE LINK IN INFO -->
+            <a href="https://likapp.pages.dev" target="_blank" class="btn btn-secondary hover-scale" style="margin-top: 0; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none;">
+                <i class="fas fa-globe"></i> <span style="font-family: 'JetBrains Mono'">likapp.pages.dev</span>
+            </a>
 
-    <div id="toast"><i class="fas fa-check-circle text-accent"></i> <span id="toast-msg">Notification</span></div>
+            <button class="btn btn-primary hover-scale" style="width: 100%;" onclick="document.getElementById('version-modal').classList.remove('active')" data-i18n="exit">Exit</button>
+        </div>
+    </div>
+
+    <!-- HELP MODAL -->
+    <div id="help-modal" class="modal-overlay">
+        <div class="modal" style="max-width: 800px; max-height: 85vh; display: flex; flex-direction: column;">
+             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="background: rgba(139, 92, 246, 0.1); color: var(--info); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div>
+                        <h3 data-i18n="manual">User Manual</h3>
+                        <p class="text-muted" style="font-size: 12px; margin: 0;">System Documentation</p>
+                    </div>
+                </div>
+                <button class="btn btn-secondary hover-scale" style="padding: 4px 8px;" onclick="document.getElementById('help-modal').classList.remove('active')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="custom-scroll" style="overflow-y: auto; padding-right: 12px; flex: 1;">
+                 <div style="margin-bottom: 32px;">
+                    <h4 style="color: var(--secondary); margin-bottom: 12px; border-left: 3px solid var(--secondary); padding-left: 12px;">1. Dashboard</h4>
+                    <p style="color: var(--text-secondary); font-size: 13px; line-height: 1.6; margin-bottom: 16px;">
+                        The dashboard provides a real-time overview of your business performance. You can see today's revenue, transaction counts, and total inventory value. Use the "Quick Actions" to jump directly to common tasks like making a sale or adding stock.
+                    </p>
+                 </div>
+
+                 <!-- NEW WEBSITE SECTION IN HELP MODAL -->
+                 <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border);">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <div style="background: rgba(0, 229, 160, 0.1); color: var(--accent); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                             <i class="fas fa-globe"></i>
+                        </div>
+                        <div>
+                             <h3 data-i18n="visit_website">Visit Website</h3>
+                             <p class="text-muted" style="font-size: 12px; margin: 0;" data-i18n="website_desc">Check for updates and news</p>
+                        </div>
+                    </div>
+                    <a href="https://likapp.pages.dev" target="_blank" class="btn btn-secondary hover-scale" style="width: 100%; display: flex; justify-content: center; text-decoration: none; gap: 8px;">
+                        <span>https://likapp.pages.dev</span> <i class="fas fa-external-link-alt"></i>
+                    </a>
+                 </div>
+
+            </div>
+            <div style="margin-top: 24px; border-top: 1px solid var(--border); padding-top: 16px; text-align: right;">
+                <button class="btn btn-primary hover-scale" onclick="document.getElementById('help-modal').classList.remove('active')" data-i18n="close">Close Guide</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast"><i class="fas fa-info-circle text-secondary"></i> <span id="toast-msg">Action Successful</span></div>
+    <div id="printable-area" class="hidden"></div>
 
     <script>
-        /* --- AUDIO SYSTEM --- */
-        const beep = () => {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.connect(gain); gain.connect(ctx.destination);
-            osc.frequency.value = 800; gain.gain.value = 0.1;
-            osc.start(); setTimeout(() => osc.stop(), 100);
+        // 1. LANGUAGE DEFINITIONS
+        const LANGUAGES = ["English", "Albanian"];
+
+        // 2. TRANSLATION DICTIONARY
+        const TRANSLATIONS = {
+            "English": {
+                dashboard: "Dashboard", pos: "POS Terminal", inventory: "Inventory", customers: "Customers", analytics: "Analytics", settings: "Settings",
+                today_revenue: "Today's Revenue", transactions: "Transactions", inventory_value: "Inventory Value", low_stock_alerts: "Low Stock Alerts",
+                click_view: "Click to View", quick_actions: "Quick Actions", new_sale: "New Sale", add_product: "Add Product", add_customer: "Add Customer",
+                replay_tour: "Replay Learning", search_products_ph: "Scan barcode or search products...", all_categories: "All Categories",
+                current_order: "Current Order", clear: "Clear", guest_customer: "Guest Customer", subtotal: "Subtotal", tax: "Tax", total: "Total",
+                pay_now: "PAY NOW", search_inventory_ph: "Search inventory...", export_template: "Export / Template (.txt)", import_txt: "Import (.txt)",
+                product: "Product", barcode: "Barcode", category: "Category", stock: "Stock", price: "Price", cost: "Cost", actions: "Actions",
+                search_customers_ph: "Search customers...", new_customer: "New Customer", name: "Name", phone: "Phone", status: "Status", points: "Points", ltv: "LTV",
+                sales_performance: "Sales Performance", export_pdf: "Export PDF", today: "Today", week: "Week", month: "Month", all: "All",
+                total_revenue: "Total Revenue", total_orders: "Total Orders", avg_order_value: "Avg. Order Value", date: "Date", customer: "Customer", items: "Items", type: "Type",
+                system_language: "System Language", select_language: "Select Language",
+                general_config: "General Configuration", store_name: "Store Name", currency_symbol: "Currency Symbol", tax_rate: "Tax Rate (%)", tax_type: "Tax Type",
+                system_preferences: "System Preferences", paper_format: "Paper Format", show_photos: "Show Product Photos", show_photos_desc: "Display images in POS grid",
+                danger_zone: "Danger Zone", import_db: "Import Database", backup_data: "Backup Data", factory_reset: "Factory Reset System",
+                welcome_title: "Welcome to LIKApos", welcome_desc: "Let's get you set up with a quick guided tour of your new retail system.",
+                start_tour: "Start Learning", skip_for_now: "Skip for Now", skip: "Skip", next: "Next", finish: "Finish",
+                app_tagline: "Professional Point of Sale. Free Forever.", restore_backup: "Restore from Backup", start_fresh: "Start Fresh System",
+                payment_gateway: "Payment Gateway", total_due: "TOTAL DUE", amount_tendered: "AMOUNT TENDERED", exact: "EXACT", change_due: "CHANGE DUE", complete_tx: "COMPLETE TRANSACTION",
+                cancel: "Cancel", save_changes: "Save Changes", customer_profile: "Customer Profile", save_customer: "Save Customer",
+                changelog: "System Changelog", exit: "Exit", manual: "User Manual", close: "Close Guide",
+                reports: "Reports",
+                import_preview: "Import Preview", import_desc: "Review items before importing. Duplicates are marked in red.", confirm_import: "Confirm Import", duplicate: "Duplicate", new: "New",
+                // Tour Steps
+                tour_sidebar_title: "Navigation Sidebar", tour_sidebar_desc: "Access all main modules here. Use F1-F12 keys for shortcuts.",
+                tour_dash_title: "Business Stats", tour_dash_desc: "Real-time overview of your daily sales and inventory value.",
+                tour_actions_title: "Quick Actions", tour_actions_desc: "Fast shortcuts to start a sale or add new products.",
+                tour_pos_title: "POS Terminal", tour_pos_desc: "The main selling interface. Scan barcodes or click items to sell.",
+                tour_settings_title: "System Settings", tour_settings_desc: "Configure your store details, tax rates, and language here.",
+                tour_finish_title: "Jeni Gati!", tour_finish_desc: "That's it! You are now ready to start selling.",
+                // NEW WEBSITE STRINGS
+                visit_website: "Visit Website", website_desc: "Check for updates and news"
+            },
+            "Albanian": {
+                dashboard: "Ballina", pos: "Arka", inventory: "Stoku", customers: "Klientët", analytics: "Analitika", settings: "Konfigurime",
+                today_revenue: "Të Ardhurat Sot", transactions: "Transaksionet", inventory_value: "Vlera e Stokut", low_stock_alerts: "Paralajmërim Stoku",
+                click_view: "Kliko për të parë", quick_actions: "Veprime të Shpejta", new_sale: "Shitje e Re", add_product: "Shto Produkt", add_customer: "Shto Klient",
+                replay_tour: "Rinis Mësimin", search_products_ph: "Skano barkodin ose kërko produkte...", all_categories: "Të gjitha kategoritë",
+                current_order: "Porosia Aktuale", clear: "Pastro", guest_customer: "Klient Mysafir", subtotal: "Nëntotali", tax: "Taksa", total: "Totali",
+                pay_now: "PAGUAJ TANI", search_inventory_ph: "Kërko në stok...", export_template: "Eksporto / Shabllon (.txt)", import_txt: "Importo (.txt)",
+                product: "Produkti", barcode: "Barkodi", category: "Kategoria", stock: "Sasia", price: "Çmimi", cost: "Kosto", actions: "Veprime",
+                search_customers_ph: "Kërko klientë...", new_customer: "Klient i Ri", name: "Emri", phone: "Telefoni", status: "Statusi", points: "Pikët", ltv: "Vlera",
+                sales_performance: "Performanca e Shitjeve", export_pdf: "Eksporto PDF", today: "Sot", week: "Javë", month: "Muaj", all: "Gjitha",
+                total_revenue: "Totali i të Ardhurave", total_orders: "Totali i Porosive", avg_order_value: "Vlera Mesatare", date: "Data", customer: "Klienti", items: "Artikuj", type: "Lloji",
+                system_language: "Gjuha e Sistemit", select_language: "Zgjidh Gjuhën",
+                general_config: "Konfigurimi i Përgjithshëm", store_name: "Emri i Dyqanit", currency_symbol: "Simboli i Monedhës", tax_rate: "Norma e Taksës (%)", tax_type: "Lloji i Taksës",
+                system_preferences: "Preferencat e Sistemit", paper_format: "Formati i Letrës", show_photos: "Shfaq Fotot e Produkteve", show_photos_desc: "Shfaq imazhet në rrjetin POS",
+                danger_zone: "Zona e Rrezikut", import_db: "Importo Bazën e të Dhënave", backup_data: "Ruaj të Dhënat", factory_reset: "Rivendos Sistemin",
+                welcome_title: "Mirësevini në LIKApos", welcome_desc: "Le t'ju ndihmojmë me një tur të shpejtë të sistemit tuaj të ri të shitjes.",
+                start_tour: "Fillo Mësimin", skip_for_now: "Kalo për tani", skip: "Kalo", next: "Tjetra", finish: "Përfundo",
+                app_tagline: "Pikë Shitje Profesionale. Falas Përgjithmonë.", restore_backup: "Rikthe nga Ruajtja", start_fresh: "Fillo Sistem të Ri",
+                payment_gateway: "Porta e Pagesës", total_due: "TOTALI PËR TË PAGUAR", amount_tendered: "SHUMA E MARRË", exact: "E SAKTË", change_due: "KUSURI", complete_tx: "PËRFUNDO TRANSAKSIONIN",
+                cancel: "Anulo", save_changes: "Ruaj Ndryshimet", customer_profile: "Profili i Klientit", save_customer: "Ruaj Klientin",
+                changelog: "Ndryshimet e Sistemit", exit: "Dil", manual: "Manuali i Përdorimit", close: "Mbyll Udhëzuesin",
+                reports: "Raporte",
+                import_preview: "Paraqitja e Importit", import_desc: "Shqyrto para importimit. Dublikatat janë të shënuara me të kuqe.", confirm_import: "Konfirmo Importin", duplicate: "Dublikatë", new: "E Re",
+                // Tour Steps
+                tour_sidebar_title: "Shiriti i Navigimit", tour_sidebar_desc: "Qasuni në modulet kryesore këtu. Përdorni butonat F1-F12.",
+                tour_dash_title: "Statistikat e Biznesit", tour_dash_desc: "Pasqyrë në kohë reale e shitjeve ditore dhe vlerës së stokut.",
+                tour_actions_title: "Veprime të Shpejta", tour_actions_desc: "Shkurtesa për të filluar shitje ose shtuar produkte.",
+                tour_pos_title: "Arka (POS)", tour_pos_desc: "Ndërfaqja kryesore. Skanoni barkode ose klikoni produktet për të shitur.",
+                tour_settings_title: "Cilësimet e Sistemit", tour_settings_desc: "Konfiguroni detajet e dyqanit, taksat dhe gjuhën këtu.",
+                tour_finish_title: "Jeni Gati!", tour_finish_desc: "Kjo ishte! Tani jeni gati për të filluar shitjen.",
+                // NEW WEBSITE STRINGS
+                visit_website: "Vizito Webfaqen", website_desc: "Kontrollo për përditësime dhe të reja"
+            }
         };
 
-        /* --- APP STATE --- */
-        const db = { products:[], customers:[], sales:[], held:[], settings:{ name:"LIKApos", curr:"€", tax:10, lang:"English" } };
-        const state = { cart:[], total:0, discount:0, cash:"" };
-        const TRANSLATIONS = {
-            "English": { dashboard:"Dashboard", pos:"POS Terminal" },
-            "Albanian": { dashboard:"Ballina", pos:"Arka" }
+        const db = {
+            products: [], customers: [], sales: [],
+            settings: { 
+                storeName: "LIKApos", currency: "€", taxRate: 10, taxType: "exclusive", 
+                nextSaleId: 1000, paperSize: 'a4', showImages: true, gridSize: 'medium',
+                language: "English" 
+            }
         };
 
         const app = {
-            init: () => {
-                const s = localStorage.getItem('likapos_db');
-                if(s) Object.assign(db, JSON.parse(s));
-                else {
-                    db.products = [
-                        {id:101, name:"Red Bull 250ml", barcode:"9002490100070", price:1.5, cost:0.8, stock:100, category:"Drinks", minStock:20, image:""},
-                        {id:102, name:"Croissant 7Days", barcode:"5201360522216", price:0.8, cost:0.4, stock:50, category:"Snacks", minStock:10, image:""}
-                    ];
-                    db.customers = [{id:1, name:"Guest", phone:"", points:0}];
+            init: (skipImport = false) => {
+                // 1. CHECK FOR FIRST TIME LANGUAGE SELECTION
+                const savedLang = localStorage.getItem('likapos_language');
+                if (!savedLang) {
+                    document.getElementById('language-modal').classList.add('active');
+                    return; // Stop here until language is picked
                 }
-                app.launch();
+                
+                // Ensure db settings has the saved language
+                db.settings.language = savedLang;
+
+                // 2. CHECK FOR SAVED DATA
+                const savedDB = localStorage.getItem('likapos_db');
+                if (savedDB && !skipImport) {
+                    try {
+                        const parsed = JSON.parse(savedDB);
+                        Object.assign(db, parsed);
+                        // Force override language from localstorage preference if distinct
+                        db.settings.language = savedLang; 
+                        app.launch();
+                    } catch (e) { console.error("DB Error", e); }
+                } else if (skipImport || !savedDB) {
+                    // 3. SHOW STARTUP MODAL IF NO DB (OR STARTING FRESH)
+                    // But if skipImport is true (clicked "Start Fresh"), we load default data
+                    if(skipImport) {
+                         app.loadDefaultData();
+                         app.save();
+                         app.launch();
+                         // First time tour triggering
+                         onboarding.init();
+                    } else {
+                        document.getElementById('startup-modal').classList.add('active');
+                    }
+                }
+            },
+            setInitialLanguage: (lang) => {
+                localStorage.setItem('likapos_language', lang);
+                db.settings.language = lang;
+                app.applyTranslations();
+                document.getElementById('language-modal').classList.remove('active');
+                
+                // Check if we have DB, if not show startup
+                if(localStorage.getItem('likapos_db')) {
+                    app.init();
+                } else {
+                    document.getElementById('startup-modal').classList.add('active');
+                }
+            },
+            loadDefaultData: () => {
+                 db.products = [
+                    { id: 101, name: "Fanta 0.5l", barcode: "50001", price: 1.00, cost: 0.50, stock: 100, category: "Beverages", minStock: 20, image: "https://britishessentials.com/cdn/shop/products/April0938_x700.jpg?v=1617962710" },
+                    { id: 102, name: "Croissant 7 Days 40gr", barcode: "50002", price: 1.50, cost: 0.75, stock: 50, category: "Bakery", minStock: 10, image: "https://marketonline.mk/wp-content/uploads/2020/03/25862-1.jpg" },
+                    { id: 103, name: "KitKat 36gr", barcode: "50003", price: 0.80, cost: 0.25, stock: 150, category: "Snacks", minStock: 25, image: "https://cdn.mafrservices.com/pim-content/EGY/media/product/390205/1751374803/390205_main.jpg?im=Resize=376" },
+                    { id: 104, name: "CocaCola 150ml", barcode: "50004", price: 1.20, cost: 0.60, stock: 120, category: "Beverages", minStock: 15, image: "https://assets.sainsburys-groceries.co.uk/gol/7965334/1/640x640.jpg" }
+                ];
+                db.customers = [{ id: 1, name: "Guest", phone: "", points: 0, totalSpent: 0 }];
+                db.sales = [];
+                db.settings.currency = "€";
             },
             launch: () => {
-                app.renderSettings();
-                app.checkConnection();
+                document.getElementById('startup-modal').classList.remove('active');
+                document.getElementById('app').classList.remove('hidden');
+                
+                // Restore Settings UI
+                document.getElementById('setting-store-name').value = db.settings.storeName;
+                document.getElementById('setting-currency').value = db.settings.currency;
+                document.getElementById('setting-tax').value = db.settings.taxRate;
+                document.getElementById('setting-tax-type').value = db.settings.taxType;
+                document.getElementById('setting-paper').value = db.settings.paperSize || 'a4';
+                document.getElementById('setting-images').checked = db.settings.showImages;
+                document.getElementById('pos-grid-size').value = db.settings.gridSize;
+                
+                // Populate Language List
+                const langSelect = document.getElementById('setting-language-select');
+                langSelect.value = db.settings.language;
+                
+                // Apply Translations
+                app.applyTranslations();
+
+                const savedTheme = localStorage.getItem('likapos_theme') || 'dark';
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                document.getElementById('theme-icon').className = savedTheme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+
                 pos.init();
-                inventory.render();
-                app.router('dashboard');
+                inventoryManager.render();
+                customerManager.render();
+                app.updateDashboard();
+                
+                // --- INITIALIZE CONNECTION STATUS ---
+                app.checkConnection();
             },
-            save: () => localStorage.setItem('likapos_db', JSON.stringify(db)),
-            router: (v) => {
-                document.querySelectorAll('.view-container').forEach(e => e.classList.remove('active'));
-                document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
-                document.getElementById(v+'-view').classList.add('active');
-                document.getElementById('nav-'+v).classList.add('active');
-                document.getElementById('page-title').innerText = v.charAt(0).toUpperCase() + v.slice(1);
-                if(v==='dashboard') app.renderDash();
-                if(v==='pos') document.getElementById('pos-search').focus();
+            save: () => { localStorage.setItem('likapos_db', JSON.stringify(db)); },
+            
+            // --- TRANSLATION ENGINE ---
+            t: (key) => {
+                const lang = db.settings.language;
+                // Fallback to English if specific lang dictionary or key is missing
+                const dict = TRANSLATIONS[lang] || TRANSLATIONS["English"];
+                return dict[key] || TRANSLATIONS["English"][key] || key;
             },
+            updateLanguage: (newLang) => {
+                db.settings.language = newLang;
+                localStorage.setItem('likapos_language', newLang);
+                app.save();
+                app.applyTranslations();
+                app.toast("Language set to " + newLang);
+            },
+            applyTranslations: () => {
+                // 1. Update text content
+                document.querySelectorAll('[data-i18n]').forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    el.innerText = app.t(key);
+                });
+                // 2. Update placeholders
+                document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                    const key = el.getAttribute('data-i18n-placeholder');
+                    el.placeholder = app.t(key);
+                });
+                // 3. Update specific dynamic elements
+                pos.renderCart(); // Updates cart labels
+                inventoryManager.render(); // Updates headers if dynamically rendered (though headers are static HTML)
+            },
+
             toggleTheme: () => {
-                const t = document.documentElement.getAttribute('data-theme')==='light'?'dark':'light';
-                document.documentElement.setAttribute('data-theme', t);
+                const current = document.documentElement.getAttribute('data-theme');
+                const next = current === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', next);
+                localStorage.setItem('likapos_theme', next);
+                document.getElementById('theme-icon').className = next === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+            },
+            toggleSidebar: () => {
+                const sidebar = document.getElementById('sidebar');
+                // FORCE DESKTOP LOGIC ONLY
+                sidebar.classList.toggle('closed');
+            },
+            importData: (input) => {
+                const file = input.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        Object.assign(db, JSON.parse(e.target.result));
+                        app.save(); app.launch(); app.toast("Database restored");
+                    } catch (err) { alert("Invalid backup file"); }
+                };
+                reader.readAsText(file);
+            },
+            exportData: () => {
+                const blob = new Blob([JSON.stringify(db)], {type: "application/json"});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = "likapos_backup_" + new Date().toISOString().slice(0,10) + ".json";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            },
+            resetData: () => { 
+                if(confirm("WARNING: All data will be deleted.")) { 
+                    localStorage.removeItem('likapos_db'); 
+                    localStorage.removeItem('likapos_onboarding_complete');
+                    localStorage.removeItem('likapos_language');
+                    location.reload(); 
+                } 
+            },
+            router: (viewName) => {
+                document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active', 'animate-slide'));
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                
+                document.getElementById(viewName + '-view').classList.add('active', 'animate-slide');
+                const desktopNav = document.getElementById('nav-' + viewName);
+                if(desktopNav) desktopNav.classList.add('active');
+                
+                const sidebar = document.getElementById('sidebar');
+                
+                // DESKTOP ONLY LOGIC
+                if (viewName === 'pos') { 
+                    document.getElementById('pos-search').focus(); 
+                    sidebar.classList.add('closed'); 
+                } else { 
+                    sidebar.classList.remove('closed'); 
+                }
+                
+                if (viewName === 'dashboard') app.updateDashboard();
+                if (viewName === 'reports') reports.render();
+                
+                const titleKey = viewName === 'pos' ? 'pos' : (viewName === 'reports' ? 'analytics' : viewName);
+                document.getElementById('header-title').innerText = app.t(titleKey);
+            },
+            updateSetting: (key, val) => {
+                db.settings[key] = val; app.save(); app.toast("Configuration saved");
+                app.updateDashboard(); pos.renderGrid(); pos.renderCart(); inventoryManager.render();
             },
             toast: (msg) => {
                 const el = document.getElementById('toast');
                 document.getElementById('toast-msg').innerText = msg;
-                el.classList.add('show'); setTimeout(()=>el.classList.remove('show'), 3000);
+                el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
+                setTimeout(() => el.classList.remove('show'), 3000);
             },
-            renderSettings: () => {
-                document.getElementById('set-name').value = db.settings.name;
-                document.getElementById('set-curr').value = db.settings.curr;
-                document.getElementById('set-tax').value = db.settings.tax;
-                document.getElementById('set-lang').value = db.settings.lang;
-            },
-            checkConnection: () => {
-                const up = () => document.getElementById('connection-status').className = navigator.onLine ? 'status-dot online' : 'status-dot offline';
-                window.addEventListener('online', up); window.addEventListener('offline', up); up();
-            },
-            renderDash: () => {
+            updateDashboard: () => {
                 const today = new Date().toDateString();
-                const sales = db.sales.filter(s => new Date(s.date).toDateString() === today);
-                document.getElementById('dash-revenue').innerText = db.settings.curr + sales.reduce((a,b)=>a+b.total,0).toFixed(2);
-                document.getElementById('dash-tx').innerText = sales.length;
-                document.getElementById('dash-value').innerText = db.settings.curr + db.products.reduce((a,b)=>a+(b.cost*b.stock),0).toFixed(2);
-                document.getElementById('dash-low').innerText = db.products.filter(p=>p.stock<=p.minStock).length;
-                
-                const t = document.querySelector('#recent-tx-table tbody'); t.innerHTML='';
-                db.sales.slice(-5).reverse().forEach(s => {
-                    const cust = db.customers.find(c=>c.id==s.custId)?.name || 'Guest';
-                    t.innerHTML += `<tr><td class="font-mono">#${s.id}</td><td>${new Date(s.date).toLocaleTimeString()}</td><td>${cust}</td><td class="font-mono text-accent">${db.settings.curr}${s.total.toFixed(2)}</td><td><span style="font-size:10px; border:1px solid var(--border); padding:2px 6px; border-radius:4px;">${s.method}</span></td></tr>`;
-                });
+                const todaysSales = db.sales.filter(s => new Date(s.date).toDateString() === today);
+                const total = todaysSales.reduce((a, c) => a + c.total, 0);
+                const lowStock = db.products.filter(p => p.stock <= p.minStock).length;
+                const inventoryValue = db.products.reduce((acc, p) => acc + (p.cost * p.stock), 0);
+
+                document.getElementById('dash-sales').innerText = app.formatMoney(total);
+                document.getElementById('dash-tx').innerText = todaysSales.length;
+                document.getElementById('dash-lowstock').innerText = lowStock;
+                document.getElementById('dash-value').innerText = app.formatMoney(inventoryValue);
+                document.getElementById('dash-lowstock').style.color = lowStock > 0 ? 'var(--danger)' : 'var(--text-primary)';
             },
-            reset: () => { if(confirm("Delete all data?")) { localStorage.clear(); location.reload(); } }
+            formatMoney: (amount) => { return db.settings.currency + parseFloat(amount).toFixed(2); },
+            
+            // --- CONNECTION CHECKER ---
+            checkConnection: () => {
+                const el = document.getElementById('connection-status');
+                const update = () => {
+                    if(navigator.onLine) {
+                        el.className = 'status-dot online';
+                        el.title = "System Online";
+                    } else {
+                        el.className = 'status-dot offline';
+                        el.title = "Offline Mode";
+                        app.toast("Connection Lost - Offline Mode");
+                    }
+                };
+                
+                window.addEventListener('online', () => { update(); app.toast("System Back Online"); });
+                window.addEventListener('offline', update);
+                update(); // Initial check
+            }
         };
 
-        const settings = {
-            save: () => {
-                db.settings.name = document.getElementById('set-name').value;
-                db.settings.curr = document.getElementById('set-curr').value;
-                db.settings.tax = parseFloat(document.getElementById('set-tax').value);
-                app.save(); app.toast("Settings Saved"); pos.updateCartUI();
+        /* --- FIXED ONBOARDING MODULE (DESKTOP ONLY NOW DEFAULT) --- */
+        const onboarding = {
+            currentStep: 0,
+            isActive: false,
+            steps: [
+                {
+                    target: '#sidebar',
+                    titleKey: "tour_sidebar_title",
+                    descKey: "tour_sidebar_desc",
+                    position: 'right',
+                    action: () => app.router('dashboard')
+                },
+                {
+                    target: '#dashboard-view .stats-grid',
+                    titleKey: "tour_dash_title",
+                    descKey: "tour_dash_desc",
+                    position: 'bottom',
+                    action: () => app.router('dashboard')
+                },
+                {
+                    target: '#dash-quick-actions',
+                    titleKey: "tour_actions_title",
+                    descKey: "tour_actions_desc",
+                    position: 'top',
+                    action: () => app.router('dashboard')
+                },
+                {
+                    target: '#pos-grid',
+                    titleKey: "tour_pos_title",
+                    descKey: "tour_pos_desc",
+                    position: 'left',
+                    action: () => app.router('pos')
+                },
+                {
+                    target: '#settings-general',
+                    titleKey: "tour_settings_title",
+                    descKey: "tour_settings_desc",
+                    position: 'top',
+                    action: () => app.router('settings')
+                },
+                {
+                    target: '#header-help-btn',
+                    titleKey: "tour_finish_title",
+                    descKey: "tour_finish_desc",
+                    position: 'bottomLeft',
+                    action: () => app.router('dashboard')
+                }
+            ],
+            init: () => {
+                // REMOVED MOBILE CHECK - ALWAYS ALLOW TOUR
+                if (!localStorage.getItem('likapos_onboarding_complete')) {
+                    setTimeout(() => {
+                        document.getElementById('onboarding-welcome-modal').classList.add('active');
+                    }, 1000);
+                }
             },
-            setLang: (l) => { db.settings.lang = l; app.save(); location.reload(); }
+            start: (force = false) => {
+                // REMOVED MOBILE CHECK
+                if(force) {
+                    localStorage.removeItem('likapos_onboarding_complete');
+                    document.getElementById('onboarding-welcome-modal').classList.remove('active');
+                }
+                onboarding.beginTour();
+            },
+            beginTour: () => {
+                document.getElementById('onboarding-welcome-modal').classList.remove('active');
+                document.getElementById('onboarding-backdrop').classList.add('active');
+                onboarding.currentStep = 0;
+                onboarding.isActive = true;
+                onboarding.showStep();
+            },
+            showStep: () => {
+                const step = onboarding.steps[onboarding.currentStep];
+                if(step.action) step.action();
+
+                setTimeout(() => {
+                    const targetEl = document.querySelector(step.target);
+                    if(!targetEl) return onboarding.next(); // Skip if target missing
+
+                    // Remove highlight from previous
+                    document.querySelectorAll('.onboarding-spotlight').forEach(el => el.classList.remove('onboarding-spotlight'));
+                    
+                    // Add highlight
+                    targetEl.classList.add('onboarding-spotlight');
+                    targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                    // Position Tooltip
+                    const tooltip = document.getElementById('onboarding-tooltip');
+                    const rect = targetEl.getBoundingClientRect();
+                    const ttRect = tooltip.getBoundingClientRect();
+                    
+                    let top, left;
+                    const spacing = 20;
+
+                    if (step.position === 'right') {
+                        top = rect.top;
+                        left = rect.right + spacing;
+                    } else if (step.position === 'bottom') {
+                        top = rect.bottom + spacing;
+                        left = rect.left;
+                    } else if (step.position === 'top') {
+                        top = rect.top - ttRect.height - spacing;
+                        left = rect.left;
+                    } else if (step.position === 'left') {
+                        top = rect.top;
+                        left = rect.left - ttRect.width - spacing;
+                    } else if (step.position === 'bottomLeft') {
+                        top = rect.bottom + spacing;
+                        left = rect.right - ttRect.width;
+                    }
+
+                    // Boundary Check
+                    if (left < 10) left = 10;
+                    if (top < 10) top = 10;
+                    if (left + ttRect.width > window.innerWidth) left = window.innerWidth - ttRect.width - 10;
+
+                    tooltip.style.top = top + 'px';
+                    tooltip.style.left = left + 'px';
+                    tooltip.style.transform = 'translate(0, 0)'; // Reset transform from CSS default
+
+                    // Update Content
+                    document.getElementById('onboarding-title').innerText = app.t(step.titleKey);
+                    document.getElementById('onboarding-desc').innerText = app.t(step.descKey);
+                    document.getElementById('onboarding-next-btn').innerText = onboarding.currentStep === onboarding.steps.length - 1 ? app.t('finish') : app.t('next');
+
+                    // Progress Dots
+                    const prog = document.getElementById('onboarding-progress');
+                    prog.innerHTML = '';
+                    onboarding.steps.forEach((s, i) => {
+                        const d = document.createElement('div');
+                        d.className = `onboarding-dot ${i === onboarding.currentStep ? 'active' : ''}`;
+                        prog.appendChild(d);
+                    });
+
+                    tooltip.classList.add('active');
+                }, 400); // Delay for view transition
+            },
+            next: () => {
+                onboarding.currentStep++;
+                if (onboarding.currentStep >= onboarding.steps.length) {
+                    onboarding.finish();
+                } else {
+                    onboarding.showStep();
+                }
+            },
+            skip: () => { onboarding.finish(); },
+            finish: () => {
+                document.querySelectorAll('.onboarding-spotlight').forEach(el => el.classList.remove('onboarding-spotlight'));
+                document.getElementById('onboarding-tooltip').classList.remove('active');
+                document.getElementById('onboarding-backdrop').classList.remove('active');
+                document.getElementById('onboarding-welcome-modal').classList.remove('active');
+                localStorage.setItem('likapos_onboarding_complete', 'true');
+                onboarding.isActive = false;
+                app.toast("Learning Complete!");
+                app.router('dashboard');
+            },
+            reposition: () => {
+                if(!onboarding.isActive) return;
+                // Simple re-run of current step to recalculate position
+                onboarding.showStep(); 
+            }
         };
 
         const pos = {
-            init: () => {
-                pos.renderGrid();
-                const cats = [...new Set(db.products.map(p=>p.category))];
-                const bar = document.getElementById('category-tabs'); bar.innerHTML = '<div class="cat-pill active" onclick="pos.filter(this, \'\')">All Items</div>';
-                cats.forEach(c => bar.innerHTML += `<div class="cat-pill" onclick="pos.filter(this, '${c}')">${c}</div>`);
-                
-                const cs = document.getElementById('pos-customer');
-                db.customers.forEach(c => cs.innerHTML += `<option value="${c.id}">${c.name}</option>`);
+            cart: [], currentTotal: 0, prevQuantities: {},
+            init: () => { pos.changeGridSize(db.settings.gridSize); pos.renderGrid(); pos.populateCategories(); pos.populateCustomers(); },
+            changeGridSize: (size) => {
+                db.settings.gridSize = size; app.save();
+                const grid = document.getElementById('pos-grid');
+                grid.className = 'product-grid custom-scroll ' + size;
             },
-            changeGridSize: (s) => { document.getElementById('pos-grid').className = 'product-grid custom-scroll ' + s; },
-            filter: (el, c) => {
-                document.querySelectorAll('.cat-pill').forEach(e=>e.classList.remove('active'));
-                el.classList.add('active'); pos.renderGrid(c);
+            // REMOVED TOGGLE MOBILE CART - DESKTOP ONLY
+            populateCategories: () => {
+                const cats = [...new Set(db.products.map(p => p.category))];
+                const sel = document.getElementById('pos-category');
+                sel.innerHTML = `<option value="">${app.t('all_categories')}</option>`;
+                cats.forEach(c => sel.innerHTML += `<option value="${c}">${c}</option>`);
             },
-            renderGrid: (catFilter = "") => {
-                const q = document.getElementById('pos-search').value.toLowerCase();
-                const g = document.getElementById('pos-grid'); g.innerHTML = '';
-                const items = db.products.filter(p => (p.name.toLowerCase().includes(q) || p.barcode.includes(q)) && (catFilter === "" || p.category === catFilter));
+            populateCustomers: () => {
+                const sel = document.getElementById('pos-customer');
+                sel.innerHTML = `<option value="">${app.t('guest_customer')}</option>`;
+                db.customers.forEach(c => sel.innerHTML += `<option value="${c.id}">${c.name}</option>`);
+            },
+            filterProducts: () => { pos.renderGrid(); },
+            renderGrid: () => {
+                const search = document.getElementById('pos-search').value.toLowerCase();
+                const cat = document.getElementById('pos-category').value;
+                const container = document.getElementById('pos-grid');
+                container.innerHTML = '';
                 
-                if(items.length === 1 && q.length > 3 && items[0].barcode === q) {
-                    pos.addToCart(items[0].id); document.getElementById('pos-search').value = ''; pos.renderGrid(); return;
+                const filtered = db.products.filter(p => (p.name.toLowerCase().includes(search) || p.barcode.includes(search)) && (cat === "" || p.category === cat));
+                
+                if (filtered.length === 1 && search.length > 3 && filtered[0].barcode === search) {
+                    pos.addToCart(filtered[0].id); document.getElementById('pos-search').value = ''; pos.renderGrid(); return;
                 }
 
-                items.forEach(p => {
-                    const pct = Math.min(100, (p.stock / (p.minStock*4 || 20)) * 100);
-                    const color = p.stock <= p.minStock ? 'var(--danger)' : (p.stock <= p.minStock*2 ? 'var(--warning)' : 'var(--accent)');
-                    const img = p.image ? `<img src="${p.image}" class="prod-img">` : `<div style="width:100%;height:100%;background:linear-gradient(45deg, #1f2937, #111827);"></div>`;
+                filtered.forEach(p => {
+                    const el = document.createElement('div'); el.className = 'prod-card animate-scale'; el.onclick = () => pos.addToCart(p.id);
+                    const stockClass = p.stock <= p.minStock ? 'text-danger' : 'text-muted';
+                    const img = (db.settings.showImages && p.image) ? `<img src="${p.image}" class="prod-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">` : '';
+                    const ph = `<div class="prod-img-placeholder" ${db.settings.showImages && p.image ? 'style="display:none"' : ''}><i class="fas fa-box"></i></div>`;
                     
-                    g.innerHTML += `
-                    <div class="prod-card" onclick="pos.addToCart(${p.id})">
-                        <div class="prod-img-box">${img}<div class="stock-bar"><div class="stock-fill" style="width:${pct}%; background:${color}"></div></div></div>
-                        <div style="padding:12px;">
-                            <div style="font-weight:600; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.name}</div>
-                            <div style="display:flex; justify-content:space-between; font-size:13px;">
-                                <span class="text-muted">${p.category}</span>
-                                <span class="font-mono" style="color:${color}; font-weight:700;">${db.settings.curr}${p.price}</span>
+                    let barColor;
+                    if (p.stock <= p.minStock) {
+                        barColor = 'var(--danger)';
+                    } else if (p.stock <= p.minStock * 2.5) {
+                        barColor = 'var(--warning)';
+                    } else {
+                        barColor = 'var(--accent)';
+                    }
+
+                    const baseMin = p.minStock > 0 ? p.minStock : 10;
+                    const maxCapacity = baseMin * 5; 
+                    
+                    let pct = (p.stock / maxCapacity) * 100;
+                    
+                    if (pct > 100) pct = 100;
+                    if (pct < 5 && p.stock > 0) pct = 5; 
+                    if (p.stock === 0) pct = 0;
+
+                    let barWidth = pct + '%';
+                    
+                    if(!db.settings.showImages) { barWidth = '0%'; } 
+
+                    el.innerHTML = `
+                        <div class="prod-img-container">${img}${ph}<div class="stock-health-bar"><div class="stock-health-fill" style="width: ${barWidth}; background-color: ${barColor};"></div></div></div>
+                        <div class="prod-info">
+                            <div style="display:flex; justify-content:space-between; font-size: 11px;">
+                                <span class="text-accent">${p.category}</span><span class="${stockClass}">${p.stock} left</span>
                             </div>
+                            <div style="font-weight: 600; font-size: 14px; flex:1; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">${p.name}</div>
+                            <div class="prod-price">${app.formatMoney(p.price)}</div>
                         </div>
-                    </div>`;
+                    `;
+                    container.appendChild(el);
                 });
             },
             addToCart: (id) => {
-                const p = db.products.find(x=>x.id===id);
-                if(p.stock <= 0) return app.toast("Out of Stock!");
-                beep();
-                const item = state.cart.find(x=>x.id===id);
-                if(item) item.qty++; else state.cart.push({...p, qty:1});
-                pos.updateCartUI();
+                const p = db.products.find(x => x.id == id);
+                if (p.stock <= 0) return app.toast("Item Out of Stock");
+                const existing = pos.cart.find(i => i.product.id === id);
+                if (existing) { if (existing.qty < p.stock) existing.qty++; } else { pos.cart.push({ product: p, qty: 1 }); }
+                pos.renderCart();
             },
-            updateCartUI: () => {
-                const c = document.getElementById('cart-items'); c.innerHTML = '';
-                let sub = 0;
-                state.cart.forEach((i, idx) => {
-                    sub += i.price * i.qty;
-                    c.innerHTML += `
-                    <div class="cart-item">
-                        <div><div style="font-weight:500;">${i.name}</div><div class="text-muted" style="font-size:12px;">${i.qty} x ${db.settings.curr}${i.price}</div></div>
-                        <div style="display:flex; gap:8px;">
-                            <button class="btn btn-secondary" style="padding:4px 8px;" onclick="pos.modQty(${idx},-1)">-</button>
-                            <span class="font-mono" style="font-size:14px; padding-top:4px;">${i.qty}</span>
-                            <button class="btn btn-secondary" style="padding:4px 8px;" onclick="pos.modQty(${idx},1)">+</button>
+            renderCart: () => {
+                const container = document.getElementById('cart-items'); container.innerHTML = '';
+                if(pos.cart.length === 0) container.innerHTML = `<div style="text-align: center; margin-top: 60px; color: var(--text-tertiary);"><i class="fas fa-shopping-basket" style="font-size: 32px; margin-bottom: 16px; opacity: 0.3;"></i><p>Cart is empty</p></div>`;
+                let rawTotal = 0, totalItems = 0; const nextQuantities = {};
+
+                pos.cart.forEach((item, idx) => {
+                    rawTotal += item.product.price * item.qty; totalItems += item.qty;
+                    const oldQty = pos.prevQuantities[item.product.id] || 0;
+                    const animClass = item.qty > oldQty ? 'animate-up' : (item.qty < oldQty ? 'animate-down' : '');
+                    nextQuantities[item.product.id] = item.qty;
+
+                    const el = document.createElement('div'); el.className = 'cart-item';
+                    el.innerHTML = `
+                        <div style="flex:1;"><div style="font-weight:500;">${item.product.name}</div><div style="font-size:12px; color:var(--text-tertiary);">${app.formatMoney(item.product.price)}</div></div>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <button class="btn btn-secondary" style="padding:4px 8px;" onclick="pos.updateQty(${idx}, -1)">-</button>
+                            <div class="qty-container"><span class="qty-val ${animClass}">${item.qty}</span></div>
+                            <button class="btn btn-secondary" style="padding:4px 8px;" onclick="pos.updateQty(${idx}, 1)">+</button>
                         </div>
-                    </div>`;
+                    `;
+                    container.appendChild(el);
                 });
-                
-                const discAmt = sub * (state.discount / 100);
-                const taxable = sub - discAmt;
-                const tax = taxable * (db.settings.tax / 100);
-                state.total = taxable + tax;
+                pos.prevQuantities = nextQuantities;
 
-                document.getElementById('cart-subtotal').innerText = db.settings.curr + sub.toFixed(2);
-                document.getElementById('cart-discount').innerText = `-${db.settings.curr}${discAmt.toFixed(2)} (${state.discount}%)`;
-                document.getElementById('cart-tax').innerText = db.settings.curr + tax.toFixed(2);
-                document.getElementById('cart-total').innerText = db.settings.curr + state.total.toFixed(2);
+                let subtotal, tax, total; const rate = parseFloat(db.settings.taxRate);
+                if (db.settings.taxType === 'inclusive') { total = rawTotal; subtotal = total / (1 + (rate / 100)); tax = total - subtotal; } 
+                else { subtotal = rawTotal; tax = subtotal * (rate / 100); total = subtotal + tax; }
+
+                document.getElementById('cart-subtotal').innerText = app.formatMoney(subtotal);
+                document.getElementById('cart-tax').innerText = app.formatMoney(tax);
+                document.getElementById('cart-total').innerText = app.formatMoney(total);
+                // REMOVED MOBILE UPDATES
+                pos.currentTotal = total;
             },
-            modQty: (i, d) => {
-                state.cart[i].qty += d;
-                if(state.cart[i].qty <= 0) state.cart.splice(i, 1);
-                pos.updateCartUI();
+            updateQty: (idx, change) => {
+                const item = pos.cart[idx]; const newQty = item.qty + change;
+                if (newQty <= 0) pos.cart.splice(idx, 1); else if (newQty <= item.product.stock) item.qty = newQty; else app.toast("Max stock reached");
+                pos.renderCart();
             },
-            clearCart: () => { state.cart = []; state.discount = 0; pos.updateCartUI(); },
-            toggleDiscount: () => document.getElementById('discount-modal').classList.add('active'),
-            applyDiscount: () => {
-                state.discount = parseFloat(document.getElementById('disc-input').value) || 0;
-                document.getElementById('discount-modal').classList.remove('active');
-                pos.updateCartUI();
-            },
+            clearCart: () => { pos.cart = []; pos.renderCart(); },
             showCheckout: () => {
-                if(!state.cart.length) return app.toast("Cart Empty");
-                state.cash = "";
-                document.getElementById('pay-total').innerText = db.settings.curr + state.total.toFixed(2);
-                document.getElementById('pay-input').innerText = "0.00";
-                document.getElementById('pay-change').innerText = db.settings.curr + "0.00";
-                
-                const s = document.getElementById('smart-suggestions'); s.innerHTML = '';
-                [state.total, Math.ceil(state.total), Math.ceil(state.total/5)*5, 10, 20, 50, 100].forEach(n => {
-                    if(n >= state.total) s.innerHTML += `<button class="btn btn-secondary" onclick="pos.setCash(${n})">${db.settings.curr}${n}</button>`;
-                });
+                if (pos.cart.length === 0) return app.toast("Cart is empty");
                 document.getElementById('checkout-modal').classList.add('active');
-            },
-            numpad: (k) => {
-                if(k === 'C') state.cash = "";
-                else if(k === '.') { if(!state.cash.includes('.')) state.cash += '.'; }
-                else state.cash += k;
-                const val = parseFloat(state.cash) || 0;
-                document.getElementById('pay-input').innerText = val.toFixed(2);
-                document.getElementById('pay-change').innerText = db.settings.curr + Math.max(0, val - state.total).toFixed(2);
-            },
-            setCash: (v) => { state.cash = v.toString(); pos.numpad(''); },
-            finish: () => {
-                const paid = parseFloat(state.cash) || 0;
-                if(paid < state.total) return app.toast("Insufficient Cash");
+                document.getElementById('checkout-total').innerText = app.formatMoney(pos.currentTotal);
+                document.getElementById('checkout-cash').value = '';
+                document.getElementById('checkout-change').innerText = app.formatMoney(0);
                 
-                state.cart.forEach(c => { const p = db.products.find(x => x.id === c.id); if(p) p.stock -= c.qty; });
-                
-                const sale = {
-                    id: db.settings.nextSaleId++, date: new Date().toISOString(),
-                    total: state.total, items: [...state.cart],
-                    method: "Cash", custId: document.getElementById('pos-customer').value
-                };
-                
-                if(sale.custId) {
-                    const c = db.customers.find(x=>x.id==sale.custId);
-                    if(c) { c.totalSpent = (c.totalSpent||0)+sale.total; c.points = (c.points||0)+Math.floor(sale.total); }
-                }
-
-                db.sales.push(sale);
-                app.save();
-                document.getElementById('checkout-modal').classList.remove('active');
-                document.getElementById('receipt-change').innerText = db.settings.curr + (paid - state.total).toFixed(2);
-                document.getElementById('receipt-modal').classList.add('active');
-                pos.clearCart(); inventoryManager.render(); app.updateDashboard();
-            },
-            // HOLD LOGIC
-            holdOrder: () => {
-                if(!state.cart.length) return;
-                const name = prompt("Reference Name?");
-                if(name) {
-                    db.held.push({ name, cart: [...state.cart], date: new Date() });
-                    pos.clearCart(); app.toast("Order Parked");
-                }
-            },
-            showHeldOrders: () => {
-                const l = document.getElementById('held-list'); l.innerHTML = '';
-                db.held.forEach((h, i) => {
-                    l.innerHTML += `<div class="card" style="padding:12px; cursor:pointer; border:1px solid var(--border);" onclick="pos.restoreOrder(${i})">
-                        <div style="font-weight:600;">${h.name}</div>
-                        <div class="text-muted" style="font-size:12px;">${h.cart.length} Items • ${new Date(h.date).toLocaleTimeString()}</div>
-                    </div>`;
+                const suggCont = document.getElementById('quick-cash-suggestions'); suggCont.innerHTML = '';
+                const suggs = new Set([Math.ceil(pos.currentTotal), Math.ceil(pos.currentTotal/5)*5, Math.ceil(pos.currentTotal/10)*10, Math.ceil(pos.currentTotal/20)*20, 100]);
+                Array.from(suggs).sort((a,b)=>a-b).forEach(amt => {
+                    if(amt >= pos.currentTotal) {
+                        const btn = document.createElement('button'); btn.className = 'btn btn-secondary font-mono';
+                        btn.innerText = app.formatMoney(amt); btn.onclick = () => pos.setCash(amt); suggCont.appendChild(btn);
+                    }
                 });
-                document.getElementById('held-modal').classList.add('active');
+                setTimeout(() => document.getElementById('checkout-cash').focus(), 100);
             },
-            restoreOrder: (i) => {
-                state.cart = db.held[i].cart;
-                db.held.splice(i, 1);
-                pos.updateCartUI();
-                document.getElementById('held-modal').classList.remove('active');
+            numpadInput: (key) => {
+                const inp = document.getElementById('checkout-cash');
+                let val = inp.value;
+                if(key === 'C') { val = ''; } else if(key === '.') { if(!val.includes('.')) val += '.'; } else { val += key; }
+                inp.value = val; pos.calcChange();
+            },
+            setCash: (amt) => { document.getElementById('checkout-cash').value = (amt === null ? pos.currentTotal : amt).toFixed(2); pos.calcChange(); },
+            calcChange: () => {
+                const paid = parseFloat(document.getElementById('checkout-cash').value) || 0;
+                const change = Math.max(0, paid - pos.currentTotal);
+                const el = document.getElementById('checkout-change');
+                el.innerText = app.formatMoney(change); el.style.color = change > 0 ? 'var(--accent)' : 'var(--text-primary)';
+            },
+            finalizeSale: () => {
+                const tendered = parseFloat(document.getElementById('checkout-cash').value) || 0;
+                if (tendered < pos.currentTotal - 0.01) { app.toast("Insufficient Amount Tendered"); document.getElementById('checkout-cash').focus(); return; }
+
+                pos.cart.forEach(i => { db.products.find(x => x.id === i.product.id).stock -= i.qty; });
+                const sale = {
+                    id: db.settings.nextSaleId++, date: new Date().toISOString(), items: [...pos.cart],
+                    subtotal: parseFloat(document.getElementById('cart-subtotal').innerText.replace(db.settings.currency,'')),
+                    total: pos.currentTotal, method: "Cash", customerId: document.getElementById('pos-customer').value || null
+                };
+                db.sales.push(sale);
+                if(sale.customerId) { const c = db.customers.find(x => x.id == sale.customerId); if(c) { c.totalSpent = (c.totalSpent||0) + sale.total; c.points = (c.points||0) + Math.floor(sale.total * 100); } } 
+                
+                app.save(); app.toast("Transaction Completed");
+                document.getElementById('checkout-modal').classList.remove('active');
+                pos.cart = []; pos.renderCart(); pos.renderGrid(); inventoryManager.render(); customerManager.render(); app.updateDashboard();
+                // REMOVED MOBILE PANEL TOGGLE
+                document.getElementById('cart-panel').classList.remove('expanded'); 
             }
         };
 
         const inventoryManager = {
-            render: (q="") => {
-                const t = document.querySelector('#inventory-table tbody'); t.innerHTML = '';
-                const term = q.toLowerCase();
+            pendingImport: [],
+            render: (filter = "") => {
+                const tbody = document.querySelector('#inventory-table tbody'); tbody.innerHTML = '';
+                const term = filter.toLowerCase();
                 db.products.filter(p => p.name.toLowerCase().includes(term) || p.barcode.includes(term)).forEach(p => {
-                    t.innerHTML += `<tr>
-                        <td>${p.name}</td><td>${p.barcode}</td><td>${p.category}</td>
-                        <td><span style="color:${p.stock<=p.minStock?'var(--danger)':'inherit'}">${p.stock}</span></td>
-                        <td>${db.settings.curr}${p.price}</td>
-                        <td>
-                            <button class="btn btn-secondary" style="padding:4px;" onclick="inventory.edit(${p.id})"><i class="fas fa-edit"></i></button>
-                            <button class="btn btn-danger" style="padding:4px;" onclick="inventory.del(${p.id})"><i class="fas fa-trash"></i></button>
-                        </td>
-                    </tr>`;
+                    const isLow = p.stock <= p.minStock;
+                    const tr = document.createElement('tr'); if (isLow) tr.classList.add('row-low-stock');
+                    tr.innerHTML = `<td><div style="font-weight:500;">${p.name}</div></td><td class="font-mono text-muted">${p.barcode}</td><td><span style="background:var(--hover-overlay); color:var(--secondary); padding:2px 6px; border-radius:4px; font-size:11px;">${p.category}</span></td><td>${isLow ? `<span class="stock-badge low"><i class="fas fa-exclamation-circle"></i> ${p.stock}</span>` : p.stock}</td><td>${app.formatMoney(p.price)}</td><td>${app.formatMoney(p.cost)}</td><td><button class="btn btn-secondary hover-scale" style="padding:4px 8px;" onclick="inventoryManager.edit(${p.id})"><i class="fas fa-edit"></i></button> <button class="btn btn-danger hover-scale" style="padding:4px 8px;" onclick="inventoryManager.del(${p.id})"><i class="fas fa-trash"></i></button></td>`;
+                    tbody.appendChild(tr);
                 });
             },
-            // Using 'inventory' alias for shorter HTML calls
-            showModal: () => {
-                document.getElementById('p-id').value = '';
-                document.querySelectorAll('#prod-modal input').forEach(i => i.value = '');
-                document.getElementById('prod-modal').classList.add('active');
+            filterLowStock: () => { app.router('inventory'); app.toast("Viewing Inventory"); },
+            showAddModal: () => {
+                document.getElementById('prod-id').value = ''; document.querySelectorAll('#product-modal input').forEach(i => i.value = '');
+                document.getElementById('product-modal-title').innerText = app.t('add_product').toUpperCase(); 
+                document.getElementById('prod-preview').style.display = 'none';
+                inventoryManager.updateCategoryList(); document.getElementById('product-modal').classList.add('active');
             },
-            save: () => {
-                const id = document.getElementById('p-id').value;
-                const p = {
-                    id: id ? parseInt(id) : Date.now(),
-                    name: document.getElementById('p-name').value,
-                    barcode: document.getElementById('p-barcode').value,
-                    category: document.getElementById('p-cat').value,
-                    price: parseFloat(document.getElementById('p-price').value) || 0,
-                    cost: parseFloat(document.getElementById('p-cost').value) || 0,
-                    stock: parseInt(document.getElementById('p-stock').value) || 0,
-                    minStock: parseInt(document.getElementById('p-min').value) || 0,
-                    image: document.getElementById('p-img').value
-                };
-                if(id) db.products[db.products.findIndex(x=>x.id==id)] = p; else db.products.push(p);
-                app.save(); inventoryManager.render(); pos.init();
-                document.getElementById('prod-modal').classList.remove('active');
+            updateCategoryList: () => {
+                const list = document.getElementById('category-list'); list.innerHTML = '';
+                [...new Set(db.products.map(p => p.category))].sort().forEach(c => list.innerHTML += `<option value="${c}">`);
             },
+            closeModal: () => document.getElementById('product-modal').classList.remove('active'),
+            
+            updatePreview: () => {
+                const url = document.getElementById('prod-image').value;
+                const img = document.getElementById('prod-preview');
+                const txt = document.getElementById('prod-preview-text');
+                if(url) { img.src = url; img.style.display = 'block'; txt.style.display = 'none'; } else { img.style.display = 'none'; txt.style.display = 'block'; }
+            },
+
             edit: (id) => {
-                const p = db.products.find(x=>x.id==id);
-                document.getElementById('p-id').value = p.id;
-                document.getElementById('p-name').value = p.name;
-                document.getElementById('p-barcode').value = p.barcode;
-                document.getElementById('p-cat').value = p.category;
-                document.getElementById('p-price').value = p.price;
-                document.getElementById('p-cost').value = p.cost;
-                document.getElementById('p-stock').value = p.stock;
-                document.getElementById('p-min').value = p.minStock;
-                document.getElementById('p-img').value = p.image;
-                document.getElementById('prod-modal').classList.add('active');
+                const p = db.products.find(x => x.id == id);
+                document.getElementById('prod-id').value = p.id; document.getElementById('prod-name').value = p.name;
+                document.getElementById('prod-barcode').value = p.barcode; document.getElementById('prod-category').value = p.category;
+                document.getElementById('prod-image').value = p.image || ''; document.getElementById('prod-price').value = p.price;
+                document.getElementById('prod-cost').value = p.cost; document.getElementById('prod-stock').value = p.stock;
+                document.getElementById('prod-min').value = p.minStock; document.getElementById('product-modal-title').innerText = "EDIT PRODUCT";
+                inventoryManager.updatePreview(); 
+                inventoryManager.updateCategoryList(); document.getElementById('product-modal').classList.add('active');
             },
-            del: (id) => {
-                if(confirm("Delete?")) { db.products = db.products.filter(x=>x.id!=id); app.save(); inventoryManager.render(); pos.init(); }
+            saveProduct: () => {
+                const id = document.getElementById('prod-id').value;
+                const p = {
+                    id: id ? parseInt(id) : Date.now(), name: document.getElementById('prod-name').value, barcode: document.getElementById('prod-barcode').value,
+                    category: document.getElementById('prod-category').value, image: document.getElementById('prod-image').value,
+                    price: parseFloat(document.getElementById('prod-price').value)||0, cost: parseFloat(document.getElementById('prod-cost').value)||0,
+                    stock: parseInt(document.getElementById('prod-stock').value)||0, minStock: parseInt(document.getElementById('prod-min').value)||0
+                };
+                if(!p.name) return alert("Name required");
+                if(id) db.products[db.products.findIndex(x => x.id == id)] = p; else db.products.push(p);
+                app.save(); inventoryManager.render(); pos.init(); inventoryManager.closeModal(); app.toast("Inventory Updated");
             },
-            importBtn: () => document.getElementById('import-file').click(),
-            processImport: (inp) => {
-                const f = inp.files[0];
+            del: (id) => { if(confirm("Are you sure?")) { db.products = db.products.filter(x => x.id != id); app.save(); inventoryManager.render(); pos.init(); app.toast("Deleted"); } },
+            
+            downloadTXTTemplate: () => {
+                let txt = "NAME - BARCODE - CATEGORY - PRICE - COST - STOCK - MINSTOCK - IMAGEURL\n";
+                if (db.products.length > 0) {
+                    db.products.forEach(p => { txt += `${p.name} - ${p.barcode} - ${p.category} - ${p.price} - ${p.cost} - ${p.stock} - ${p.minStock} - ${p.image}\n`; });
+                } else {
+                    txt += "Krem Banane 17gr - 049585195F - Qokollad - 0.25 - 0.15 - 50 - 25 - https://maxiks.shop/storage/2019/05/3850102127252.png\n";
+                }
+                const blob = new Blob([txt], { type: 'text/plain;charset=utf-8;' });
+                const link = document.createElement("a");
+                const url = URL.createObjectURL(blob);
+                link.setAttribute("href", url); link.setAttribute("download", "inventory_export.txt"); link.click();
+            },
+            
+            importTXT: (input) => {
+                const file = input.files[0]; if(!file) return; 
                 const r = new FileReader();
                 r.onload = (e) => {
-                    const lines = e.target.result.split('\n');
-                    let c=0;
-                    lines.forEach(l => {
-                        const d = l.split(' - ');
-                        if(d.length >= 4) {
-                            db.products.push({
-                                id: Date.now()+c, name: d[0], barcode: d[1], category: d[2], 
-                                price: parseFloat(d[3]), stock: parseInt(d[5]||0), minStock: 5, image: ""
-                            });
-                            c++;
-                        }
-                    });
-                    app.save(); inventoryManager.render(); pos.init(); app.toast(`Imported ${c} items`);
-                };
-                r.readAsText(f);
+                    const lines = e.target.result.split('\n'); 
+                    inventoryManager.pendingImport = [];
+                    for(let i=1; i<lines.length; i++) {
+                        const line = lines[i].trim(); if(!line) continue;
+                        const cols = line.split(' - '); if(cols.length < 3) continue; 
+                        const name = cols[0].trim();
+                        const barcode = cols[1] ? cols[1].trim() : "";
+                        const isDupe = db.products.some(p => (barcode && p.barcode === barcode) || (p.name.toLowerCase() === name.toLowerCase()));
+                        inventoryManager.pendingImport.push({
+                            id: Date.now() + i, name: name, barcode: barcode, category: cols[2] ? cols[2].trim() : "General",
+                            price: parseFloat(cols[3])||0, cost: parseFloat(cols[4])||0, stock: parseInt(cols[5])||0, minStock: parseInt(cols[6])||0, 
+                            image: cols[7] ? cols[7].trim() : "", isDupe: isDupe
+                        }); 
+                    }
+                    input.value = ''; inventoryManager.showImportModal();
+                }; 
+                r.readAsText(file);
+            },
+            showImportModal: () => {
+                const tbody = document.getElementById('import-tbody'); tbody.innerHTML = '';
+                if(inventoryManager.pendingImport.length === 0) return app.toast("No valid data found");
+                inventoryManager.pendingImport.forEach((item, index) => {
+                    const tr = document.createElement('tr');
+                    const checked = !item.isDupe ? 'checked' : '';
+                    const rowClass = item.isDupe ? 'import-row-dupe' : 'import-row-new';
+                    const statusText = item.isDupe ? `<span class="text-danger"><i class="fas fa-exclamation-triangle"></i> ${app.t('duplicate')}</span>` : `<span class="text-accent"><i class="fas fa-check"></i> ${app.t('new')}</span>`;
+                    tr.className = rowClass;
+                    tr.innerHTML = `<td><input type="checkbox" class="import-chk" data-index="${index}" ${checked}></td><td style="font-weight:500;">${item.name}</td><td class="font-mono text-muted">${item.barcode}</td><td>${statusText}</td>`;
+                    tbody.appendChild(tr);
+                });
+                document.getElementById('import-preview-modal').classList.add('active');
+            },
+            closeImportModal: () => { document.getElementById('import-preview-modal').classList.remove('active'); inventoryManager.pendingImport = []; },
+            toggleImportSelectAll: (cb) => { document.querySelectorAll('.import-chk').forEach(c => c.checked = cb.checked); },
+            confirmImport: () => {
+                let importedCount = 0;
+                document.querySelectorAll('.import-chk').forEach(cb => {
+                    if(cb.checked) {
+                        const idx = parseInt(cb.getAttribute('data-index'));
+                        const item = inventoryManager.pendingImport[idx];
+                        delete item.isDupe; item.id = Date.now() + Math.floor(Math.random()*10000);
+                        db.products.push(item); importedCount++;
+                    }
+                });
+                app.save(); inventoryManager.render(); pos.init(); inventoryManager.closeImportModal(); app.toast(`Successfully imported ${importedCount} items`);
             }
         };
-        // Alias for cleaner onclicks
-        const inventory = inventoryManager;
 
-        const customers = {
-            render: () => {
-                const t = document.querySelector('#customer-table tbody'); t.innerHTML = '';
-                db.customers.forEach(c => {
-                    t.innerHTML += `<tr><td>${c.name}</td><td>${c.phone}</td><td>${c.points||0}</td><td>${db.settings.curr}${(c.totalSpent||0).toFixed(2)}</td></tr>`;
+        const customerManager = {
+            render: (filter = "") => {
+                const tbody = document.querySelector('#customer-table tbody'); tbody.innerHTML = '';
+                db.customers.filter(c => c.name.toLowerCase().includes(filter.toLowerCase()) || c.phone.includes(filter)).forEach(c => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td><div style="font-weight:500;">${c.name}</div></td><td class="font-mono text-muted">${c.phone}</td><td>${c.totalSpent > 500 ? '<span style="color:#FFD700;">Gold VIP</span>' : '<span class="text-muted">Regular</span>'}</td><td class="font-mono">${c.points || 0}</td><td class="font-mono">${app.formatMoney(c.totalSpent || 0)}</td><td><button class="btn btn-secondary hover-scale" style="padding:4px 8px;" onclick="customerManager.edit(${c.id})"><i class="fas fa-edit"></i></button></td>`;
+                    tbody.appendChild(tr);
                 });
             },
-            showModal: () => document.getElementById('cust-modal').classList.add('active'),
-            save: () => {
-                db.customers.push({ id:Date.now(), name:document.getElementById('c-name').value, phone:document.getElementById('c-phone').value });
-                app.save(); customers.render(); pos.populateCustomers();
-                document.getElementById('cust-modal').classList.remove('active');
+            showAddModal: () => { document.getElementById('cust-id').value = ''; document.querySelectorAll('#customer-modal input').forEach(i => i.value = ''); document.getElementById('customer-modal').classList.add('active'); },
+            closeModal: () => document.getElementById('customer-modal').classList.remove('active'),
+            edit: (id) => { const c = db.customers.find(x => x.id == id); document.getElementById('cust-id').value = c.id; document.getElementById('cust-name').value = c.name; document.getElementById('cust-phone').value = c.phone; document.getElementById('cust-email').value = c.email || ''; document.getElementById('customer-modal').classList.add('active'); },
+            saveCustomer: () => {
+                const id = document.getElementById('cust-id').value;
+                const c = { id: id ? parseInt(id) : Date.now(), name: document.getElementById('cust-name').value, phone: document.getElementById('cust-phone').value, email: document.getElementById('cust-email').value, points: 0, totalSpent: 0 };
+                if(!c.name) return alert("Name required");
+                if(id) { const old = db.customers.find(x => x.id == id); c.points = old.points; c.totalSpent = old.totalSpent; db.customers[db.customers.findIndex(x => x.id == id)] = c; } else { db.customers.push(c); }
+                app.save(); customerManager.render(); pos.populateCustomers(); customerManager.closeModal(); app.toast("Customer Saved");
             }
         };
 
-        // Shortcuts
+        const reports = {
+            filter: 'today',
+            setFilter: (f) => {
+                reports.filter = f; document.querySelectorAll('#reports-view button').forEach(b => b.classList.toggle('btn-primary', b.id === 'filter-'+f));
+                reports.render();
+            },
+            getFiltered: () => {
+                const now = new Date(); const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                return db.sales.filter(s => {
+                    const d = new Date(s.date);
+                    if(reports.filter === 'today') return d >= start;
+                    if(reports.filter === 'week') { const w = new Date(start); w.setDate(w.getDate() - 7); return d >= w; }
+                    if(reports.filter === 'month') return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+                    return true;
+                }).reverse();
+            },
+            render: () => {
+                const data = reports.getFiltered();
+                const total = data.reduce((a,b) => a + b.total, 0);
+                document.getElementById('report-total').innerText = app.formatMoney(total);
+                document.getElementById('report-count').innerText = data.length;
+                document.getElementById('report-avg').innerText = app.formatMoney(data.length ? total/data.length : 0);
+                
+                const tbody = document.querySelector('#sales-table tbody'); tbody.innerHTML = '';
+                data.forEach(s => {
+                    const cust = s.customerId ? (db.customers.find(c=>c.id==s.customerId)?.name||'Unknown') : 'Guest';
+                    const items = s.items.reduce((a,b) => a+b.qty, 0);
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td class="font-mono text-secondary">#${s.id}</td><td class="text-muted">${new Date(s.date).toLocaleTimeString()}</td><td>${cust}</td><td>${items}</td><td class="font-mono font-bold">${app.formatMoney(s.total)}</td><td><span style="font-size:10px; border:1px solid var(--border); padding:2px 4px; border-radius:4px;">${s.method}</span></td><td><button class="btn btn-secondary hover-scale" style="padding:4px 8px;" onclick="reports.view(${s.id})">View</button></td>`;
+                    tbody.appendChild(tr);
+                });
+            },
+            exportPDF: () => {
+                const data = reports.getFiltered();
+                const total = data.reduce((a,b) => a + b.total, 0);
+                const prodStats = {};
+                data.forEach(s => s.items.forEach(i => {
+                    if(!prodStats[i.product.name]) prodStats[i.product.name] = {qty:0, rev:0};
+                    prodStats[i.product.name].qty += i.qty; prodStats[i.product.name].rev += i.qty * i.product.price;
+                }));
+                const sortedProds = Object.entries(prodStats).sort((a,b) => b[1].qty - a[1].qty).slice(0, 5);
+                const paperSize = db.settings.paperSize || 'a4';
+                
+                const printArea = document.getElementById('printable-area');
+                printArea.innerHTML = `
+                    <style>@page { size: ${paperSize}; margin: 20mm; }</style>
+                    <div class="print-header"><h1>${db.settings.storeName}</h1><h3>Sales Report - ${reports.filter.toUpperCase()}</h3><p>Generated: ${new Date().toLocaleString()}</p></div>
+                    <div class="print-stats">
+                        <div class="print-stat-box"><div>REVENUE</div><h2>${app.formatMoney(total)}</h2></div>
+                        <div class="print-stat-box"><div>TRANSACTIONS</div><h2>${data.length}</h2></div>
+                        <div class="print-stat-box"><div>AVG VALUE</div><h2>${app.formatMoney(data.length ? total/data.length : 0)}</h2></div>
+                    </div>
+                    <h3>Top Selling Products</h3>
+                    <table class="print-table">
+                        <tr><th>Product</th><th>Qty Sold</th><th>Revenue</th></tr>
+                        ${sortedProds.map(([n, s]) => `<tr><td>${n}</td><td>${s.qty}</td><td>${app.formatMoney(s.rev)}</td></tr>`).join('')}
+                    </table>
+                    <h3>Transaction Log</h3>
+                    <table class="print-table">
+                        <tr><th>ID</th><th>Date</th><th>Customer</th><th>Total</th></tr>
+                        ${data.map(s => `<tr><td>#${s.id}</td><td>${new Date(s.date).toLocaleString()}</td><td>${s.customerId ? (db.customers.find(c=>c.id==s.customerId)?.name||'Unknown') : 'Guest'}</td><td>${app.formatMoney(s.total)}</td></tr>`).join('')}
+                    </table>
+                `;
+                setTimeout(() => window.print(), 200);
+            },
+            view: (id) => {
+                const s = db.sales.find(x => x.id === id);
+                document.getElementById('detail-id').innerText = '#' + s.id;
+                document.getElementById('detail-date').innerText = new Date(s.date).toLocaleString();
+                document.getElementById('detail-cust').innerText = s.customerId ? (db.customers.find(c=>c.id==s.customerId)?.name) : 'Guest';
+                const list = document.getElementById('detail-items'); list.innerHTML = '';
+                s.items.forEach(i => { list.innerHTML += `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.05);"><div><div>${i.product.name}</div><div class="text-muted" style="font-size:11px;">${i.product.category}</div></div><div style="text-align:right;"><div class="font-mono">${i.qty} x ${app.formatMoney(i.product.price)}</div><div class="font-mono text-primary">${app.formatMoney(i.qty * i.product.price)}</div></div></div>`; });
+                document.getElementById('detail-subtotal').innerText = app.formatMoney(s.subtotal);
+                document.getElementById('detail-tax').innerText = app.formatMoney(s.total - s.subtotal);
+                document.getElementById('detail-total').innerText = app.formatMoney(s.total);
+                document.getElementById('sale-detail-modal').classList.add('active');
+            },
+            closeModal: () => document.getElementById('sale-detail-modal').classList.remove('active')
+        };
+
         window.addEventListener('keydown', (e) => {
             if(document.querySelector('.modal-overlay.active')) return;
             switch(e.key) {
@@ -841,21 +1917,42 @@
                 case 'F3': e.preventDefault(); app.router('customers'); break;
                 case 'F4': e.preventDefault(); app.router('inventory'); break;
                 case 'F5': e.preventDefault(); app.router('settings'); break;
-                case 'F6': e.preventDefault(); pos.holdOrder(); break;
-                case 'F9': e.preventDefault(); pos.showCheckout(); break;
+                case 'F9': e.preventDefault(); if(document.getElementById('pos-view').classList.contains('active')) pos.showCheckout(); break;
                 case 'F12': e.preventDefault(); app.router('reports'); break;
             }
         });
 
-        // Image Paste
-        document.getElementById('p-img').addEventListener('paste', (e) => {
-            const item = (e.clipboardData || e.originalEvent.clipboardData).items[0];
-            if(item.kind === 'file') {
-                const reader = new FileReader();
-                reader.onload = (ev) => { document.getElementById('p-img').value = ev.target.result; };
-                reader.readAsDataURL(item.getAsFile());
+        document.getElementById('prod-image').addEventListener('paste', function(e) {
+            const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+            for (let index in items) {
+                const item = items[index];
+                if (item.kind === 'file') {
+                    const blob = item.getAsFile();
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        document.getElementById('prod-image').value = event.target.result;
+                        inventoryManager.updatePreview();
+                        app.toast("Image pasted from clipboard");
+                    };
+                    reader.readAsDataURL(blob);
+                }
             }
         });
+
+        (function initNavCurveColor() {
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === "attributes" && mutation.attributeName === "data-theme") {}
+                });
+            });
+            observer.observe(document.documentElement, { attributes: true });
+        })();
+        
+        document.getElementById('checkout-cash').addEventListener('keydown', function(e) {
+            if(e.key === 'Enter') { e.preventDefault(); pos.finalizeSale(); }
+        });
+        
+        window.addEventListener('resize', () => { if(onboarding.isActive) onboarding.reposition(); });
 
         app.init();
     </script>
