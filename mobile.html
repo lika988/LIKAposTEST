@@ -20,7 +20,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -44,7 +44,6 @@
             --nav-height: 80px;
             --header-height: 60px;
             --radius-md: 16px;
-            --radius-lg: 24px;
             --safe-top: env(safe-area-inset-top);
             --safe-bottom: env(safe-area-inset-bottom);
             --shadow-float: 0 10px 30px rgba(0,0,0,0.5);
@@ -75,16 +74,17 @@
             font-size: 14px;
         }
 
-        /* --- LAYOUT --- */
+        /* --- LAYOUT STRUCTURE --- */
         #app {
             display: flex;
             flex-direction: column;
             height: 100%;
             width: 100%;
-            padding-bottom: calc(var(--nav-height) + var(--safe-bottom)); /* Space for Bottom Nav */
+            position: relative;
         }
 
         header {
+            flex-shrink: 0;
             height: calc(var(--header-height) + var(--safe-top));
             padding-top: var(--safe-top);
             padding-left: 20px;
@@ -99,22 +99,72 @@
 
         .view-container {
             flex: 1;
-            overflow-y: auto;
-            overflow-x: hidden;
-            padding: 20px;
+            position: relative;
+            overflow: hidden; /* Individual views handle their own scroll */
             display: none;
             opacity: 0;
-            transform: translateY(10px);
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            /* transition: opacity 0.2s ease; */ /* Removed transition to make switching snappy */
         }
 
         .view-container.active {
-            display: block;
+            display: flex; /* Changed to flex for better layout control */
+            flex-direction: column;
             opacity: 1;
-            transform: translateY(0);
+        }
+        
+        /* Dashboard, Inventory, etc specific scrolling */
+        .scroll-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            padding-bottom: calc(var(--nav-height) + var(--safe-bottom) + 20px);
         }
 
-        /* --- BOTTOM NAVIGATION --- */
+        /* --- POS SPECIFIC LAYOUT --- */
+        .pos-header-bar {
+            flex-shrink: 0;
+            padding: 12px 16px;
+            background: var(--bg-app);
+            display: flex;
+            gap: 12px;
+            z-index: 20;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .pos-grid-wrapper {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            padding-bottom: 120px; /* EXTRA PADDING FOR FROZEN BAR */
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* --- FROZEN FLOATING CART BAR --- */
+        .floating-cart-bar {
+            position: fixed; /* STRICTLY FIXED */
+            bottom: calc(var(--nav-height) + var(--safe-bottom) + 12px);
+            left: 12px;
+            right: 12px;
+            height: 64px;
+            background: var(--bg-surface);
+            border: 1px solid var(--accent);
+            border-radius: 16px;
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            z-index: 80; /* Above Grid, Below Nav/Modals */
+            transform: translateY(150%);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .floating-cart-bar.visible { transform: translateY(0); }
+        
+        .cart-summary { display: flex; flex-direction: column; justify-content: center; }
+        .cart-count { font-size: 11px; color: var(--text-tertiary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .cart-total { font-weight: 700; font-size: 18px; color: var(--text-primary); font-family: 'JetBrains Mono'; }
+
+        /* --- BOTTOM NAV --- */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -129,7 +179,6 @@
             padding-top: 12px;
             padding-bottom: var(--safe-bottom);
             z-index: 100;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
         }
 
         .nav-btn {
@@ -141,288 +190,129 @@
             font-size: 11px;
             font-weight: 500;
             width: 70px;
-            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            background: none;
-            border: none;
+            background: none; border: none;
         }
-
         .nav-btn i { font-size: 20px; transition: transform 0.2s; }
-        
         .nav-btn.active { color: var(--secondary); }
-        .nav-btn.active i { transform: translateY(-2px); }
-
-        /* CENTER POS BUTTON */
         .nav-btn-pos {
-            position: relative;
-            top: -25px; /* Float above */
-            background: linear-gradient(135deg, var(--secondary), #00A3FF);
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 8px 20px rgba(0, 212, 255, 0.4);
-            color: #fff !important; /* Always white icon */
-            border: 4px solid var(--bg-app); /* Cutout effect */
+            position: relative; top: -25px; background: linear-gradient(135deg, var(--secondary), #00A3FF);
+            width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 20px rgba(0, 212, 255, 0.4); color: #fff !important; border: 4px solid var(--bg-app);
         }
         .nav-btn-pos i { font-size: 24px; }
-        .nav-btn-pos span {
-            position: absolute;
-            bottom: -24px;
-            color: var(--text-secondary);
-            font-size: 11px;
-            font-weight: 500;
-        }
-        .nav-btn-pos:active { transform: scale(0.9); }
-
-        /* --- MORE MENU DRAWER --- */
-        .drawer-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(4px);
-            z-index: 200;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-        .drawer-overlay.active { opacity: 1; pointer-events: all; }
-
-        .drawer {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: var(--bg-surface);
-            border-radius: 24px 24px 0 0;
-            padding: 24px;
-            padding-bottom: calc(24px + var(--safe-bottom));
-            transform: translateY(100%);
-            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-        .drawer-overlay.active .drawer { transform: translateY(0); }
-
-        .drawer-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-top: 20px;
-        }
-
-        .drawer-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            text-align: center;
-            color: var(--text-secondary);
-        }
-        .drawer-icon-box {
-            width: 50px;
-            height: 50px;
-            border-radius: 16px;
-            background: var(--bg-app);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            border: 1px solid var(--border);
-            transition: transform 0.2s;
-        }
-        .drawer-item:active .drawer-icon-box { transform: scale(0.95); background: var(--border); }
-        .drawer-label { font-size: 11px; font-weight: 500; }
-
-        .drawer-handle {
-            width: 40px;
-            height: 5px;
-            background: var(--border);
-            border-radius: 10px;
-            margin: 0 auto;
-        }
+        .nav-btn-pos:active { transform: scale(0.95); }
 
         /* --- UI COMPONENTS --- */
-        .card {
-            background: var(--bg-surface);
-            border-radius: var(--radius-md);
-            padding: 16px;
-            margin-bottom: 16px;
-            border: 1px solid var(--border);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        h2, h3 { color: var(--text-primary); }
-        .text-muted { color: var(--text-tertiary); }
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
-
-        .btn {
-            border: none;
-            border-radius: 12px;
-            padding: 14px;
-            font-weight: 600;
-            font-size: 14px;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .btn:active { transform: scale(0.98); }
-        .btn-primary { background: var(--secondary); color: #fff; box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3); }
-        .btn-success { background: var(--accent); color: #fff; box-shadow: 0 4px 12px rgba(0, 229, 160, 0.3); }
+        .card { background: var(--bg-surface); border-radius: var(--radius-md); padding: 16px; margin-bottom: 16px; border: 1px solid var(--border); }
+        .btn { border: none; border-radius: 12px; padding: 14px; font-weight: 600; font-size: 14px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: transform 0.1s; }
+        .btn:active { transform: scale(0.97); }
+        .btn-primary { background: var(--secondary); color: #fff; }
+        .btn-success { background: var(--accent); color: #111827; }
         .btn-secondary { background: var(--bg-app); color: var(--text-primary); border: 1px solid var(--border); }
-        .btn-danger { background: rgba(255, 75, 85, 0.1); color: var(--danger); }
+        .btn-danger { background: rgba(255, 75, 85, 0.1); color: var(--danger); border: 1px solid rgba(255, 75, 85, 0.2); }
+        input, select { width: 100%; padding: 12px; background: var(--bg-app); border: 1px solid var(--border); border-radius: 12px; color: var(--text-primary); font-size: 16px; }
 
-        input, select {
-            width: 100%;
-            padding: 12px;
-            background: var(--bg-app);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            color: var(--text-primary);
-            font-size: 16px; /* Prevents iOS zoom */
-        }
-
-        /* --- POS GRID (Mobile Optimized) --- */
-        .pos-container { display: flex; flex-direction: column; height: 100%; }
-        
+        /* --- PROFESSIONAL POS GRID --- */
         .pos-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 2 Columns on mobile */
-            gap: 12px;
-            padding-bottom: 80px; /* Space for floating cart bar */
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
         }
         
         .prod-card {
             background: var(--bg-surface);
-            border-radius: 12px;
+            border-radius: 16px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
             border: 1px solid var(--border);
             position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
         .prod-card:active { transform: scale(0.96); }
         
-        .prod-img {
+        .prod-img-container {
             width: 100%;
-            height: 100px;
-            object-fit: cover;
-            background: var(--bg-app);
+            aspect-ratio: 1/1; /* Square */
+            position: relative;
+            background: #000;
         }
-        .prod-info { padding: 10px; }
-        .prod-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; line-height: 1.2; height: 32px; overflow: hidden; }
-        .prod-price { font-size: 12px; color: var(--secondary); font-family: 'JetBrains Mono'; }
+        .prod-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; }
         
-        /* --- FLOATING CART BAR --- */
-        .floating-cart-bar {
-            position: fixed;
-            bottom: calc(var(--nav-height) + var(--safe-bottom) + 16px);
-            left: 16px;
-            right: 16px;
-            background: var(--bg-surface);
-            border: 1px solid var(--accent);
-            border-radius: 50px;
-            padding: 8px 8px 8px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: var(--shadow-float);
-            z-index: 90;
-            transform: translateY(150%);
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .floating-cart-bar.visible { transform: translateY(0); }
+        .prod-info { padding: 12px; display: flex; flex-direction: column; gap: 6px; flex: 1; justify-content: space-between; }
+        .prod-name { font-size: 14px; font-weight: 600; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; min-height: 36px; }
         
-        .cart-summary { display: flex; flex-direction: column; }
-        .cart-count { font-size: 10px; color: var(--text-tertiary); text-transform: uppercase; }
-        .cart-total { font-weight: 700; font-size: 16px; color: var(--text-primary); }
-
-        /* --- FULL SCREEN CART OVERLAY --- */
-        .cart-overlay {
-            position: fixed;
-            inset: 0;
-            background: var(--bg-app);
-            z-index: 300;
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            padding-top: var(--safe-top);
-        }
-        .cart-overlay.active { transform: translateY(0); }
-
-        .cart-header {
-            padding: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid var(--border);
-            background: var(--bg-surface);
-        }
-
-        .cart-items-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 16px;
-        }
-
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--bg-surface);
-            padding: 12px;
-            border-radius: 12px;
-            margin-bottom: 12px;
+        .prod-meta { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 4px; }
+        .prod-price { font-size: 15px; color: var(--secondary); font-family: 'JetBrains Mono'; font-weight: 700; }
+        .prod-stock-badge { 
+            font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.05); color: var(--text-tertiary);
             border: 1px solid var(--border);
         }
 
-        .cart-footer {
-            background: var(--bg-surface);
-            padding: 20px;
-            padding-bottom: calc(20px + var(--safe-bottom));
-            border-top: 1px solid var(--border);
-            box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+        .stock-indicator {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: rgba(0,0,0,0.5);
         }
+        .stock-fill { height: 100%; transition: width 0.3s ease, background-color 0.3s ease; }
 
-        /* --- STATS CARDS --- */
-        .stat-card {
-            display: flex;
-            align-items: center;
-            gap: 16px;
+        /* --- OVERLAYS (Cart, Checkout) --- */
+        .overlay {
+            position: fixed; inset: 0; background: var(--bg-app); z-index: 2000;
+            transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            display: flex; flex-direction: column; padding-top: var(--safe-top); padding-bottom: var(--safe-bottom);
         }
-        .stat-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
+        .overlay.active { transform: translateY(0); }
+        
+        .overlay-header {
+            padding: 16px; border-bottom: 1px solid var(--border); background: var(--bg-surface);
+            display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
         }
-        .stat-val { font-size: 24px; font-weight: 700; font-family: 'JetBrains Mono'; }
+        .overlay-content { flex: 1; overflow-y: auto; padding: 16px; }
+        .overlay-footer { padding: 16px; border-top: 1px solid var(--border); background: var(--bg-surface); flex-shrink: 0; }
 
-        /* --- LISTS --- */
-        .list-group { display: flex; flex-direction: column; gap: 12px; }
-        .list-item {
-            background: var(--bg-surface);
-            padding: 16px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border: 1px solid var(--border);
+        /* --- CHECKOUT KEYPAD --- */
+        .checkout-grid { display: grid; grid-template-columns: 1fr 300px; height: 100%; }
+        /* Mobile specific checkout layout */
+        .mobile-checkout { display: flex; flex-direction: column; height: 100%; gap: 16px; }
+        
+        .amount-display {
+            background: var(--bg-surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px;
+            text-align: right; margin-bottom: 16px;
         }
+        .amount-label { font-size: 12px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+        .amount-value { font-size: 32px; font-weight: 700; font-family: 'JetBrains Mono'; color: var(--text-primary); }
+        .amount-value.highlight { color: var(--accent); }
 
-        /* UTILS */
+        .quick-cash-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px;
+        }
+        .cash-btn {
+            background: var(--bg-nav); border: 1px solid var(--border); color: var(--text-primary);
+            padding: 12px 0; border-radius: 8px; font-weight: 600; font-family: 'JetBrains Mono'; font-size: 13px;
+        }
+        .cash-btn:active { background: var(--secondary); color: #fff; }
+
+        .numpad {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; flex: 1;
+        }
+        .pad-btn {
+            background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px;
+            font-size: 24px; font-weight: 500; color: var(--text-primary);
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.1s;
+        }
+        .pad-btn:active { background: rgba(255,255,255,0.1); }
+        
+        /* Drawer & Utils */
+        .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 150; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .drawer-overlay.active { opacity: 1; pointer-events: auto; }
+        .drawer { position: absolute; bottom: 0; left: 0; width: 100%; background: var(--bg-surface); border-radius: 24px 24px 0 0; padding: 24px; transform: translateY(100%); transition: transform 0.3s; padding-bottom: calc(24px + var(--safe-bottom)); }
+        .drawer-overlay.active .drawer { transform: translateY(0); }
+        
         .hidden { display: none !important; }
         .text-accent { color: var(--accent); }
-        .text-secondary { color: var(--secondary); }
-
-        /* ANIMATIONS */
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-fade { animation: fadeUp 0.3s ease forwards; }
+        .text-danger { color: var(--danger); }
+        
+        .list-item { background: var(--bg-surface); padding: 16px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); margin-bottom: 8px; }
 
     </style>
 </head>
@@ -430,337 +320,313 @@
     <div id="app">
         <!-- HEADER -->
         <header>
-            <div style="display:flex; align-items:center; gap:10px;">
-                <div style="width:32px; height:32px; background:var(--secondary); border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700;">L</div>
-                <h3 id="header-title">Dashboard</h3>
-            </div>
+            <h3 id="header-title" style="font-size: 18px; font-weight: 700;">Dashboard</h3>
             <div style="display:flex; gap:12px;">
                 <button class="nav-btn" style="width:auto; color:var(--text-primary);" onclick="app.toggleTheme()"><i class="fas fa-moon" id="theme-icon"></i></button>
             </div>
         </header>
 
-        <!-- VIEW: DASHBOARD -->
+        <!-- DASHBOARD -->
         <div id="dashboard-view" class="view-container active">
-            <div class="card stat-card animate-fade" style="animation-delay: 0.05s;">
-                <div class="stat-icon" style="background: rgba(0, 212, 255, 0.15); color: var(--secondary);"><i class="fas fa-wallet"></i></div>
-                <div>
-                    <div class="text-muted" style="font-size:12px;">Today's Sales</div>
-                    <div class="stat-val" id="dash-sales">€0.00</div>
+            <div class="scroll-content">
+                <div class="card stat-card" style="display:flex; gap:16px; align-items:center;">
+                    <div class="stat-icon" style="background: rgba(0, 212, 255, 0.15); color: var(--secondary); width:48px; height:48px; display:flex; align-items:center; justify-content:center; border-radius:12px; font-size:20px;"><i class="fas fa-wallet"></i></div>
+                    <div>
+                        <div class="text-muted" style="font-size:12px;">Today's Sales</div>
+                        <div class="stat-val" style="font-size:24px; font-weight:700; font-family:'JetBrains Mono';" id="dash-sales">€0.00</div>
+                    </div>
                 </div>
-            </div>
-
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-bottom:16px;">
-                 <div class="card stat-card animate-fade" style="flex-direction:column; align-items:flex-start; gap:8px; animation-delay: 0.1s;">
-                    <div class="stat-icon" style="background: rgba(0, 229, 160, 0.15); color: var(--accent); width:36px; height:36px;"><i class="fas fa-receipt"></i></div>
-                    <div class="stat-val" id="dash-tx" style="font-size:20px;">0</div>
-                    <div class="text-muted" style="font-size:11px;">Transactions</div>
-                 </div>
-                 <div class="card stat-card animate-fade" style="flex-direction:column; align-items:flex-start; gap:8px; animation-delay: 0.15s;">
-                    <div class="stat-icon" style="background: rgba(255, 184, 76, 0.15); color: var(--warning); width:36px; height:36px;"><i class="fas fa-exclamation-triangle"></i></div>
-                    <div class="stat-val" id="dash-lowstock" style="font-size:20px;">0</div>
-                    <div class="text-muted" style="font-size:11px;">Low Stock</div>
-                 </div>
-            </div>
-
-            <h3 style="margin: 24px 0 12px 0;">Quick Actions</h3>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-                <button class="btn btn-secondary animate-fade" style="animation-delay: 0.2s;" onclick="inventoryManager.showAddModal()"><i class="fas fa-plus"></i> Add Product</button>
-                <button class="btn btn-secondary animate-fade" style="animation-delay: 0.25s;" onclick="customerManager.showAddModal()"><i class="fas fa-user-plus"></i> Add Customer</button>
-                <button class="btn btn-secondary animate-fade" style="animation-delay: 0.3s;" onclick="app.router('reports')"><i class="fas fa-chart-line"></i> View Reports</button>
-                <button class="btn btn-secondary animate-fade" style="animation-delay: 0.35s;" onclick="app.router('settings')"><i class="fas fa-cog"></i> Settings</button>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-bottom:24px;">
+                     <div class="card" style="padding:16px;">
+                        <div class="text-muted" style="font-size:11px; margin-bottom:4px;">Tx Count</div>
+                        <div class="stat-val" id="dash-tx" style="font-size:20px; font-family:'JetBrains Mono';">0</div>
+                     </div>
+                     <div class="card" style="padding:16px;">
+                        <div class="text-muted" style="font-size:11px; margin-bottom:4px;">Low Stock</div>
+                        <div class="stat-val text-danger" id="dash-lowstock" style="font-size:20px; font-family:'JetBrains Mono';">0</div>
+                     </div>
+                </div>
+                <h3 style="margin-bottom:12px;">Quick Actions</h3>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+                    <button class="btn btn-secondary" onclick="inventoryManager.showAddModal()"><i class="fas fa-plus"></i> Add Product</button>
+                    <button class="btn btn-secondary" onclick="customerManager.showAddModal()"><i class="fas fa-user-plus"></i> Add Customer</button>
+                    <button class="btn btn-secondary" onclick="app.router('reports')"><i class="fas fa-chart-bar"></i> Reports</button>
+                    <button class="btn btn-secondary" onclick="app.router('settings')"><i class="fas fa-cog"></i> Settings</button>
+                </div>
             </div>
         </div>
 
-        <!-- VIEW: POS -->
+        <!-- POS TERMINAL -->
         <div id="pos-view" class="view-container">
-            <div class="pos-container">
-                <div style="display:flex; gap:8px; margin-bottom:12px; position:sticky; top:0; z-index:10; background:var(--bg-app); padding-bottom:8px;">
-                    <input type="text" id="pos-search" placeholder="Search..." onkeyup="pos.filterProducts()" style="flex:1;">
-                    <select id="pos-category" onchange="pos.filterProducts()" style="width:40px; padding:0; text-align:center; background:var(--bg-surface); color:var(--text-secondary);">
-                        <option value="">All</option>
-                    </select>
+            <!-- Fixed Search Bar -->
+            <div class="pos-header-bar">
+                <div style="position:relative; flex:1;">
+                    <i class="fas fa-search" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-tertiary);"></i>
+                    <input type="text" id="pos-search" placeholder="Search products..." onkeyup="pos.renderGrid()" style="padding-left:36px;">
                 </div>
-
-                <div id="pos-grid" class="pos-grid">
-                    <!-- Products injected here -->
-                </div>
+                <select id="pos-category" onchange="pos.renderGrid()" style="width:50px; padding:0; text-align:center;">
+                    <option value="">All</option>
+                </select>
+            </div>
+            
+            <!-- Scrollable Grid -->
+            <div class="pos-grid-wrapper">
+                <div id="pos-grid" class="pos-grid"></div>
             </div>
 
-            <!-- FLOATING CART BAR -->
+            <!-- Frozen Floating Bar -->
             <div id="pos-float-bar" class="floating-cart-bar" onclick="pos.openCart()">
                 <div class="cart-summary">
                     <span class="cart-count"><span id="float-count">0</span> Items</span>
-                    <span class="cart-total font-mono" id="float-total">€0.00</span>
+                    <span class="cart-total" id="float-total">€0.00</span>
                 </div>
-                <button class="btn btn-success" style="width: auto; padding: 8px 16px; border-radius: 20px; font-size:12px;">
-                    View Cart <i class="fas fa-chevron-up"></i>
+                <button class="btn btn-success" style="width: auto; padding: 0 20px; height: 40px; border-radius: 20px; font-size:12px;">
+                    VIEW CART <i class="fas fa-chevron-up" style="margin-left:4px;"></i>
                 </button>
             </div>
         </div>
 
-        <!-- VIEW: INVENTORY -->
+        <!-- INVENTORY -->
         <div id="inventory-view" class="view-container">
-            <div style="display:flex; gap:10px; margin-bottom:16px;">
-                <input type="text" placeholder="Search Inventory..." onkeyup="inventoryManager.render(this.value)">
-                <button class="btn btn-primary" style="width:50px;" onclick="inventoryManager.showAddModal()"><i class="fas fa-plus"></i></button>
-            </div>
-            <div id="inventory-list" class="list-group"></div>
-        </div>
-
-        <!-- VIEW: CUSTOMERS -->
-        <div id="customers-view" class="view-container">
-            <div style="display:flex; gap:10px; margin-bottom:16px;">
-                <input type="text" placeholder="Search Customers..." onkeyup="customerManager.render(this.value)">
-                <button class="btn btn-primary" style="width:50px;" onclick="customerManager.showAddModal()"><i class="fas fa-user-plus"></i></button>
-            </div>
-            <div id="customer-list" class="list-group"></div>
-        </div>
-
-        <!-- VIEW: REPORTS -->
-        <div id="reports-view" class="view-container">
-            <div class="card stat-card" style="margin-bottom:16px; background:linear-gradient(135deg, var(--bg-surface), #1a202c);">
-                <div>
-                    <div class="text-muted" style="font-size:12px;">Total Revenue</div>
-                    <div class="stat-val text-secondary" id="report-total">€0.00</div>
+            <div class="scroll-content">
+                <div style="display:flex; gap:10px; margin-bottom:16px;">
+                    <input type="text" placeholder="Search..." onkeyup="inventoryManager.render(this.value)">
+                    <button class="btn btn-secondary" style="width:50px;" onclick="document.getElementById('txt-import').click()"><i class="fas fa-file-import"></i></button>
+                    <input type="file" id="txt-import" class="hidden" accept=".txt" onchange="inventoryManager.importTXT(this)">
+                    <button class="btn btn-primary" style="width:50px;" onclick="inventoryManager.showAddModal()"><i class="fas fa-plus"></i></button>
                 </div>
+                <div id="inventory-list"></div>
             </div>
-            <div style="display:flex; gap:8px; overflow-x:auto; margin-bottom:16px; padding-bottom:4px;">
-                <button class="btn btn-secondary" style="width:auto; padding:6px 16px; font-size:12px;" onclick="reports.setFilter('today')">Today</button>
-                <button class="btn btn-secondary" style="width:auto; padding:6px 16px; font-size:12px;" onclick="reports.setFilter('week')">Week</button>
-                <button class="btn btn-secondary" style="width:auto; padding:6px 16px; font-size:12px;" onclick="reports.setFilter('month')">Month</button>
-            </div>
-            <div id="report-list" class="list-group"></div>
         </div>
-        
-        <!-- VIEW: SETTINGS -->
+
+        <!-- REPORTS, CUSTOMERS, SETTINGS placeholders -->
+        <div id="customers-view" class="view-container"><div class="scroll-content"><div id="customer-list"></div></div></div>
+        <div id="reports-view" class="view-container"><div class="scroll-content"><div id="report-list"></div></div></div>
         <div id="settings-view" class="view-container">
-            <div class="card">
-                <h3>General</h3>
-                <div style="margin-top:16px; display:flex; flex-direction:column; gap:16px;">
-                    <div>
-                        <label class="text-muted" style="font-size:12px;">Store Name</label>
-                        <input type="text" id="setting-store-name" onchange="app.updateSetting('storeName', this.value)">
-                    </div>
-                    <div>
-                        <label class="text-muted" style="font-size:12px;">Tax Rate (%)</label>
-                        <input type="number" id="setting-tax" onchange="app.updateSetting('taxRate', this.value)">
-                    </div>
-                    <div>
-                         <label class="text-muted" style="font-size:12px;">Currency</label>
-                         <select id="setting-currency" onchange="app.updateSetting('currency', this.value)">
-                            <option value="€">EUR (€)</option>
-                            <option value="$">USD ($)</option>
-                         </select>
+            <div class="scroll-content">
+                <div class="card">
+                    <h3>General</h3>
+                    <div style="margin-top:16px; display:flex; flex-direction:column; gap:16px;">
+                        <input type="text" id="st-name" placeholder="Store Name" onchange="app.updateSet('storeName', this.value)">
+                        <input type="number" id="st-tax" placeholder="Tax Rate %" onchange="app.updateSet('taxRate', this.value)">
                     </div>
                 </div>
+                <button class="btn btn-danger" onclick="app.reset()">Reset Data</button>
             </div>
-            <button class="btn btn-danger" onclick="app.resetData()">Reset Data</button>
         </div>
 
-        <!-- CART FULL SCREEN OVERLAY -->
-        <div id="cart-overlay" class="cart-overlay">
-            <div class="cart-header">
+        <!-- CART OVERLAY -->
+        <div id="cart-overlay" class="overlay">
+            <div class="overlay-header">
                 <h3>Current Order</h3>
-                <button class="btn btn-secondary" style="width:40px; height:40px; padding:0; border-radius:50%;" onclick="pos.closeCart()"><i class="fas fa-times"></i></button>
+                <button onclick="pos.closeCart()" style="background:none; border:none; color:var(--text-primary); font-size:24px;"><i class="fas fa-times"></i></button>
             </div>
-            <div style="padding:16px 16px 0 16px;">
-                <select id="pos-customer" style="padding:10px;" onchange="pos.updateCartTotal()">
+            <div class="overlay-content">
+                <select id="pos-customer" style="margin-bottom:16px;" onchange="pos.updateTotals()">
                     <option value="">Guest Customer</option>
                 </select>
+                <div id="cart-items-list"></div>
             </div>
-            <div id="cart-items" class="cart-items-list"></div>
-            <div class="cart-footer">
+            <div class="overlay-footer">
                 <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:13px;" class="text-muted">
                     <span>Tax</span> <span id="cart-tax" class="font-mono">€0.00</span>
                 </div>
-                <div style="display:flex; justify-content:space-between; margin-bottom:16px; font-size:20px; font-weight:700;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:16px; font-size:22px; font-weight:700;">
                     <span>Total</span> <span id="cart-total" class="font-mono text-secondary">€0.00</span>
                 </div>
                 <div style="display:flex; gap:12px;">
                     <button class="btn btn-danger" style="width:60px;" onclick="pos.clearCart()"><i class="fas fa-trash"></i></button>
-                    <button class="btn btn-success" onclick="pos.checkout()">Checkout</button>
+                    <button class="btn btn-success" onclick="pos.showCheckout()">CHECKOUT</button>
                 </div>
             </div>
         </div>
 
-        <!-- MORE DRAWER -->
-        <div id="more-drawer-overlay" class="drawer-overlay" onclick="app.closeMoreMenu()">
-            <div class="drawer" onclick="event.stopPropagation()">
-                <div class="drawer-handle"></div>
-                <div class="drawer-grid">
-                    <div class="drawer-item" onclick="app.router('inventory'); app.closeMoreMenu();">
-                        <div class="drawer-icon-box" style="color:var(--info);"><i class="fas fa-boxes"></i></div>
-                        <span class="drawer-label">Inventory</span>
-                    </div>
-                    <div class="drawer-item" onclick="app.router('customers'); app.closeMoreMenu();">
-                        <div class="drawer-icon-box" style="color:var(--accent);"><i class="fas fa-users"></i></div>
-                        <span class="drawer-label">Customers</span>
-                    </div>
-                    <div class="drawer-item" onclick="app.router('reports'); app.closeMoreMenu();">
-                        <div class="drawer-icon-box" style="color:var(--warning);"><i class="fas fa-chart-pie"></i></div>
-                        <span class="drawer-label">Analytics</span>
-                    </div>
-                    <div class="drawer-item" onclick="app.router('settings'); app.closeMoreMenu();">
-                        <div class="drawer-icon-box" style="color:var(--text-secondary);"><i class="fas fa-cog"></i></div>
-                        <span class="drawer-label">Settings</span>
-                    </div>
+        <!-- CHECKOUT OVERLAY (FULL SCREEN PRO MODE) -->
+        <div id="checkout-overlay" class="overlay">
+            <div class="overlay-header">
+                <h3>Checkout</h3>
+                <button onclick="pos.closeCheckout()" style="background:none; border:none; color:var(--text-primary); font-size:24px;"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="overlay-content" style="display:flex; flex-direction:column; height:100%; padding: 20px;">
+                <div class="amount-display">
+                    <div class="amount-label">Total Due</div>
+                    <div class="amount-value highlight" id="co-total">€0.00</div>
                 </div>
+                
+                <div class="amount-display" style="border-color: var(--secondary);">
+                    <div class="amount-label">Amount Tendered</div>
+                    <div class="amount-value" id="co-tendered">0</div>
+                </div>
+                
+                <div class="amount-display" style="background: transparent; border:none; padding:0; margin-bottom:20px;">
+                    <div class="amount-label" style="text-align:right;">Change Due</div>
+                    <div class="amount-value" id="co-change" style="font-size:24px; color:var(--text-tertiary);">€0.00</div>
+                </div>
+
+                <div class="quick-cash-grid" id="quick-cash-grid"></div>
+
+                <div class="numpad">
+                    <button class="pad-btn" onclick="pos.pad('1')">1</button>
+                    <button class="pad-btn" onclick="pos.pad('2')">2</button>
+                    <button class="pad-btn" onclick="pos.pad('3')">3</button>
+                    <button class="pad-btn" onclick="pos.pad('4')">4</button>
+                    <button class="pad-btn" onclick="pos.pad('5')">5</button>
+                    <button class="pad-btn" onclick="pos.pad('6')">6</button>
+                    <button class="pad-btn" onclick="pos.pad('7')">7</button>
+                    <button class="pad-btn" onclick="pos.pad('8')">8</button>
+                    <button class="pad-btn" onclick="pos.pad('9')">9</button>
+                    <button class="pad-btn text-danger" onclick="pos.pad('C')">C</button>
+                    <button class="pad-btn" onclick="pos.pad('0')">0</button>
+                    <button class="pad-btn" onclick="pos.pad('.')">.</button>
+                </div>
+                
+                <button class="btn btn-success" style="margin-top:20px; height:60px; font-size:18px;" onclick="pos.finalize()">COMPLETE TRANSACTION</button>
             </div>
         </div>
 
-        <!-- BOTTOM NAV -->
-        <nav class="bottom-nav">
-            <button class="nav-btn active" id="nav-dashboard" onclick="app.router('dashboard')">
-                <i class="fas fa-home"></i> <span>Dashboard</span>
-            </button>
-            <button class="nav-btn nav-btn-pos" id="nav-pos" onclick="app.router('pos')">
-                <i class="fas fa-calculator"></i>
-                <!-- <span>POS</span> -->
-            </button>
-            <button class="nav-btn" id="nav-more" onclick="app.openMoreMenu()">
-                <i class="fas fa-th-large"></i> <span>More</span>
-            </button>
-        </nav>
-
-        <!-- ADD/EDIT MODAL -->
+        <!-- MODAL DRAWER -->
         <div id="general-modal" class="drawer-overlay">
-            <div class="drawer" style="height:90vh; border-radius:16px 16px 0 0; display:flex; flex-direction:column;">
+            <div class="drawer">
                 <div style="display:flex; justify-content:space-between; margin-bottom:16px;">
                     <h3 id="modal-title">Edit</h3>
-                    <button onclick="document.getElementById('general-modal').classList.remove('active')" style="background:none; border:none; color:var(--text-primary); font-size:18px;"><i class="fas fa-times"></i></button>
+                    <button onclick="document.getElementById('general-modal').classList.remove('active')" style="border:none; background:none; color:#fff;"><i class="fas fa-times"></i></button>
                 </div>
-                <div id="modal-content" style="flex:1; overflow-y:auto; padding-bottom:20px;"></div>
+                <div id="modal-content"></div>
             </div>
         </div>
         
-        <!-- TOAST -->
-        <div id="toast" style="position:fixed; top:20px; left:50%; transform:translateX(-50%) translateY(-100px); background:var(--bg-surface); color:var(--text-primary); padding:12px 24px; border-radius:50px; box-shadow:0 10px 30px rgba(0,0,0,0.3); z-index:2000; transition:transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display:flex; align-items:center; gap:10px; border:1px solid var(--secondary); font-size:13px;">
-            <i class="fas fa-check-circle text-secondary"></i> <span id="toast-msg">Success</span>
+        <!-- NAV -->
+        <nav class="bottom-nav">
+            <button class="nav-btn active" id="nav-dashboard" onclick="app.router('dashboard')"><i class="fas fa-home"></i><span>Dashboard</span></button>
+            <button class="nav-btn nav-btn-pos" id="nav-pos" onclick="app.router('pos')"><i class="fas fa-calculator"></i></button>
+            <button class="nav-btn" id="nav-more" onclick="app.openMore()"><i class="fas fa-th-large"></i><span>More</span></button>
+        </nav>
+        
+        <!-- MORE DRAWER -->
+        <div id="more-drawer" class="drawer-overlay" onclick="this.classList.remove('active')">
+            <div class="drawer" onclick="event.stopPropagation()">
+                <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px;">
+                    <div class="nav-btn" onclick="app.router('inventory'); app.closeMore();"><i class="fas fa-boxes text-accent"></i><span>Inventory</span></div>
+                    <div class="nav-btn" onclick="app.router('customers'); app.closeMore();"><i class="fas fa-users text-secondary"></i><span>Customers</span></div>
+                    <div class="nav-btn" onclick="app.router('reports'); app.closeMore();"><i class="fas fa-chart-pie text-warning"></i><span>Reports</span></div>
+                    <div class="nav-btn" onclick="app.router('settings'); app.closeMore();"><i class="fas fa-cog"></i><span>Settings</span></div>
+                </div>
+            </div>
         </div>
 
+        <!-- TOAST -->
+        <div id="toast" style="position:fixed; top:20px; left:50%; transform:translateX(-50%) translateY(-100px); background:var(--bg-surface); color:#fff; padding:12px 24px; border-radius:50px; z-index:3000; border:1px solid var(--secondary); transition:transform 0.4s;">
+            <i class="fas fa-check"></i> <span id="toast-msg">Success</span>
+        </div>
     </div>
 
     <script>
         const db = {
             products: [], customers: [], sales: [],
-            settings: { storeName: "LIKApos Mobile", currency: "€", taxRate: 10, nextSaleId: 1000 }
+            settings: { storeName: "LIKApos", currency: "€", taxRate: 10, nextSaleId: 1000 }
         };
 
         const app = {
             init: () => {
-                const saved = localStorage.getItem('likapos_mobile_db');
-                if(saved) Object.assign(db, JSON.parse(saved));
+                const s = localStorage.getItem('likapos_mob_v2');
+                if(s) Object.assign(db, JSON.parse(s));
                 else app.seed();
-                
-                app.applyTheme();
                 app.router('dashboard');
-                
-                // Populate dropdowns
                 pos.init();
+                inventoryManager.render();
             },
             seed: () => {
                 db.products = [
-                    { id: 1, name: "Espresso", price: 1.00, stock: 100, category: "Drinks", image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=150&q=80" },
-                    { id: 2, name: "Cappuccino", price: 1.50, stock: 50, category: "Drinks", image: "https://images.unsplash.com/photo-1572442388796-11668a67e53d?auto=format&fit=crop&w=150&q=80" },
-                    { id: 3, name: "Croissant", price: 2.00, stock: 20, category: "Food", image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=150&q=80" },
-                    { id: 4, name: "Orange Juice", price: 2.50, stock: 30, category: "Drinks", image: "https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&w=150&q=80" }
+                    { id: 1, name: "Espresso Macchiato", price: 1.20, stock: 100, category: "Coffee", image: "https://images.unsplash.com/photo-1485808191679-5f8c7c835587?w=300" },
+                    { id: 2, name: "Cappuccino", price: 1.50, stock: 50, category: "Coffee", image: "https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=300" },
+                    { id: 3, name: "Fresh Croissant", price: 2.00, stock: 12, category: "Food", image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=300" },
+                    { id: 4, name: "Orange Juice", price: 2.50, stock: 5, category: "Drinks", image: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=300" },
+                    { id: 5, name: "Chocolate Muffin", price: 2.20, stock: 0, category: "Food", image: "https://images.unsplash.com/photo-1607958996333-41aef7caefaa?w=300" },
+                    { id: 6, name: "Iced Latte", price: 2.80, stock: 45, category: "Coffee", image: "https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?w=300" }
                 ];
-                db.customers = [{id: 1, name: "Walk-in Guest", phone: ""}];
+                db.customers = [{id:1, name:"Guest", phone:""}];
                 app.save();
             },
-            save: () => localStorage.setItem('likapos_mobile_db', JSON.stringify(db)),
-            
-            router: (view) => {
-                document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active'));
-                document.getElementById(view + '-view').classList.add('active');
+            save: () => localStorage.setItem('likapos_mob_v2', JSON.stringify(db)),
+            router: (v) => {
+                document.querySelectorAll('.view-container').forEach(e => e.classList.remove('active'));
+                document.getElementById(v + '-view').classList.add('active');
+                document.querySelectorAll('.nav-btn').forEach(e => e.classList.remove('active'));
+                const nav = v === 'pos' ? 'nav-pos' : (v === 'dashboard' ? 'nav-dashboard' : 'nav-more');
+                document.getElementById(nav).classList.add('active');
+                document.getElementById('header-title').innerText = v.charAt(0).toUpperCase() + v.slice(1);
                 
-                // Update Nav
-                document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-                const navId = view === 'pos' ? 'nav-pos' : (view === 'dashboard' ? 'nav-dashboard' : 'nav-more');
-                document.getElementById(navId).classList.add('active');
-                
-                // Update Header Title
-                const titles = { dashboard: 'Dashboard', pos: 'Terminal', inventory: 'Inventory', customers: 'Customers', reports: 'Analytics', settings: 'Settings' };
-                document.getElementById('header-title').innerText = titles[view] || 'LIKApos';
-
-                if(view === 'dashboard') app.updateDashboard();
-                if(view === 'pos') pos.renderGrid();
-                if(view === 'inventory') inventoryManager.render();
-                if(view === 'customers') customerManager.render();
-                if(view === 'reports') reports.render();
-                if(view === 'settings') {
-                    document.getElementById('setting-store-name').value = db.settings.storeName;
-                    document.getElementById('setting-tax').value = db.settings.taxRate;
-                    document.getElementById('setting-currency').value = db.settings.currency;
+                if(v === 'dashboard') app.dash();
+                if(v === 'pos') pos.renderGrid();
+                if(v === 'inventory') inventoryManager.render();
+                if(v === 'settings') {
+                    document.getElementById('st-name').value = db.settings.storeName;
+                    document.getElementById('st-tax').value = db.settings.taxRate;
                 }
             },
-
-            openMoreMenu: () => document.getElementById('more-drawer-overlay').classList.add('active'),
-            closeMoreMenu: () => document.getElementById('more-drawer-overlay').classList.remove('active'),
-            
-            toggleTheme: () => {
-                const html = document.documentElement;
-                const curr = html.getAttribute('data-theme');
-                const next = curr === 'dark' ? 'light' : 'dark';
-                html.setAttribute('data-theme', next);
-                localStorage.setItem('likapos_theme', next);
-                document.getElementById('theme-icon').className = next === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
-            },
-            applyTheme: () => {
-                const t = localStorage.getItem('likapos_theme') || 'dark';
-                document.documentElement.setAttribute('data-theme', t);
-                document.getElementById('theme-icon').className = t === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
-            },
-
-            updateDashboard: () => {
-                const todayStr = new Date().toDateString();
-                const todaySales = db.sales.filter(s => new Date(s.date).toDateString() === todayStr);
-                const total = todaySales.reduce((a, b) => a + b.total, 0);
-                const lowStock = db.products.filter(p => p.stock < 10).length;
-                
+            dash: () => {
+                const today = new Date().toDateString();
+                const sales = db.sales.filter(s => new Date(s.date).toDateString() === today);
+                const total = sales.reduce((a,b) => a+b.total,0);
                 document.getElementById('dash-sales').innerText = app.fmt(total);
-                document.getElementById('dash-tx').innerText = todaySales.length;
-                document.getElementById('dash-lowstock').innerText = lowStock;
+                document.getElementById('dash-tx').innerText = sales.length;
+                document.getElementById('dash-lowstock').innerText = db.products.filter(p=>p.stock<5).length;
             },
-            
+            openMore: () => document.getElementById('more-drawer').classList.add('active'),
+            closeMore: () => document.getElementById('more-drawer').classList.remove('active'),
+            toggleTheme: () => {
+                const h = document.documentElement;
+                h.setAttribute('data-theme', h.getAttribute('data-theme')==='dark'?'light':'dark');
+            },
             fmt: (n) => db.settings.currency + parseFloat(n).toFixed(2),
-            toast: (msg) => {
-                const el = document.getElementById('toast');
-                document.getElementById('toast-msg').innerText = msg;
-                el.style.transform = 'translateX(-50%) translateY(0)';
-                setTimeout(() => el.style.transform = 'translateX(-50%) translateY(-100px)', 3000);
+            toast: (m) => {
+                const t = document.getElementById('toast');
+                document.getElementById('toast-msg').innerText = m;
+                t.style.transform = 'translateX(-50%) translateY(0)';
+                setTimeout(() => t.style.transform = 'translateX(-50%) translateY(-100px)', 2500);
             },
-            updateSetting: (k, v) => { db.settings[k] = v; app.save(); },
-            resetData: () => { if(confirm("Clear all data?")) { localStorage.removeItem('likapos_mobile_db'); location.reload(); } }
+            updateSet: (k,v) => { db.settings[k] = v; app.save(); },
+            reset: () => { if(confirm("Reset?")) { localStorage.clear(); location.reload(); } }
         };
 
         const pos = {
             cart: [],
+            tenderedInput: "",
             init: () => {
-                // Populate categories
-                const cats = [...new Set(db.products.map(p => p.category))];
                 const sel = document.getElementById('pos-category');
-                sel.innerHTML = '<option value="">All</option>';
-                cats.forEach(c => sel.innerHTML += `<option value="${c}">${c.substring(0,3)}</option>`);
+                const cats = [...new Set(db.products.map(p=>p.category))];
+                cats.forEach(c => sel.innerHTML += `<option value="${c}">${c}</option>`);
             },
-            filterProducts: () => pos.renderGrid(),
             renderGrid: () => {
                 const term = document.getElementById('pos-search').value.toLowerCase();
                 const cat = document.getElementById('pos-category').value;
                 const grid = document.getElementById('pos-grid');
                 grid.innerHTML = '';
                 
-                db.products.filter(p => (p.name.toLowerCase().includes(term)) && (cat === "" || p.category === cat)).forEach(p => {
+                db.products.filter(p => (p.name.toLowerCase().includes(term)) && (cat===""||p.category===cat)).forEach(p => {
+                    // REALTIME STOCK CALCULATION
+                    const inCart = pos.cart.find(i => i.id === p.id);
+                    const cartQty = inCart ? inCart.qty : 0;
+                    const realStock = p.stock - cartQty;
+                    
+                    let barColor = 'var(--accent)';
+                    if(realStock < 10) barColor = 'var(--warning)';
+                    if(realStock <= 0) barColor = 'var(--danger)';
+                    let pct = Math.min(100, (realStock/20)*100); 
+
                     const el = document.createElement('div');
                     el.className = 'prod-card';
                     el.onclick = () => pos.addToCart(p.id);
                     el.innerHTML = `
-                        <img src="${p.image}" class="prod-img" onerror="this.src='https://placehold.co/150x150?text=No+Img'">
+                        <div class="prod-img-container">
+                            <img src="${p.image}" class="prod-img">
+                            <div class="stock-indicator"><div class="stock-fill" style="width:${pct}%; background:${barColor};"></div></div>
+                        </div>
                         <div class="prod-info">
                             <div class="prod-name">${p.name}</div>
-                            <div style="display:flex; justify-content:space-between;">
+                            <div class="prod-meta">
                                 <span class="prod-price">${app.fmt(p.price)}</span>
-                                <span style="font-size:10px; color:${p.stock<10?'var(--danger)':'var(--text-tertiary)'}">${p.stock} left</span>
+                                <span class="prod-stock-badge">${realStock} left</span>
                             </div>
                         </div>
                     `;
@@ -768,112 +634,148 @@
                 });
             },
             addToCart: (id) => {
-                const p = db.products.find(x => x.id == id);
-                if(p.stock <= 0) return app.toast("Out of stock");
+                const p = db.products.find(x=>x.id===id);
+                const existing = pos.cart.find(i=>i.id===id);
+                const currentQty = existing ? existing.qty : 0;
                 
-                const existing = pos.cart.find(i => i.id == id);
-                if(existing) { 
-                    if(existing.qty < p.stock) existing.qty++; 
-                } else { 
-                    pos.cart.push({id: id, qty: 1, price: p.price, name: p.name}); 
-                }
+                if(p.stock <= currentQty) return app.toast("Out of stock!");
                 
-                // Visual feedback
-                app.toast(`Added ${p.name}`);
-                pos.updateCartTotal();
+                if(existing) existing.qty++;
+                else pos.cart.push({id:id, qty:1, price:p.price, name:p.name});
+                
+                pos.renderGrid(); // Re-render to update "realtime" stock displayed on card
+                pos.updateTotals();
             },
-            updateCartTotal: () => {
-                const total = pos.cart.reduce((a,b) => a + (b.price * b.qty), 0);
-                const count = pos.cart.reduce((a,b) => a + b.qty, 0);
+            updateTotals: () => {
+                const total = pos.cart.reduce((a,b)=>a+(b.price*b.qty),0);
+                const count = pos.cart.reduce((a,b)=>a+b.qty,0);
                 
-                // Update Float Bar
+                // Floating Bar
                 document.getElementById('float-count').innerText = count;
                 document.getElementById('float-total').innerText = app.fmt(total);
                 
                 const bar = document.getElementById('pos-float-bar');
-                if(count > 0) bar.classList.add('visible'); else bar.classList.remove('visible');
+                if(count>0) bar.classList.add('visible'); else bar.classList.remove('visible');
                 
-                // Update Overlay
+                // Cart Overlay
                 document.getElementById('cart-total').innerText = app.fmt(total);
-                const tax = total * (db.settings.taxRate / 100);
-                document.getElementById('cart-tax').innerText = app.fmt(tax);
+                document.getElementById('cart-tax').innerText = app.fmt(total * (db.settings.taxRate/100));
                 
-                pos.renderCartItems();
+                pos.renderCartList();
             },
-            renderCartItems: () => {
-                const list = document.getElementById('cart-items');
-                list.innerHTML = '';
-                pos.cart.forEach((item, idx) => {
-                    list.innerHTML += `
-                        <div class="cart-item">
-                            <div>
-                                <div style="font-weight:600;">${item.name}</div>
-                                <div class="text-muted" style="font-size:12px;">${app.fmt(item.price)}</div>
-                            </div>
-                            <div style="display:flex; align-items:center; gap:12px;">
-                                <button class="btn btn-secondary" style="width:30px; height:30px; padding:0;" onclick="pos.modQty(${idx}, -1)">-</button>
-                                <span class="font-mono">${item.qty}</span>
-                                <button class="btn btn-secondary" style="width:30px; height:30px; padding:0;" onclick="pos.modQty(${idx}, 1)">+</button>
+            renderCartList: () => {
+                const l = document.getElementById('cart-items-list'); l.innerHTML = '';
+                pos.cart.forEach((i, idx) => {
+                    l.innerHTML += `
+                        <div class="list-item">
+                            <div><div style="font-weight:600;">${i.name}</div><div class="text-muted" style="font-size:12px;">${app.fmt(i.price)}</div></div>
+                            <div style="display:flex; gap:12px; align-items:center;">
+                                <button class="btn btn-secondary" style="width:30px; height:30px; padding:0;" onclick="pos.modQty(${idx},-1)">-</button>
+                                <span class="font-mono">${i.qty}</span>
+                                <button class="btn btn-secondary" style="width:30px; height:30px; padding:0;" onclick="pos.modQty(${idx},1)">+</button>
                             </div>
                         </div>
                     `;
                 });
             },
-            modQty: (idx, delta) => {
-                const item = pos.cart[idx];
-                const p = db.products.find(x => x.id == item.id);
-                const newQty = item.qty + delta;
+            modQty: (idx, d) => {
+                const i = pos.cart[idx];
+                const p = db.products.find(x=>x.id===i.id);
+                if(d>0 && i.qty >= p.stock) return app.toast("Max stock");
                 
-                if(newQty <= 0) pos.cart.splice(idx, 1);
-                else if(newQty <= p.stock) item.qty = newQty;
-                else app.toast("Max stock reached");
+                i.qty += d;
+                if(i.qty<=0) pos.cart.splice(idx,1);
                 
-                pos.updateCartTotal();
+                pos.renderGrid();
+                pos.updateTotals();
             },
+            clearCart: () => { pos.cart=[]; pos.renderGrid(); pos.updateTotals(); pos.closeCart(); },
             openCart: () => document.getElementById('cart-overlay').classList.add('active'),
             closeCart: () => document.getElementById('cart-overlay').classList.remove('active'),
-            clearCart: () => { pos.cart = []; pos.updateCartTotal(); pos.closeCart(); },
             
-            checkout: () => {
-                if(pos.cart.length === 0) return;
+            // CHECKOUT LOGIC
+            showCheckout: () => {
+                pos.closeCart();
+                document.getElementById('checkout-overlay').classList.add('active');
+                const total = pos.cart.reduce((a,b)=>a+(b.price*b.qty),0);
+                document.getElementById('co-total').innerText = app.fmt(total);
+                pos.tenderedInput = "";
+                pos.updateChange();
                 
-                const total = pos.cart.reduce((a,b) => a + (b.price * b.qty), 0);
-                const sale = {
+                // Generate Quick Cash Suggestions
+                const grid = document.getElementById('quick-cash-grid');
+                grid.innerHTML = `<button class="cash-btn" onclick="pos.setCash(${total})">Exact</button>`;
+                
+                const suggestions = [Math.ceil(total), Math.ceil(total/5)*5, Math.ceil(total/10)*10, 20, 50, 100];
+                const unique = [...new Set(suggestions)].filter(x => x >= total).sort((a,b)=>a-b);
+                
+                unique.slice(0, 7).forEach(amt => {
+                    grid.innerHTML += `<button class="cash-btn" onclick="pos.setCash(${amt})">${app.fmt(amt)}</button>`;
+                });
+            },
+            closeCheckout: () => document.getElementById('checkout-overlay').classList.remove('active'),
+            pad: (k) => {
+                if(k==='C') pos.tenderedInput = "";
+                else if(k==='.') { if(!pos.tenderedInput.includes('.')) pos.tenderedInput += '.'; }
+                else pos.tenderedInput += k;
+                pos.updateChange();
+            },
+            setCash: (v) => { pos.tenderedInput = v.toString(); pos.updateChange(); },
+            updateChange: () => {
+                const t = document.getElementById('co-tendered');
+                t.innerText = pos.tenderedInput || "0";
+                
+                const total = pos.cart.reduce((a,b)=>a+(b.price*b.qty),0);
+                const tend = parseFloat(pos.tenderedInput)||0;
+                const change = tend - total;
+                
+                const cEl = document.getElementById('co-change');
+                if(change >= 0) {
+                    cEl.innerText = app.fmt(change);
+                    cEl.style.color = "var(--accent)";
+                } else {
+                    cEl.innerText = "Insufficient";
+                    cEl.style.color = "var(--danger)";
+                }
+            },
+            finalize: () => {
+                const total = pos.cart.reduce((a,b)=>a+(b.price*b.qty),0);
+                const tend = parseFloat(pos.tenderedInput)||0;
+                
+                if(tend < total - 0.01) return app.toast("Insufficient Cash!");
+                
+                // Deduct real stock
+                pos.cart.forEach(i => {
+                    const p = db.products.find(x=>x.id===i.id);
+                    p.stock -= i.qty;
+                });
+                
+                db.sales.push({
                     id: db.settings.nextSaleId++,
                     date: new Date().toISOString(),
                     total: total,
                     items: [...pos.cart],
                     customer: document.getElementById('pos-customer').value || "Guest"
-                };
-                
-                // Deduct Stock
-                pos.cart.forEach(i => {
-                    const p = db.products.find(x => x.id == i.id);
-                    if(p) p.stock -= i.qty;
                 });
                 
-                db.sales.push(sale);
                 app.save();
-                app.toast("Sale Complete!");
-                pos.clearCart();
-                app.updateDashboard();
-                pos.renderGrid(); // Update stock visuals
+                app.toast("Payment Successful!");
+                pos.cart = [];
+                pos.renderGrid();
+                pos.updateTotals();
+                pos.closeCheckout();
             }
         };
 
         const inventoryManager = {
-            render: (filter = "") => {
-                const list = document.getElementById('inventory-list');
-                list.innerHTML = '';
-                db.products.filter(p => p.name.toLowerCase().includes(filter.toLowerCase())).forEach(p => {
-                    list.innerHTML += `
+            render: (filter="") => {
+                const l = document.getElementById('inventory-list'); l.innerHTML = '';
+                db.products.filter(p=>p.name.toLowerCase().includes(filter.toLowerCase())).forEach(p => {
+                    l.innerHTML += `
                         <div class="list-item" onclick="inventoryManager.edit(${p.id})">
-                            <div style="display:flex; align-items:center; gap:12px;">
-                                <img src="${p.image}" style="width:40px; height:40px; border-radius:8px; object-fit:cover; background:#333;">
-                                <div>
-                                    <div style="font-weight:600;">${p.name}</div>
-                                    <div class="text-muted" style="font-size:11px;">Stock: ${p.stock}</div>
-                                </div>
+                            <div style="display:flex; gap:12px; align-items:center;">
+                                <img src="${p.image}" style="width:40px; height:40px; border-radius:8px; object-fit:cover;">
+                                <div><div style="font-weight:600;">${p.name}</div><div class="text-muted" style="font-size:11px;">Stock: ${p.stock}</div></div>
                             </div>
                             <div class="font-mono">${app.fmt(p.price)}</div>
                         </div>
@@ -881,137 +783,65 @@
                 });
             },
             showAddModal: () => {
-                const modal = document.getElementById('general-modal');
+                const d = document.getElementById('modal-content');
                 document.getElementById('modal-title').innerText = "Add Product";
-                document.getElementById('modal-content').innerHTML = `
-                    <div style="display:flex; flex-direction:column; gap:16px;">
-                        <input type="text" id="inp-name" placeholder="Product Name">
-                        <input type="number" id="inp-price" placeholder="Price">
-                        <input type="number" id="inp-stock" placeholder="Stock">
-                        <input type="text" id="inp-cat" placeholder="Category">
-                        <input type="text" id="inp-img" placeholder="Image URL">
-                        <button class="btn btn-primary" onclick="inventoryManager.save()">Save</button>
-                    </div>
-                `;
-                modal.classList.add('active');
+                d.innerHTML = `<div style="display:flex; flex-direction:column; gap:12px;">
+                    <input id="np-name" placeholder="Name">
+                    <input id="np-price" type="number" placeholder="Price">
+                    <input id="np-stock" type="number" placeholder="Stock">
+                    <input id="np-cat" placeholder="Category">
+                    <input id="np-img" placeholder="Image URL">
+                    <button class="btn btn-primary" onclick="inventoryManager.save()">Save</button>
+                </div>`;
+                document.getElementById('general-modal').classList.add('active');
             },
             edit: (id) => {
-                const p = db.products.find(x => x.id == id);
-                const modal = document.getElementById('general-modal');
+                const p = db.products.find(x=>x.id===id);
+                const d = document.getElementById('modal-content');
                 document.getElementById('modal-title').innerText = "Edit Product";
-                document.getElementById('modal-content').innerHTML = `
-                    <div style="display:flex; flex-direction:column; gap:16px;">
-                        <input type="hidden" id="inp-id" value="${p.id}">
-                        <input type="text" id="inp-name" value="${p.name}" placeholder="Name">
-                        <input type="number" id="inp-price" value="${p.price}" placeholder="Price">
-                        <input type="number" id="inp-stock" value="${p.stock}" placeholder="Stock">
-                        <input type="text" id="inp-cat" value="${p.category}" placeholder="Category">
-                        <input type="text" id="inp-img" value="${p.image}" placeholder="Image URL">
-                        <button class="btn btn-primary" onclick="inventoryManager.save()">Update</button>
-                        <button class="btn btn-danger" onclick="inventoryManager.del(${p.id})">Delete</button>
-                    </div>
-                `;
-                modal.classList.add('active');
+                d.innerHTML = `<div style="display:flex; flex-direction:column; gap:12px;">
+                    <input type="hidden" id="np-id" value="${p.id}">
+                    <input id="np-name" value="${p.name}">
+                    <input id="np-price" type="number" value="${p.price}">
+                    <input id="np-stock" type="number" value="${p.stock}">
+                    <input id="np-cat" value="${p.category}">
+                    <input id="np-img" value="${p.image}">
+                    <button class="btn btn-primary" onclick="inventoryManager.save()">Update</button>
+                    <button class="btn btn-danger" onclick="inventoryManager.del(${p.id})">Delete</button>
+                </div>`;
+                document.getElementById('general-modal').classList.add('active');
             },
             save: () => {
-                const id = document.getElementById('inp-id')?.value;
-                const data = {
+                const id = document.getElementById('np-id')?.value;
+                const obj = {
                     id: id ? parseInt(id) : Date.now(),
-                    name: document.getElementById('inp-name').value,
-                    price: parseFloat(document.getElementById('inp-price').value),
-                    stock: parseInt(document.getElementById('inp-stock').value),
-                    category: document.getElementById('inp-cat').value,
-                    image: document.getElementById('inp-img').value || 'https://placehold.co/150x150'
+                    name: document.getElementById('np-name').value,
+                    price: parseFloat(document.getElementById('np-price').value),
+                    stock: parseInt(document.getElementById('np-stock').value),
+                    category: document.getElementById('np-cat').value,
+                    image: document.getElementById('np-img').value || 'https://placehold.co/300'
                 };
-                
-                if(id) {
-                    const idx = db.products.findIndex(x => x.id == id);
-                    db.products[idx] = data;
-                } else {
-                    db.products.push(data);
-                }
-                app.save();
-                inventoryManager.render();
-                document.getElementById('general-modal').classList.remove('active');
-                pos.init(); // Refresh categories
+                if(id) { const i = db.products.findIndex(x=>x.id==id); db.products[i] = obj; }
+                else db.products.push(obj);
+                app.save(); inventoryManager.render(); document.getElementById('general-modal').classList.remove('active'); pos.init();
             },
-            del: (id) => {
-                if(confirm("Delete?")) {
-                    db.products = db.products.filter(x => x.id != id);
-                    app.save();
-                    inventoryManager.render();
-                    document.getElementById('general-modal').classList.remove('active');
-                }
-            }
-        };
-        
-        const customerManager = {
-            render: (filter = "") => {
-                const list = document.getElementById('customer-list');
-                list.innerHTML = '';
-                db.customers.filter(c => c.name.toLowerCase().includes(filter.toLowerCase())).forEach(c => {
-                    list.innerHTML += `
-                        <div class="list-item">
-                            <div style="font-weight:600;">${c.name}</div>
-                            <div class="font-mono text-muted">${c.phone || "No Phone"}</div>
-                        </div>
-                    `;
-                });
-            },
-            showAddModal: () => {
-                 const modal = document.getElementById('general-modal');
-                document.getElementById('modal-title').innerText = "Add Customer";
-                document.getElementById('modal-content').innerHTML = `
-                    <div style="display:flex; flex-direction:column; gap:16px;">
-                        <input type="text" id="inp-cust-name" placeholder="Name">
-                        <input type="text" id="inp-cust-phone" placeholder="Phone">
-                        <button class="btn btn-primary" onclick="customerManager.save()">Save</button>
-                    </div>
-                `;
-                modal.classList.add('active');
-            },
-            save: () => {
-                db.customers.push({
-                    id: Date.now(),
-                    name: document.getElementById('inp-cust-name').value,
-                    phone: document.getElementById('inp-cust-phone').value
-                });
-                app.save();
-                customerManager.render();
-                document.getElementById('general-modal').classList.remove('active');
-            }
+            del: (id) => { if(confirm("Delete?")) { db.products=db.products.filter(x=>x.id!=id); app.save(); inventoryManager.render(); document.getElementById('general-modal').classList.remove('active'); pos.init(); } }
         };
 
-        const reports = {
-            render: () => {
-                const list = document.getElementById('report-list');
-                list.innerHTML = '';
-                
-                // Calculate Total for View
-                let total = 0;
-                
-                // Get filtered sales (defaulting to today logic for init or last selected)
-                // For simplicity in mobile demo, just showing last 10
-                const sales = [...db.sales].reverse().slice(0, 20);
-                
-                sales.forEach(s => {
-                    total += s.total;
-                    list.innerHTML += `
-                        <div class="list-item">
-                            <div>
-                                <div style="font-size:12px; color:var(--text-tertiary);">#${s.id} • ${new Date(s.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
-                                <div style="font-size:13px;">${s.customer}</div>
-                            </div>
-                            <div class="font-mono font-bold">${app.fmt(s.total)}</div>
-                        </div>
-                    `;
-                });
-                document.getElementById('report-total').innerText = app.fmt(total);
+        const customerManager = {
+            showAddModal: () => {
+                const d = document.getElementById('modal-content');
+                document.getElementById('modal-title').innerText = "Add Customer";
+                d.innerHTML = `<div style="display:flex; flex-direction:column; gap:12px;">
+                    <input id="nc-name" placeholder="Name">
+                    <input id="nc-phone" placeholder="Phone">
+                    <button class="btn btn-primary" onclick="customerManager.save()">Save</button>
+                </div>`;
+                document.getElementById('general-modal').classList.add('active');
             },
-            setFilter: (f) => {
-                // Simplified filter visual feedback
-                app.toast("Filter: " + f);
-                reports.render();
+            save: () => {
+                db.customers.push({id:Date.now(), name:document.getElementById('nc-name').value, phone:document.getElementById('nc-phone').value});
+                app.save(); document.getElementById('general-modal').classList.remove('active');
             }
         };
 
