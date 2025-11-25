@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-8XSLX790TS"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -276,8 +275,8 @@
             border: 1px solid var(--border);
             position: relative;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            transform: translateZ(0); /* Forces GPU rasterization to fix border-radius clipping on iOS */
-            -webkit-mask-image: -webkit-radial-gradient(white, black); /* Alternative clipping fix */
+            /* REMOVED MASK IMAGE TO FIX IMAGE VISIBILITY BUGS */
+            transform: translateZ(0); 
         }
         .prod-card:active { transform: scale(0.96); }
         
@@ -391,7 +390,6 @@
 </head>
 <body>
     <div id="app">
-        <!-- HEADER -->
         <header>
             <h3 id="header-title" style="font-size: 18px; font-weight: 700;">Dashboard</h3>
             <div style="display:flex; gap:12px;">
@@ -400,7 +398,6 @@
             </div>
         </header>
 
-        <!-- DASHBOARD -->
         <div id="dashboard-view" class="view-container active">
             <div class="scroll-content">
                 <div class="card stat-card" style="display:flex; gap:16px; align-items:center;">
@@ -430,9 +427,7 @@
             </div>
         </div>
 
-        <!-- POS TERMINAL -->
         <div id="pos-view" class="view-container">
-            <!-- Fixed Search Bar -->
             <div class="pos-header-bar">
                 <div style="position:relative; flex:1;">
                     <i class="fas fa-search" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-tertiary);"></i>
@@ -441,18 +436,15 @@
                 <select id="pos-category" onchange="pos.renderGrid()" style="width:50px; padding:0; text-align:center;">
                     <option value="">All</option>
                 </select>
-                <!-- NEW VIEW TOGGLE BUTTON -->
                 <button class="btn btn-secondary" onclick="pos.toggleView()" style="width:40px; padding:0; justify-content:center;">
                     <i id="view-icon" class="fas fa-list"></i>
                 </button>
             </div>
             
-            <!-- Scrollable Grid -->
             <div class="pos-grid-wrapper">
                 <div id="pos-grid" class="pos-grid grid-view"></div>
             </div>
 
-            <!-- Frozen Floating Bar -->
             <div id="pos-float-bar" class="floating-cart-bar" onclick="pos.openCart()">
                 <div class="cart-summary">
                     <span class="cart-count"><span id="float-count">0</span> Items</span>
@@ -464,7 +456,6 @@
             </div>
         </div>
 
-        <!-- INVENTORY -->
         <div id="inventory-view" class="view-container">
             <div class="scroll-content">
                 <div style="display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap;">
@@ -478,7 +469,6 @@
             </div>
         </div>
 
-        <!-- CUSTOMERS -->
         <div id="customers-view" class="view-container">
             <div class="scroll-content">
                 <div style="display:flex; gap:10px; margin-bottom:16px;">
@@ -489,7 +479,6 @@
             </div>
         </div>
 
-        <!-- REPORTS -->
         <div id="reports-view" class="view-container">
             <div class="scroll-content">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
@@ -523,7 +512,6 @@
             </div>
         </div>
         
-        <!-- SETTINGS -->
         <div id="settings-view" class="view-container">
             <div class="scroll-content">
                 <div class="card">
@@ -604,7 +592,6 @@
             </div>
         </div>
 
-        <!-- CART OVERLAY -->
         <div id="cart-overlay" class="overlay">
             <div class="overlay-header">
                 <h3 data-i18n="current_order">Current Order</h3>
@@ -630,7 +617,6 @@
             </div>
         </div>
 
-        <!-- CHECKOUT OVERLAY -->
         <div id="checkout-overlay" class="overlay">
             <div class="overlay-header">
                 <h3 data-i18n="checkout">Checkout</h3>
@@ -673,7 +659,6 @@
             </div>
         </div>
 
-        <!-- SUPPORT MODAL -->
         <div id="support-modal" class="drawer-overlay">
             <div class="drawer">
                 <div style="display:flex; justify-content:space-between; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border);">
@@ -720,7 +705,6 @@
             </div>
         </div>
 
-        <!-- MODAL DRAWER -->
         <div id="general-modal" class="drawer-overlay">
             <div class="drawer">
                 <div style="display:flex; justify-content:space-between; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border);">
@@ -731,7 +715,6 @@
             </div>
         </div>
         
-        <!-- SALE DETAIL MODAL -->
         <div id="detail-modal" class="drawer-overlay">
             <div class="drawer">
                  <div style="display:flex; justify-content:space-between; margin-bottom:16px; border-bottom:1px solid var(--border); padding-bottom:12px;">
@@ -751,14 +734,12 @@
             </div>
         </div>
         
-        <!-- NAV -->
         <nav class="bottom-nav">
             <button class="nav-btn active" id="nav-dashboard" onclick="app.router('dashboard')"><i class="fas fa-home"></i><span data-i18n="dashboard">Dashboard</span></button>
             <button class="nav-btn nav-btn-pos" id="nav-pos" onclick="app.router('pos')"><i class="fas fa-calculator"></i></button>
             <button class="nav-btn" id="nav-more" onclick="app.openMore()"><i class="fas fa-th-large"></i><span data-i18n="more">More</span></button>
         </nav>
         
-        <!-- MORE DRAWER -->
         <div id="more-drawer" class="drawer-overlay" onclick="this.classList.remove('active')">
             <div class="drawer" onclick="event.stopPropagation()">
                 <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px;">
@@ -770,10 +751,8 @@
             </div>
         </div>
 
-        <!-- PRINTABLE AREA -->
         <div id="printable-area" class="hidden"></div>
 
-        <!-- TOAST -->
         <div id="toast" style="position:fixed; top:20px; left:50%; transform:translateX(-50%) translateY(-100px); background:var(--bg-surface); color:#fff; padding:12px 24px; border-radius:50px; z-index:3000; border:1px solid var(--secondary); transition:transform 0.4s;">
             <i class="fas fa-check"></i> <span id="toast-msg">Success</span>
         </div>
@@ -830,15 +809,13 @@
         // MAIN APP LOGIC
         window.app = {
             init: () => {
-                const s = localStorage.getItem('likapos_mob_v2');
-                if(s) Object.assign(db, JSON.parse(s));
-                
-                // Ensure zero data if fresh start
-                if(!s) {
-                    db.products = [];
-                    db.customers = [{id:1, name:"Guest", phone:"", email:"", points:0, totalSpent:0}];
-                    db.sales = [];
-                    app.save();
+                // FIXED: Now uses main database key (likapos_db) instead of mobile-only key
+                const s = localStorage.getItem('likapos_db');
+                if(s) {
+                     Object.assign(db, JSON.parse(s));
+                } else {
+                     app.loadDefaultData();
+                     app.save();
                 }
 
                 app.applyTranslations();
@@ -855,6 +832,19 @@
                 
                 pos.init();
                 inventoryManager.render();
+            },
+            
+            // NEW: Matches Desktop Default Data Logic
+            loadDefaultData: () => {
+                 db.products = [
+                    { id: 101, name: "Fanta 0.5l", barcode: "50001", price: 1.00, cost: 0.50, stock: 100, category: "Beverages", minStock: 20, image: "https://britishessentials.com/cdn/shop/products/April0938_x700.jpg?v=1617962710" },
+                    { id: 102, name: "Croissant 7 Days 40gr", barcode: "50002", price: 1.50, cost: 0.75, stock: 50, category: "Bakery", minStock: 10, image: "https://marketonline.mk/wp-content/uploads/2020/03/25862-1.jpg" },
+                    { id: 103, name: "KitKat 36gr", barcode: "50003", price: 0.80, cost: 0.25, stock: 150, category: "Snacks", minStock: 25, image: "https://cdn.mafrservices.com/pim-content/EGY/media/product/390205/1751374803/390205_main.jpg?im=Resize=376" },
+                    { id: 104, name: "CocaCola 150ml", barcode: "50004", price: 1.20, cost: 0.60, stock: 120, category: "Beverages", minStock: 15, image: "https://assets.sainsburys-groceries.co.uk/gol/7965334/1/640x640.jpg" }
+                ];
+                db.customers = [{ id: 1, name: "Guest", phone: "", points: 0, totalSpent: 0 }];
+                db.sales = [];
+                db.settings.currency = "€";
             },
             
             t: (k) => (TRANSLATIONS[db.settings.language] || TRANSLATIONS["English"])[k] || k,
@@ -918,7 +908,8 @@
                 if(k === 'taxType' || k === 'taxRate') pos.updateTotals();
             },
             
-            save: () => localStorage.setItem('likapos_mob_v2', JSON.stringify(db)),
+            // FIXED: Saves to main DB key now
+            save: () => localStorage.setItem('likapos_db', JSON.stringify(db)),
             
             exportData: () => {
                 const blob = new Blob([JSON.stringify(db)], {type: "application/json"});
@@ -948,7 +939,7 @@
             
             reset: () => { 
                 if(confirm("Delete ALL data?")) { 
-                    localStorage.removeItem('likapos_mob_v2'); 
+                    localStorage.removeItem('likapos_db'); 
                     location.reload(); 
                 } 
             }
@@ -1319,6 +1310,115 @@
                     app.save(); customerManager.render(); pos.init(); 
                     document.getElementById('general-modal').classList.remove('active'); 
                 } 
+            }
+        };
+
+        // --- MISSING REPORTS LOGIC ADDED HERE ---
+        window.reports = {
+            filter: 'today',
+            setFilter: (f) => {
+                reports.filter = f;
+                // Update UI active state
+                document.querySelectorAll('.report-filters .btn').forEach(b => b.classList.remove('active'));
+                document.getElementById('filter-'+f).classList.add('active');
+                reports.render();
+            },
+            getFiltered: () => {
+                const now = new Date();
+                const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                return db.sales.filter(s => {
+                    const d = new Date(s.date);
+                    if(reports.filter === 'today') return d >= start;
+                    if(reports.filter === 'week') { const w = new Date(start); w.setDate(w.getDate() - 7); return d >= w; }
+                    if(reports.filter === 'month') return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+                    return true;
+                }).reverse();
+            },
+            render: () => {
+                const data = reports.getFiltered();
+                const total = data.reduce((a,b) => a + b.total, 0);
+                
+                // Update stats
+                document.getElementById('rep-revenue').innerText = app.fmt(total);
+                document.getElementById('rep-orders').innerText = data.length;
+                document.getElementById('rep-avg').innerText = app.fmt(data.length ? total/data.length : 0);
+                
+                // Update List
+                const list = document.getElementById('report-list');
+                list.innerHTML = '';
+                
+                if(data.length === 0) {
+                    list.innerHTML = `<div style="text-align:center; padding:32px; color:var(--text-tertiary);"><i class="fas fa-inbox" style="font-size:32px; opacity:0.5; margin-bottom:8px;"></i><br>No sales found</div>`;
+                    return;
+                }
+
+                data.forEach(s => {
+                    const cust = s.customer || 'Guest';
+                    list.innerHTML += `
+                    <div class="report-list-item" onclick="reports.showDetail(${s.id})">
+                        <div class="report-item-left">
+                            <div class="report-id">#${s.id}</div>
+                            <div class="report-cust">${cust}</div>
+                        </div>
+                        <div class="report-item-right">
+                            <div class="report-total">${app.fmt(s.total)}</div>
+                            <div class="report-meta">${new Date(s.date).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
+                        </div>
+                    </div>`;
+                });
+            },
+            showDetail: (id) => {
+                const s = db.sales.find(x => x.id == id);
+                if(!s) return;
+                document.getElementById('detail-id').innerText = '#' + s.id;
+                document.getElementById('detail-date').innerText = new Date(s.date).toLocaleString();
+                document.getElementById('detail-total').innerText = app.fmt(s.total);
+                
+                const l = document.getElementById('detail-list');
+                l.innerHTML = '';
+                s.items.forEach(i => {
+                    const name = i.name || (i.product ? i.product.name : 'Unknown Item');
+                    l.innerHTML += `
+                    <div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--border);">
+                        <div>
+                            <div style="font-weight:600;">${name}</div>
+                            <div class="text-muted" style="font-size:12px;">${i.qty} x ${app.fmt(i.price)}</div>
+                        </div>
+                        <div class="font-mono">${app.fmt(i.qty * i.price)}</div>
+                    </div>`;
+                });
+                
+                document.getElementById('detail-modal').classList.add('active');
+            },
+            exportPDF: () => {
+                const data = reports.getFiltered();
+                if(data.length === 0) return app.toast("No data to export");
+                
+                const area = document.getElementById('printable-area');
+                const total = data.reduce((a,b) => a+b.total, 0);
+                
+                area.innerHTML = `
+                    <div style="text-align:center; margin-bottom:20px;">
+                        <h2>${db.settings.storeName}</h2>
+                        <p>Sales Report (${reports.filter.toUpperCase()})</p>
+                        <p>${new Date().toLocaleString()}</p>
+                    </div>
+                    <div style="margin-bottom:20px; border:1px solid #000; padding:10px;">
+                        <strong>Total Revenue:</strong> ${app.fmt(total)}<br>
+                        <strong>Transactions:</strong> ${data.length}
+                    </div>
+                    <table>
+                        <thead><tr><th>ID</th><th>Time</th><th>Total</th></tr></thead>
+                        <tbody>
+                            ${data.map(s => `<tr><td>#${s.id}</td><td>${new Date(s.date).toLocaleTimeString()}</td><td>${app.fmt(s.total)}</td></tr>`).join('')}
+                        </tbody>
+                    </table>
+                `;
+                
+                window.print();
+                
+                // Cleanup after print (optional, or rely on .hidden class)
+                setTimeout(() => { area.innerHTML = ''; }, 1000);
             }
         };
 
