@@ -11,7 +11,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIKApos Ultimate</title>
+    <title>LIKApos Pro Desktop</title>
     
     <link rel="icon" type="image/png" href="https://realfavicongenerator.net/files/56477a3f-ceaa-4bcb-8de8-c8c79a099f2d/favicon-96x96.png" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -19,71 +19,66 @@
 
     <style>
         :root {
-            /* "Million Dollar" Dark Theme */
-            --bg-body: #030712; /* Ultra dark navy */
-            --bg-sidebar: rgba(17, 24, 39, 0.7);
-            --bg-card: #111827;
-            --bg-surface: #1F2937;
-            --bg-input: #0F131A;
+            /* MILLION DOLLAR DARK THEME */
+            --bg-app: #0F111A;
+            --bg-sidebar: rgba(20, 23, 33, 0.85);
+            --bg-card: #1A1D26;
+            --bg-surface: #232732;
+            --bg-input: #14161F;
             
-            --primary: #6366f1; /* Indigo */
-            --primary-glow: rgba(99, 102, 241, 0.4);
-            --secondary: #06b6d4; /* Cyan */
-            --accent: #10b981; /* Emerald */
+            --primary: #6366f1;
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            --secondary: #06b6d4;
+            --accent: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
             
-            --text-main: #f9fafb;
-            --text-muted: #9ca3af;
+            --text-main: #F3F4F6;
+            --text-muted: #9CA3AF;
             
-            --border: rgba(255, 255, 255, 0.08);
-            --border-hover: rgba(255, 255, 255, 0.15);
+            --border: rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(255, 255, 255, 0.12);
             
-            --glass: blur(16px);
-            --shadow-card: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-            --radius: 12px;
-            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --glass: blur(20px);
+            --shadow-card: 0 10px 30px -5px rgba(0, 0, 0, 0.3);
+            --radius: 14px;
+            --ease: cubic-bezier(0.23, 1, 0.32, 1);
         }
 
         [data-theme="light"] {
-            --bg-body: #F3F4F6;
-            --bg-sidebar: rgba(255, 255, 255, 0.8);
+            --bg-app: #F1F5F9;
+            --bg-sidebar: rgba(255, 255, 255, 0.9);
             --bg-card: #FFFFFF;
-            --bg-surface: #F9FAFB;
-            --bg-input: #FFFFFF;
-            --text-main: #111827;
-            --text-muted: #6B7280;
-            --border: #E5E7EB;
-            --border-hover: #D1D5DB;
-            --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --bg-surface: #F8FAFC;
+            --bg-input: #F1F5F9;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+            --border-hover: #CBD5E1;
+            --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; font-family: 'Inter', sans-serif; }
         
         body {
-            background-color: var(--bg-body);
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.1) 0px, transparent 50%);
+            background-color: var(--bg-app);
             color: var(--text-main);
             height: 100vh; overflow: hidden;
             transition: background 0.3s;
         }
 
-        /* --- UTILITIES --- */
+        /* --- TYPOGRAPHY & UTILS --- */
         .font-mono { font-family: 'JetBrains Mono', monospace; }
         .text-accent { color: var(--accent); }
         .text-danger { color: var(--danger); }
         .text-muted { color: var(--text-muted); }
-        .flex-center { display: flex; align-items: center; justify-content: center; }
         .hidden { display: none !important; }
         
-        /* Scrollbar */
+        /* --- SCROLLBAR --- */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
-
+        
         /* --- LAYOUT --- */
         #app { display: flex; height: 100vh; width: 100vw; }
 
@@ -94,117 +89,130 @@
             backdrop-filter: var(--glass);
             border-right: 1px solid var(--border);
             display: flex; flex-direction: column;
-            transition: var(--transition);
-            z-index: 50;
+            z-index: 50; transition: all 0.4s var(--ease);
         }
-        #sidebar.closed { width: 80px; }
-        #sidebar.closed .nav-label, #sidebar.closed .brand-text { display: none; }
-        #sidebar.closed .nav-icon { margin: 0; font-size: 20px; }
-        #sidebar.closed .nav-item { justify-content: center; padding: 16px 0; }
+        #sidebar.closed { margin-left: -260px; }
 
         .brand { 
             height: 80px; display: flex; align-items: center; padding: 0 24px; 
             border-bottom: 1px solid var(--border); gap: 12px;
         }
         .brand-logo { 
-            width: 32px; height: 32px; background: linear-gradient(135deg, var(--primary), var(--secondary)); 
-            border-radius: 8px; display: grid; place-items: center; color: white; font-weight: 800;
-            box-shadow: 0 0 15px var(--primary-glow);
+            width: 36px; height: 36px; background: var(--primary-gradient); 
+            border-radius: 10px; display: grid; place-items: center; color: white; font-weight: 800; font-size: 18px;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
         }
-        .brand-text { font-weight: 700; font-size: 18px; letter-spacing: -0.5px; }
+        .brand-text { font-weight: 700; font-size: 18px; letter-spacing: -0.03em; }
 
-        .nav-list { flex: 1; padding: 24px 16px; display: flex; flex-direction: column; gap: 8px; }
+        .nav-list { flex: 1; padding: 24px 12px; display: flex; flex-direction: column; gap: 6px; }
         .nav-item {
-            display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+            display: flex; align-items: center; gap: 14px; padding: 12px 16px;
             color: var(--text-muted); text-decoration: none; border-radius: var(--radius);
-            cursor: pointer; transition: var(--transition); font-weight: 500; font-size: 14px;
+            cursor: pointer; transition: all 0.2s; font-weight: 500; font-size: 14px; position: relative;
         }
-        .nav-item:hover { background: var(--bg-surface); color: var(--text-main); }
-        .nav-item.active { background: rgba(99, 102, 241, 0.15); color: var(--primary); border: 1px solid rgba(99, 102, 241, 0.2); }
+        .nav-item:hover { background: var(--bg-surface); color: var(--text-main); transform: translateX(4px); }
+        .nav-item.active { background: rgba(99, 102, 241, 0.15); color: var(--primary); }
         .nav-item.active i { color: var(--primary); }
+        .shortcut-badge { 
+            margin-left: auto; font-size: 10px; font-family: 'JetBrains Mono'; 
+            background: var(--border); padding: 2px 6px; border-radius: 4px; opacity: 0.7;
+        }
 
-        /* MAIN AREA */
+        /* MAIN */
         #main { flex: 1; display: flex; flex-direction: column; position: relative; overflow: hidden; }
 
         header {
             height: 80px; padding: 0 32px; display: flex; align-items: center; justify-content: space-between;
-            border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.1);
+            border-bottom: 1px solid var(--border); background: var(--bg-app);
         }
 
-        .view-container { display: none; padding: 32px; height: calc(100vh - 80px); overflow-y: auto; animation: slideUp 0.4s ease-out; }
+        .view-container { display: none; padding: 32px; height: calc(100vh - 80px); overflow-y: auto; animation: fadeIn 0.3s ease; }
         .view-container.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- COMPONENTS --- */
+        /* --- UI COMPONENTS --- */
         .btn {
             padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer;
-            border: none; transition: var(--transition); display: inline-flex; align-items: center; gap: 8px;
+            border: 1px solid transparent; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
         }
         .btn:active { transform: scale(0.96); }
         
-        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 12px var(--primary-glow); }
+        .btn-primary { background: var(--primary-gradient); color: white; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3); }
         .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
         
-        .btn-secondary { background: var(--bg-surface); border: 1px solid var(--border); color: var(--text-main); }
-        .btn-secondary:hover { border-color: var(--text-muted); }
+        .btn-secondary { background: var(--bg-surface); border-color: var(--border); color: var(--text-main); }
+        .btn-secondary:hover { border-color: var(--text-muted); background: var(--bg-card); }
         
-        .btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); }
+        .btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); border-color: rgba(239, 68, 68, 0.2); }
         .btn-danger:hover { background: rgba(239, 68, 68, 0.2); }
 
         input, select {
             background: var(--bg-input); border: 1px solid var(--border); color: var(--text-main);
-            padding: 12px; border-radius: 8px; width: 100%; font-size: 14px; transition: var(--transition);
+            padding: 12px; border-radius: 8px; width: 100%; font-size: 14px; transition: all 0.2s;
         }
-        input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2); }
+        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
 
-        /* --- POS SPECIFIC --- */
+        /* --- DASHBOARD CARDS --- */
+        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 32px; }
+        .stat-box { 
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; 
+            position: relative; overflow: hidden; transition: transform 0.3s;
+        }
+        .stat-box:hover { transform: translateY(-4px); border-color: var(--primary); }
+        
+        .stat-icon { width: 48px; height: 48px; border-radius: 12px; display: grid; place-items: center; font-size: 20px; margin-bottom: 16px; }
+        
+        /* --- POS LAYOUT --- */
         .pos-layout { display: grid; grid-template-columns: 1fr 420px; gap: 24px; height: 100%; overflow: hidden; }
         
-        /* Categories Bar */
+        /* Category Tabs (Pills) */
         .category-bar { 
-            display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 16px;
-            scrollbar-width: none; /* Hide scrollbar for clean look */
+            display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 16px; 
+            scrollbar-width: none;
         }
         .cat-pill {
-            background: var(--bg-card); border: 1px solid var(--border); padding: 8px 16px; border-radius: 20px;
-            white-space: nowrap; cursor: pointer; font-size: 13px; transition: var(--transition); color: var(--text-muted);
+            background: var(--bg-surface); border: 1px solid var(--border); padding: 10px 20px; border-radius: 30px;
+            white-space: nowrap; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s; color: var(--text-muted);
         }
-        .cat-pill:hover { border-color: var(--text-muted); color: var(--text-main); }
-        .cat-pill.active { background: var(--primary); border-color: var(--primary); color: white; }
+        .cat-pill:hover { color: var(--text-main); border-color: var(--text-muted); }
+        .cat-pill.active { background: var(--primary); border-color: var(--primary); color: white; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); }
 
         /* Product Grid */
         .product-grid { display: grid; gap: 16px; padding-bottom: 80px; }
         .product-grid.medium { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+        .product-grid.list { grid-template-columns: 1fr; }
         
         .prod-card {
             background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
-            overflow: hidden; cursor: pointer; transition: var(--transition); position: relative;
+            overflow: hidden; cursor: pointer; transition: all 0.2s; position: relative;
         }
         .prod-card:hover { transform: translateY(-4px); border-color: var(--primary); box-shadow: var(--shadow-card); }
+        
         .prod-img-box { height: 140px; background: #000; position: relative; overflow: hidden; }
         .prod-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
         .prod-card:hover .prod-img { transform: scale(1.1); }
         
-        /* Stock Bar */
-        .stock-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: rgba(0,0,0,0.5); }
-        .stock-fill { height: 100%; }
+        .stock-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: rgba(0,0,0,0.5); }
+        .stock-fill { height: 100%; transition: width 0.3s; }
 
-        /* Cart */
+        /* Cart Panel */
         .cart-panel { 
-            background: var(--bg-card); border-left: 1px solid var(--border); 
-            display: flex; flex-direction: column; height: 100%; 
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+            display: flex; flex-direction: column; height: 100%; overflow: hidden;
         }
-        .cart-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .cart-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); }
         .cart-list { flex: 1; overflow-y: auto; padding: 16px; }
+        
         .cart-item {
             background: var(--bg-surface); padding: 12px; border-radius: 8px; margin-bottom: 8px;
-            display: flex; justify-content: space-between; align-items: center; animation: slideIn 0.2s;
+            display: flex; justify-content: space-between; align-items: center; animation: slideInRight 0.2s;
+            border: 1px solid transparent;
         }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
         
         .cart-footer { padding: 24px; background: var(--bg-surface); border-top: 1px solid var(--border); }
-        .summary-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: var(--text-muted); }
-        .total-row { display: flex; justify-content: space-between; margin: 16px 0 24px 0; font-size: 28px; font-weight: 800; color: var(--text-main); }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; color: var(--text-muted); }
+        .total-row { display: flex; justify-content: space-between; margin: 16px 0 24px 0; font-size: 24px; font-weight: 800; color: var(--text-main); }
 
         /* --- MODALS --- */
         .modal-overlay {
@@ -215,36 +223,34 @@
         .modal-overlay.active { opacity: 1; pointer-events: all; }
         .modal {
             background: #111827; border: 1px solid var(--border); border-radius: 24px;
-            padding: 32px; width: 500px; max-width: 90vw; transform: scale(0.95); transition: var(--transition);
+            padding: 32px; width: 500px; max-width: 90vw; transform: scale(0.95); transition: var(--ease) 0.3s;
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
         }
         .modal-overlay.active .modal { transform: scale(1); }
 
-        /* Checkout specific */
-        .checkout-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+        /* Checkout Specific */
+        .checkout-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 32px; }
         .num-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px; }
         .num-btn { 
             background: var(--bg-surface); border: 1px solid var(--border); height: 60px; border-radius: 12px;
-            font-size: 20px; font-weight: 600; color: var(--text-main); cursor: pointer; transition: var(--transition);
+            font-size: 22px; font-weight: 600; color: var(--text-main); cursor: pointer; transition: all 0.1s;
         }
         .num-btn:hover { background: var(--bg-input); border-color: var(--text-muted); }
-        .pay-btn { grid-column: span 3; background: var(--primary); color: white; border: none; }
+        .num-btn:active { transform: scale(0.95); }
+        .pay-btn { grid-column: span 3; background: var(--primary-gradient); color: white; border: none; }
 
-        /* --- DASHBOARD & TABLES --- */
-        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 32px; }
-        .stat-box { 
-            background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; 
-            position: relative; overflow: hidden;
-        }
-        .stat-box::after { 
-            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; 
-            background: var(--primary); 
-        }
-        
+        /* Table Styles */
         .table-wrap { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
         table { width: 100%; border-collapse: collapse; }
         th { text-align: left; padding: 16px 24px; background: rgba(255,255,255,0.02); color: var(--text-muted); font-size: 12px; text-transform: uppercase; }
         td { padding: 16px 24px; border-top: 1px solid var(--border); font-size: 14px; }
+        tr:hover td { background: var(--bg-surface); }
+
+        /* Status Dot */
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+        .status-dot.online { background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+        .status-dot.offline { background: var(--danger); box-shadow: 0 0 10px var(--danger); }
+
     </style>
 </head>
 <body>
@@ -252,27 +258,29 @@
         <nav id="sidebar">
             <div class="brand">
                 <div class="brand-logo">L</div>
-                <div class="brand-text">LIKApos <span style="font-weight:400; opacity:0.5; font-size:14px;">Ult</span></div>
+                <div class="brand-text">LIKApos <span style="font-weight:400; opacity:0.5; font-size:14px;">Pro</span></div>
+                <div style="flex:1"></div>
+                <div id="connection-status" class="status-dot online" title="Online"></div>
             </div>
             <div class="nav-list">
                 <a onclick="app.router('dashboard')" class="nav-item active" id="nav-dashboard">
-                    <i class="fas fa-home nav-icon"></i> <span class="nav-label">Dashboard</span>
+                    <i class="fas fa-home"></i> Dashboard
                 </a>
                 <a onclick="app.router('pos')" class="nav-item" id="nav-pos">
-                    <i class="fas fa-cash-register nav-icon"></i> <span class="nav-label">POS Terminal</span>
+                    <i class="fas fa-cash-register"></i> Terminal <span class="shortcut-badge">F1</span>
                 </a>
                 <a onclick="app.router('inventory')" class="nav-item" id="nav-inventory">
-                    <i class="fas fa-box nav-icon"></i> <span class="nav-label">Inventory</span>
+                    <i class="fas fa-box"></i> Inventory <span class="shortcut-badge">F4</span>
                 </a>
                 <a onclick="app.router('customers')" class="nav-item" id="nav-customers">
-                    <i class="fas fa-users nav-icon"></i> <span class="nav-label">Customers</span>
+                    <i class="fas fa-users"></i> Customers <span class="shortcut-badge">F3</span>
                 </a>
                 <a onclick="app.router('reports')" class="nav-item" id="nav-reports">
-                    <i class="fas fa-chart-bar nav-icon"></i> <span class="nav-label">Reports</span>
+                    <i class="fas fa-chart-bar"></i> Reports <span class="shortcut-badge">F12</span>
                 </a>
                 <div style="flex:1"></div>
                 <a onclick="app.router('settings')" class="nav-item" id="nav-settings">
-                    <i class="fas fa-cog nav-icon"></i> <span class="nav-label">Settings</span>
+                    <i class="fas fa-cog"></i> Settings <span class="shortcut-badge">F5</span>
                 </a>
             </div>
         </nav>
@@ -284,35 +292,38 @@
                     <h2 id="page-title">Dashboard</h2>
                 </div>
                 <div style="display: flex; align-items: center; gap: 12px;">
-                    <div id="status-dot" style="width:8px; height:8px; background:var(--accent); border-radius:50%; box-shadow:0 0 10px var(--accent);"></div>
-                    <button class="btn btn-secondary" onclick="app.toggleTheme()"><i class="fas fa-moon"></i></button>
+                    <button class="btn btn-secondary" onclick="app.toggleTheme()"><i class="fas fa-moon" id="theme-icon"></i></button>
                 </div>
             </header>
 
             <div id="dashboard-view" class="view-container active">
                 <div class="stats-row">
                     <div class="stat-box">
-                        <div class="text-muted" style="font-size:12px; text-transform:uppercase;">Total Revenue</div>
-                        <div class="font-mono" style="font-size:32px; font-weight:700; margin-top:8px;" id="dash-revenue">€0.00</div>
+                        <div class="stat-icon" style="background:rgba(99, 102, 241, 0.1); color:var(--primary)"><i class="fas fa-wallet"></i></div>
+                        <div class="text-muted" style="font-size:12px; text-transform:uppercase;">Today's Revenue</div>
+                        <div class="font-mono" style="font-size:32px; font-weight:700; margin-top:4px;" id="dash-revenue">€0.00</div>
                     </div>
-                    <div class="stat-box" style="border-left-color: var(--secondary);">
+                    <div class="stat-box">
+                        <div class="stat-icon" style="background:rgba(16, 185, 129, 0.1); color:var(--accent)"><i class="fas fa-receipt"></i></div>
                         <div class="text-muted" style="font-size:12px; text-transform:uppercase;">Transactions</div>
-                        <div class="font-mono" style="font-size:32px; font-weight:700; margin-top:8px;" id="dash-tx">0</div>
+                        <div class="font-mono" style="font-size:32px; font-weight:700; margin-top:4px;" id="dash-tx">0</div>
                     </div>
                     <div class="stat-box">
+                        <div class="stat-icon" style="background:rgba(6, 182, 212, 0.1); color:var(--secondary)"><i class="fas fa-cubes"></i></div>
                         <div class="text-muted" style="font-size:12px; text-transform:uppercase;">Inventory Value</div>
-                        <div class="font-mono" style="font-size:32px; font-weight:700; margin-top:8px; color:var(--secondary);" id="dash-value">€0.00</div>
+                        <div class="font-mono" style="font-size:32px; font-weight:700; margin-top:4px;" id="dash-value">€0.00</div>
                     </div>
                     <div class="stat-box">
+                        <div class="stat-icon" style="background:rgba(245, 158, 11, 0.1); color:var(--warning)"><i class="fas fa-exclamation-triangle"></i></div>
                         <div class="text-muted" style="font-size:12px; text-transform:uppercase;">Low Stock</div>
-                        <div class="font-mono" style="font-size:32px; font-weight:700; margin-top:8px; color:var(--warning);" id="dash-low">0</div>
+                        <div class="font-mono" style="font-size:32px; font-weight:700; margin-top:4px;" id="dash-low">0</div>
                     </div>
                 </div>
 
-                <h3 style="margin-bottom:16px;">Recent Activity</h3>
+                <h3 style="margin-bottom:16px;">Live Activity Feed</h3>
                 <div class="table-wrap">
                     <table id="recent-tx-table">
-                        <thead><tr><th>ID</th><th>Time</th><th>Amount</th><th>Method</th></tr></thead>
+                        <thead><tr><th>ID</th><th>Time</th><th>Customer</th><th>Amount</th><th>Method</th></tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
@@ -322,7 +333,14 @@
                 <div class="pos-layout">
                     <div style="display: flex; flex-direction: column; overflow: hidden;">
                         <div style="display: flex; gap: 12px; margin-bottom: 16px;">
-                            <input type="text" id="pos-search" placeholder="Scan barcode or search..." onkeyup="pos.renderGrid()">
+                            <div style="flex:1; position: relative;">
+                                <i class="fas fa-search" style="position:absolute; left:12px; top:12px; color:var(--text-muted)"></i>
+                                <input type="text" id="pos-search" placeholder="Scan barcode or search..." style="padding-left:36px;" onkeyup="pos.renderGrid()">
+                            </div>
+                            <select id="pos-grid-size" style="width:120px;" onchange="pos.changeGridSize(this.value)">
+                                <option value="medium">Grid</option>
+                                <option value="list">List</option>
+                            </select>
                         </div>
                         <div class="category-bar" id="category-tabs"></div>
                         <div id="pos-grid" class="product-grid medium custom-scroll"></div>
@@ -330,27 +348,27 @@
 
                     <div class="cart-panel">
                         <div class="cart-header">
-                            <span>Current Order</span>
+                            <span style="font-weight:600;">Current Order</span>
                             <div style="display:flex; gap:8px;">
-                                <button class="btn btn-secondary" style="padding:6px;" onclick="pos.holdOrder()" title="Park Order"><i class="fas fa-pause"></i></button>
-                                <button class="btn btn-secondary" style="padding:6px;" onclick="pos.showHeldOrders()" title="Recall Order"><i class="fas fa-history"></i></button>
-                                <button class="btn btn-danger" style="padding:6px;" onclick="pos.clearCart()"><i class="fas fa-trash"></i></button>
+                                <button class="btn btn-secondary" onclick="pos.holdOrder()" title="Park (F6)"><i class="fas fa-pause"></i></button>
+                                <button class="btn btn-secondary" onclick="pos.showHeldOrders()" title="Recall"><i class="fas fa-history"></i></button>
+                                <button class="btn btn-danger" onclick="pos.clearCart()"><i class="fas fa-trash"></i></button>
                             </div>
                         </div>
-                        <div style="padding: 12px; border-bottom:1px solid var(--border);">
-                            <select id="pos-customer" onchange="pos.updateCartUI()"><option value="">Walk-in Customer</option></select>
+                        <div style="padding: 12px; border-bottom:1px solid var(--border); background:var(--bg-app);">
+                            <select id="pos-customer" style="border:none; background:transparent; padding:0;" onchange="pos.updateCartUI()"><option value="">Walk-in Customer</option></select>
                         </div>
                         <div id="cart-items" class="cart-list custom-scroll"></div>
                         <div class="cart-footer">
                             <div class="summary-row"><span>Subtotal</span><span class="font-mono" id="cart-subtotal">€0.00</span></div>
                             <div class="summary-row"><span>Tax</span><span class="font-mono" id="cart-tax">€0.00</span></div>
-                            <div class="summary-row" style="color:var(--accent);">
-                                <span style="cursor:pointer;" onclick="pos.toggleDiscount()">Discount <i class="fas fa-edit"></i></span>
+                            <div class="summary-row" style="color:var(--accent); cursor:pointer;" onclick="pos.toggleDiscount()">
+                                <span>Discount <i class="fas fa-tag" style="font-size:10px;"></i></span>
                                 <span class="font-mono" id="cart-discount">-€0.00</span>
                             </div>
                             <div class="total-row"><span>Total</span><span class="font-mono" style="color:var(--primary);" id="cart-total">€0.00</span></div>
-                            <button class="btn btn-primary" style="width:100%; height:56px; font-size:18px; justify-content:center;" onclick="pos.showCheckout()">
-                                CHARGE <i class="fas fa-arrow-right"></i>
+                            <button class="btn btn-primary" style="width:100%; height:60px; font-size:18px; justify-content:center;" onclick="pos.showCheckout()">
+                                CHARGE (F9)
                             </button>
                         </div>
                     </div>
@@ -359,7 +377,11 @@
 
             <div id="inventory-view" class="view-container">
                 <div style="display:flex; justify-content:space-between; margin-bottom:24px;">
-                    <input type="text" id="inv-search" placeholder="Search inventory..." style="width:300px;" onkeyup="inventory.render()">
+                    <div style="display:flex; gap:12px;">
+                        <input type="text" id="inv-search" placeholder="Search inventory..." style="width:300px;" onkeyup="inventory.render()">
+                        <button class="btn btn-secondary" onclick="inventory.importBtn()"><i class="fas fa-file-import"></i> Import</button>
+                        <input type="file" id="import-file" hidden onchange="inventory.processImport(this)">
+                    </div>
                     <button class="btn btn-primary" onclick="inventory.showModal()"><i class="fas fa-plus"></i> Add Item</button>
                 </div>
                 <div class="table-wrap">
@@ -383,28 +405,16 @@
                 </div>
             </div>
 
-            <div id="reports-view" class="view-container">
-                <div style="display:flex; gap:12px; margin-bottom:24px;">
-                    <button class="btn btn-secondary" onclick="reports.filter('today')">Today</button>
-                    <button class="btn btn-secondary" onclick="reports.filter('month')">This Month</button>
-                </div>
-                <div class="table-wrap">
-                    <table id="report-table">
-                        <thead><tr><th>ID</th><th>Date</th><th>Total</th><th>Items</th></tr></thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-
             <div id="settings-view" class="view-container">
-                <div class="card" style="max-width:600px; background:var(--bg-card); padding:32px; border-radius:16px; border:1px solid var(--border);">
-                    <h3 style="margin-bottom:24px;">Configuration</h3>
+                <div class="card" style="max-width:600px;">
+                    <h3 style="margin-bottom:24px;">Store Configuration</h3>
                     <div style="display:grid; gap:16px;">
                         <label>Store Name <input type="text" id="set-name" onchange="settings.save()"></label>
                         <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
                             <label>Currency <select id="set-curr" onchange="settings.save()"><option value="€">EUR (€)</option><option value="$">USD ($)</option></select></label>
                             <label>Tax Rate % <input type="number" id="set-tax" onchange="settings.save()"></label>
                         </div>
+                        <label>Language <select id="set-lang" onchange="settings.setLang(this.value)"><option value="English">English</option><option value="Albanian">Albanian</option></select></label>
                         <button class="btn btn-danger" onclick="app.reset()">Factory Reset Data</button>
                     </div>
                 </div>
@@ -413,22 +423,20 @@
     </div>
 
     <div id="checkout-modal" class="modal-overlay">
-        <div class="modal" style="width:800px; height:600px; display:grid; grid-template-columns:1fr 1fr; gap:32px;">
+        <div class="modal" style="width:900px; height:650px; display:grid; grid-template-columns:1fr 1fr; gap:40px;">
             <div style="display:flex; flex-direction:column; justify-content:center;">
-                <div class="text-muted" style="font-size:14px; text-transform:uppercase;">Total Due</div>
-                <div class="font-mono" style="font-size:48px; font-weight:800; color:var(--text-main);" id="pay-total">€0.00</div>
+                <h2 style="margin-bottom:32px;">Payment Gateway</h2>
+                <div class="text-muted" style="font-size:14px; text-transform:uppercase; letter-spacing:1px;">Total Due</div>
+                <div class="font-mono" style="font-size:56px; font-weight:800; color:var(--text-main);" id="pay-total">€0.00</div>
                 
-                <div style="margin-top:32px;">
-                    <div class="text-muted" style="font-size:12px; text-transform:uppercase;">Cash Received</div>
-                    <div style="background:var(--bg-input); padding:20px; border-radius:12px; border:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
-                        <span class="font-mono" style="font-size:32px;" id="pay-input">0.00</span>
-                        <i class="fas fa-money-bill-wave text-muted"></i>
-                    </div>
+                <div style="margin-top:32px; background:var(--bg-input); padding:24px; border-radius:16px; border:1px solid var(--border); text-align:right;">
+                    <div class="text-muted" style="font-size:12px; text-transform:uppercase; margin-bottom:8px;">Cash Received</div>
+                    <div class="font-mono" style="font-size:40px; color:var(--primary);" id="pay-input">0.00</div>
                 </div>
 
-                <div style="margin-top:24px; display:flex; justify-content:space-between;">
-                    <span class="text-muted">Change</span>
-                    <span class="font-mono text-accent" style="font-size:24px;" id="pay-change">€0.00</span>
+                <div style="margin-top:24px; display:flex; justify-content:space-between; align-items:center;">
+                    <span class="text-muted">Change Due</span>
+                    <span class="font-mono text-accent" style="font-size:32px;" id="pay-change">€0.00</span>
                 </div>
                 
                 <div id="smart-suggestions" style="margin-top:24px; display:flex; gap:8px; flex-wrap:wrap;"></div>
@@ -447,51 +455,73 @@
                 <button class="num-btn text-danger" onclick="pos.numpad('C')">C</button>
                 <button class="num-btn" onclick="pos.numpad('0')">0</button>
                 <button class="num-btn" onclick="pos.numpad('.')">.</button>
-                <button class="num-btn pay-btn" style="grid-column:span 3;" onclick="pos.finish()">COMPLETE PAYMENT</button>
+                <button class="num-btn pay-btn" style="grid-column:span 3;" onclick="pos.finish()">COMPLETE SALE</button>
             </div>
         </div>
     </div>
 
     <div id="receipt-modal" class="modal-overlay">
         <div class="modal" style="text-align:center; width:400px;">
-            <div style="width:60px; height:60px; background:var(--accent); border-radius:50%; margin:0 auto 20px; display:grid; place-items:center; font-size:30px; color:white;"><i class="fas fa-check"></i></div>
-            <h2>Payment Successful!</h2>
-            <p class="text-muted" style="margin-bottom:24px;">Change Due: <span class="text-accent font-mono" id="receipt-change">€0.00</span></p>
+            <div style="width:80px; height:80px; background:var(--accent); border-radius:50%; margin:0 auto 24px; display:grid; place-items:center; font-size:40px; color:white;"><i class="fas fa-check"></i></div>
+            <h2>Sale Successful!</h2>
+            <p class="text-muted" style="margin-bottom:24px;">Change Due: <span class="text-accent font-mono" id="receipt-change" style="font-size:18px; font-weight:700;">€0.00</span></p>
             <div style="display:flex; gap:12px;">
                 <button class="btn btn-secondary" style="flex:1" onclick="window.print()">Print Receipt</button>
-                <button class="btn btn-primary" style="flex:1" onclick="document.getElementById('receipt-modal').classList.remove('active')">Next Sale</button>
+                <button class="btn btn-primary" style="flex:1" onclick="document.getElementById('receipt-modal').classList.remove('active')">New Sale</button>
             </div>
         </div>
     </div>
 
-    <div id="prod-modal" class="modal-overlay"><div class="modal"><h3>Product Details</h3><input type="hidden" id="p-id"><div style="display:grid; gap:16px; margin-top:20px;"><input type="text" id="p-name" placeholder="Name"><div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;"><input type="text" id="p-barcode" placeholder="Barcode"><input type="text" id="p-cat" placeholder="Category"></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;"><input type="number" id="p-price" placeholder="Price"><input type="number" id="p-stock" placeholder="Stock"></div><input type="text" id="p-img" placeholder="Image URL"></div><div style="margin-top:24px; display:flex; justify-content:flex-end; gap:12px;"><button class="btn btn-secondary" onclick="document.getElementById('prod-modal').classList.remove('active')">Cancel</button><button class="btn btn-primary" onclick="inventory.save()">Save</button></div></div></div>
+    <div id="prod-modal" class="modal-overlay"><div class="modal"><h3>Product Details</h3><input type="hidden" id="p-id"><div style="display:grid; gap:16px; margin-top:20px;"><input type="text" id="p-name" placeholder="Product Name"><div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;"><input type="text" id="p-barcode" placeholder="Barcode"><input type="text" id="p-cat" placeholder="Category" list="cat-list"><datalist id="cat-list"></datalist></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;"><input type="number" id="p-price" placeholder="Sell Price"><input type="number" id="p-cost" placeholder="Cost Price"></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;"><input type="number" id="p-stock" placeholder="Stock Qty"><input type="number" id="p-min" placeholder="Min Alert"></div><input type="text" id="p-img" placeholder="Image URL"></div><div style="margin-top:24px; display:flex; justify-content:flex-end; gap:12px;"><button class="btn btn-secondary" onclick="document.getElementById('prod-modal').classList.remove('active')">Cancel</button><button class="btn btn-primary" onclick="inventory.save()">Save Product</button></div></div></div>
 
-    <div id="cust-modal" class="modal-overlay"><div class="modal"><h3>Customer Profile</h3><input type="hidden" id="c-id"><div style="display:grid; gap:16px; margin-top:20px;"><input type="text" id="c-name" placeholder="Name"><input type="text" id="c-phone" placeholder="Phone"></div><div style="margin-top:24px; display:flex; justify-content:flex-end; gap:12px;"><button class="btn btn-secondary" onclick="document.getElementById('cust-modal').classList.remove('active')">Cancel</button><button class="btn btn-primary" onclick="customers.save()">Save</button></div></div></div>
+    <div id="cust-modal" class="modal-overlay"><div class="modal"><h3>Customer Profile</h3><input type="hidden" id="c-id"><div style="display:grid; gap:16px; margin-top:20px;"><input type="text" id="c-name" placeholder="Full Name"><input type="text" id="c-phone" placeholder="Phone Number"></div><div style="margin-top:24px; display:flex; justify-content:flex-end; gap:12px;"><button class="btn btn-secondary" onclick="document.getElementById('cust-modal').classList.remove('active')">Cancel</button><button class="btn btn-primary" onclick="customers.save()">Save Customer</button></div></div></div>
 
-    <div id="discount-modal" class="modal-overlay"><div class="modal" style="width:300px;"><h3>Apply Discount</h3><input type="number" id="disc-input" placeholder="Percentage %" style="margin:20px 0;"><div style="display:flex; justify-content:flex-end; gap:12px;"><button class="btn btn-secondary" onclick="document.getElementById('discount-modal').classList.remove('active')">Cancel</button><button class="btn btn-primary" onclick="pos.applyDiscount()">Apply</button></div></div></div>
+    <div id="discount-modal" class="modal-overlay"><div class="modal" style="width:350px;"><h3>Apply Discount</h3><div style="margin:20px 0;"><input type="number" id="disc-input" placeholder="Percentage %"></div><div style="display:flex; justify-content:flex-end; gap:12px;"><button class="btn btn-secondary" onclick="document.getElementById('discount-modal').classList.remove('active')">Cancel</button><button class="btn btn-primary" onclick="pos.applyDiscount()">Apply Discount</button></div></div></div>
 
-    <div id="held-modal" class="modal-overlay"><div class="modal"><h3>Parked Orders</h3><div id="held-list" style="margin:20px 0; max-height:300px; overflow-y:auto;"></div><button class="btn btn-secondary" style="width:100%" onclick="document.getElementById('held-modal').classList.remove('active')">Close</button></div></div>
+    <div id="held-modal" class="modal-overlay"><div class="modal"><h3>Parked Orders</h3><div id="held-list" style="margin:20px 0; max-height:300px; overflow-y:auto; display:grid; gap:10px;"></div><button class="btn btn-secondary" style="width:100%" onclick="document.getElementById('held-modal').classList.remove('active')">Close</button></div></div>
+
+    <div id="toast"><i class="fas fa-check-circle text-accent"></i> <span id="toast-msg">Notification</span></div>
 
     <script>
-        /* --- CORE STATE --- */
-        const db = { products:[], customers:[], sales:[], held:[], settings:{ name:"LIKApos", curr:"€", tax:10 } };
+        /* --- AUDIO SYSTEM --- */
+        const beep = () => {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain); gain.connect(ctx.destination);
+            osc.frequency.value = 800; gain.gain.value = 0.1;
+            osc.start(); setTimeout(() => osc.stop(), 100);
+        };
+
+        /* --- APP STATE --- */
+        const db = { products:[], customers:[], sales:[], held:[], settings:{ name:"LIKApos", curr:"€", tax:10, lang:"English" } };
         const state = { cart:[], total:0, discount:0, cash:"" };
+        const TRANSLATIONS = {
+            "English": { dashboard:"Dashboard", pos:"POS Terminal" },
+            "Albanian": { dashboard:"Ballina", pos:"Arka" }
+        };
 
         const app = {
             init: () => {
-                const s = localStorage.getItem('likapos_data');
+                const s = localStorage.getItem('likapos_db');
                 if(s) Object.assign(db, JSON.parse(s));
-                else db.products = [
-                    {id:1, name:"Espresso", price:1.5, stock:100, category:"Drinks", barcode:"111", image:""},
-                    {id:2, name:"Croissant", price:2.5, stock:50, category:"Food", barcode:"222", image:""},
-                    {id:3, name:"Water", price:1.0, stock:200, category:"Drinks", barcode:"333", image:""}
-                ];
+                else {
+                    db.products = [
+                        {id:101, name:"Red Bull 250ml", barcode:"9002490100070", price:1.5, cost:0.8, stock:100, category:"Drinks", minStock:20, image:""},
+                        {id:102, name:"Croissant 7Days", barcode:"5201360522216", price:0.8, cost:0.4, stock:50, category:"Snacks", minStock:10, image:""}
+                    ];
+                    db.customers = [{id:1, name:"Guest", phone:"", points:0}];
+                }
+                app.launch();
+            },
+            launch: () => {
                 app.renderSettings();
+                app.checkConnection();
                 pos.init();
                 inventory.render();
                 app.router('dashboard');
             },
-            save: () => localStorage.setItem('likapos_data', JSON.stringify(db)),
+            save: () => localStorage.setItem('likapos_db', JSON.stringify(db)),
             router: (v) => {
                 document.querySelectorAll('.view-container').forEach(e => e.classList.remove('active'));
                 document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
@@ -499,76 +529,91 @@
                 document.getElementById('nav-'+v).classList.add('active');
                 document.getElementById('page-title').innerText = v.charAt(0).toUpperCase() + v.slice(1);
                 if(v==='dashboard') app.renderDash();
-                if(v==='reports') reports.render();
+                if(v==='pos') document.getElementById('pos-search').focus();
             },
-            toggleTheme: () => document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme')==='light'?'dark':'light'),
+            toggleTheme: () => {
+                const t = document.documentElement.getAttribute('data-theme')==='light'?'dark':'light';
+                document.documentElement.setAttribute('data-theme', t);
+            },
+            toast: (msg) => {
+                const el = document.getElementById('toast');
+                document.getElementById('toast-msg').innerText = msg;
+                el.classList.add('show'); setTimeout(()=>el.classList.remove('show'), 3000);
+            },
             renderSettings: () => {
                 document.getElementById('set-name').value = db.settings.name;
                 document.getElementById('set-curr').value = db.settings.curr;
                 document.getElementById('set-tax').value = db.settings.tax;
+                document.getElementById('set-lang').value = db.settings.lang;
+            },
+            checkConnection: () => {
+                const up = () => document.getElementById('connection-status').className = navigator.onLine ? 'status-dot online' : 'status-dot offline';
+                window.addEventListener('online', up); window.addEventListener('offline', up); up();
             },
             renderDash: () => {
                 const today = new Date().toDateString();
-                const daySales = db.sales.filter(s => new Date(s.date).toDateString() === today);
-                const rev = daySales.reduce((a,b) => a+b.total, 0);
-                const val = db.products.reduce((a,b) => a+(b.price*b.stock), 0);
+                const sales = db.sales.filter(s => new Date(s.date).toDateString() === today);
+                document.getElementById('dash-revenue').innerText = db.settings.curr + sales.reduce((a,b)=>a+b.total,0).toFixed(2);
+                document.getElementById('dash-tx').innerText = sales.length;
+                document.getElementById('dash-value').innerText = db.settings.curr + db.products.reduce((a,b)=>a+(b.cost*b.stock),0).toFixed(2);
+                document.getElementById('dash-low').innerText = db.products.filter(p=>p.stock<=p.minStock).length;
                 
-                document.getElementById('dash-revenue').innerText = db.settings.curr + rev.toFixed(2);
-                document.getElementById('dash-tx').innerText = daySales.length;
-                document.getElementById('dash-value').innerText = db.settings.curr + val.toFixed(2);
-                document.getElementById('dash-low').innerText = db.products.filter(p=>p.stock<5).length;
-
-                // Recent Transactions
                 const t = document.querySelector('#recent-tx-table tbody'); t.innerHTML='';
                 db.sales.slice(-5).reverse().forEach(s => {
-                    t.innerHTML += `<tr><td>#${s.id}</td><td>${new Date(s.date).toLocaleTimeString()}</td><td>${db.settings.curr}${s.total.toFixed(2)}</td><td>${s.method}</td></tr>`;
+                    const cust = db.customers.find(c=>c.id==s.custId)?.name || 'Guest';
+                    t.innerHTML += `<tr><td class="font-mono">#${s.id}</td><td>${new Date(s.date).toLocaleTimeString()}</td><td>${cust}</td><td class="font-mono text-accent">${db.settings.curr}${s.total.toFixed(2)}</td><td><span style="font-size:10px; border:1px solid var(--border); padding:2px 6px; border-radius:4px;">${s.method}</span></td></tr>`;
                 });
             },
-            reset: () => { if(confirm("Reset all data?")) { localStorage.clear(); location.reload(); } }
+            reset: () => { if(confirm("Delete all data?")) { localStorage.clear(); location.reload(); } }
         };
 
         const settings = {
             save: () => {
                 db.settings.name = document.getElementById('set-name').value;
                 db.settings.curr = document.getElementById('set-curr').value;
-                db.settings.tax = parseFloat(document.getElementById('set-tax').value) || 0;
-                app.save(); app.renderSettings(); pos.updateCartUI();
-            }
+                db.settings.tax = parseFloat(document.getElementById('set-tax').value);
+                app.save(); app.toast("Settings Saved"); pos.updateCartUI();
+            },
+            setLang: (l) => { db.settings.lang = l; app.save(); location.reload(); }
         };
 
         const pos = {
             init: () => {
                 pos.renderGrid();
                 const cats = [...new Set(db.products.map(p=>p.category))];
-                const cb = document.getElementById('category-tabs'); cb.innerHTML = '<div class="cat-pill active" onclick="pos.filter(this, \'\')">All</div>';
-                cats.forEach(c => cb.innerHTML += `<div class="cat-pill" onclick="pos.filter(this, '${c}')">${c}</div>`);
+                const bar = document.getElementById('category-tabs'); bar.innerHTML = '<div class="cat-pill active" onclick="pos.filter(this, \'\')">All Items</div>';
+                cats.forEach(c => bar.innerHTML += `<div class="cat-pill" onclick="pos.filter(this, '${c}')">${c}</div>`);
                 
                 const cs = document.getElementById('pos-customer');
                 db.customers.forEach(c => cs.innerHTML += `<option value="${c.id}">${c.name}</option>`);
             },
-            filter: (el, cat) => {
+            changeGridSize: (s) => { document.getElementById('pos-grid').className = 'product-grid custom-scroll ' + s; },
+            filter: (el, c) => {
                 document.querySelectorAll('.cat-pill').forEach(e=>e.classList.remove('active'));
-                el.classList.add('active');
-                document.getElementById('pos-search').value = cat; // Simple filter trick
-                pos.renderGrid(cat);
+                el.classList.add('active'); pos.renderGrid(c);
             },
             renderGrid: (catFilter = "") => {
                 const q = document.getElementById('pos-search').value.toLowerCase();
                 const g = document.getElementById('pos-grid'); g.innerHTML = '';
-                const matches = db.products.filter(p => (p.name.toLowerCase().includes(q) || p.barcode.includes(q) || (catFilter && p.category === catFilter)));
+                const items = db.products.filter(p => (p.name.toLowerCase().includes(q) || p.barcode.includes(q)) && (catFilter === "" || p.category === catFilter));
                 
-                matches.forEach(p => {
-                    const pct = Math.max(0, Math.min(100, (p.stock/20)*100));
-                    const color = p.stock < 5 ? 'var(--danger)' : 'var(--accent)';
+                if(items.length === 1 && q.length > 3 && items[0].barcode === q) {
+                    pos.addToCart(items[0].id); document.getElementById('pos-search').value = ''; pos.renderGrid(); return;
+                }
+
+                items.forEach(p => {
+                    const pct = Math.min(100, (p.stock / (p.minStock*4 || 20)) * 100);
+                    const color = p.stock <= p.minStock ? 'var(--danger)' : (p.stock <= p.minStock*2 ? 'var(--warning)' : 'var(--accent)');
                     const img = p.image ? `<img src="${p.image}" class="prod-img">` : `<div style="width:100%;height:100%;background:linear-gradient(45deg, #1f2937, #111827);"></div>`;
+                    
                     g.innerHTML += `
                     <div class="prod-card" onclick="pos.addToCart(${p.id})">
                         <div class="prod-img-box">${img}<div class="stock-bar"><div class="stock-fill" style="width:${pct}%; background:${color}"></div></div></div>
                         <div style="padding:12px;">
-                            <div style="font-weight:600; margin-bottom:4px;">${p.name}</div>
+                            <div style="font-weight:600; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.name}</div>
                             <div style="display:flex; justify-content:space-between; font-size:13px;">
                                 <span class="text-muted">${p.category}</span>
-                                <span class="font-mono" style="color:${color}">${db.settings.curr}${p.price}</span>
+                                <span class="font-mono" style="color:${color}; font-weight:700;">${db.settings.curr}${p.price}</span>
                             </div>
                         </div>
                     </div>`;
@@ -576,7 +621,8 @@
             },
             addToCart: (id) => {
                 const p = db.products.find(x=>x.id===id);
-                if(p.stock <= 0) return alert("Out of Stock!");
+                if(p.stock <= 0) return app.toast("Out of Stock!");
+                beep();
                 const item = state.cart.find(x=>x.id===id);
                 if(item) item.qty++; else state.cart.push({...p, qty:1});
                 pos.updateCartUI();
@@ -588,22 +634,22 @@
                     sub += i.price * i.qty;
                     c.innerHTML += `
                     <div class="cart-item">
-                        <div><div>${i.name}</div><div class="text-muted" style="font-size:12px;">${db.settings.curr}${i.price} x ${i.qty}</div></div>
-                        <div style="display:flex; gap:8px; align-items:center;">
-                            <button class="btn btn-secondary" style="padding:2px 8px;" onclick="pos.modQty(${idx},-1)">-</button>
-                            <span class="font-mono">${i.qty}</span>
-                            <button class="btn btn-secondary" style="padding:2px 8px;" onclick="pos.modQty(${idx},1)">+</button>
+                        <div><div style="font-weight:500;">${i.name}</div><div class="text-muted" style="font-size:12px;">${i.qty} x ${db.settings.curr}${i.price}</div></div>
+                        <div style="display:flex; gap:8px;">
+                            <button class="btn btn-secondary" style="padding:4px 8px;" onclick="pos.modQty(${idx},-1)">-</button>
+                            <span class="font-mono" style="font-size:14px; padding-top:4px;">${i.qty}</span>
+                            <button class="btn btn-secondary" style="padding:4px 8px;" onclick="pos.modQty(${idx},1)">+</button>
                         </div>
                     </div>`;
                 });
                 
-                const discAmount = sub * (state.discount / 100);
-                const taxable = sub - discAmount;
+                const discAmt = sub * (state.discount / 100);
+                const taxable = sub - discAmt;
                 const tax = taxable * (db.settings.tax / 100);
                 state.total = taxable + tax;
 
                 document.getElementById('cart-subtotal').innerText = db.settings.curr + sub.toFixed(2);
-                document.getElementById('cart-discount').innerText = `-${db.settings.curr}${discAmount.toFixed(2)} (${state.discount}%)`;
+                document.getElementById('cart-discount').innerText = `-${db.settings.curr}${discAmt.toFixed(2)} (${state.discount}%)`;
                 document.getElementById('cart-tax').innerText = db.settings.curr + tax.toFixed(2);
                 document.getElementById('cart-total').innerText = db.settings.curr + state.total.toFixed(2);
             },
@@ -619,27 +665,23 @@
                 document.getElementById('discount-modal').classList.remove('active');
                 pos.updateCartUI();
             },
-            // --- CHECKOUT ---
             showCheckout: () => {
-                if(!state.cart.length) return;
+                if(!state.cart.length) return app.toast("Cart Empty");
                 state.cash = "";
                 document.getElementById('pay-total').innerText = db.settings.curr + state.total.toFixed(2);
                 document.getElementById('pay-input').innerText = "0.00";
                 document.getElementById('pay-change').innerText = db.settings.curr + "0.00";
                 
-                // Smart Suggestions
                 const s = document.getElementById('smart-suggestions'); s.innerHTML = '';
                 [state.total, Math.ceil(state.total), Math.ceil(state.total/5)*5, 10, 20, 50, 100].forEach(n => {
                     if(n >= state.total) s.innerHTML += `<button class="btn btn-secondary" onclick="pos.setCash(${n})">${db.settings.curr}${n}</button>`;
                 });
-                
                 document.getElementById('checkout-modal').classList.add('active');
             },
-            numpad: (key) => {
-                if(key === 'C') state.cash = "";
-                else if(key === '.') { if(!state.cash.includes('.')) state.cash += '.'; }
-                else state.cash += key;
-                
+            numpad: (k) => {
+                if(k === 'C') state.cash = "";
+                else if(k === '.') { if(!state.cash.includes('.')) state.cash += '.'; }
+                else state.cash += k;
                 const val = parseFloat(state.cash) || 0;
                 document.getElementById('pay-input').innerText = val.toFixed(2);
                 document.getElementById('pay-change').innerText = db.settings.curr + Math.max(0, val - state.total).toFixed(2);
@@ -647,45 +689,43 @@
             setCash: (v) => { state.cash = v.toString(); pos.numpad(''); },
             finish: () => {
                 const paid = parseFloat(state.cash) || 0;
-                if(paid < state.total) return alert("Insufficient Cash!");
+                if(paid < state.total) return app.toast("Insufficient Cash");
                 
-                // Deduct Stock
-                state.cart.forEach(c => {
-                    const p = db.products.find(x => x.id === c.id);
-                    if(p) p.stock -= c.qty;
-                });
-
+                state.cart.forEach(c => { const p = db.products.find(x => x.id === c.id); if(p) p.stock -= c.qty; });
+                
                 const sale = {
-                    id: Date.now(), date: new Date().toISOString(),
+                    id: db.settings.nextSaleId++, date: new Date().toISOString(),
                     total: state.total, items: [...state.cart],
                     method: "Cash", custId: document.getElementById('pos-customer').value
                 };
+                
+                if(sale.custId) {
+                    const c = db.customers.find(x=>x.id==sale.custId);
+                    if(c) { c.totalSpent = (c.totalSpent||0)+sale.total; c.points = (c.points||0)+Math.floor(sale.total); }
+                }
+
                 db.sales.push(sale);
                 app.save();
-                
                 document.getElementById('checkout-modal').classList.remove('active');
                 document.getElementById('receipt-change').innerText = db.settings.curr + (paid - state.total).toFixed(2);
                 document.getElementById('receipt-modal').classList.add('active');
-                
-                pos.clearCart();
-                inventory.render();
-                app.renderDash();
+                pos.clearCart(); inventoryManager.render(); app.updateDashboard();
             },
-            // --- HOLD ORDERS ---
+            // HOLD LOGIC
             holdOrder: () => {
                 if(!state.cart.length) return;
-                const name = prompt("Order Reference Name?");
+                const name = prompt("Reference Name?");
                 if(name) {
                     db.held.push({ name, cart: [...state.cart], date: new Date() });
-                    pos.clearCart();
-                    alert("Order Parked");
+                    pos.clearCart(); app.toast("Order Parked");
                 }
             },
             showHeldOrders: () => {
                 const l = document.getElementById('held-list'); l.innerHTML = '';
                 db.held.forEach((h, i) => {
-                    l.innerHTML += `<div class="cart-item" style="cursor:pointer" onclick="pos.restoreOrder(${i})">
-                        <b>${h.name}</b> <span>${h.cart.length} Items - ${new Date(h.date).toLocaleTimeString()}</span>
+                    l.innerHTML += `<div class="card" style="padding:12px; cursor:pointer; border:1px solid var(--border);" onclick="pos.restoreOrder(${i})">
+                        <div style="font-weight:600;">${h.name}</div>
+                        <div class="text-muted" style="font-size:12px;">${h.cart.length} Items • ${new Date(h.date).toLocaleTimeString()}</div>
                     </div>`;
                 });
                 document.getElementById('held-modal').classList.add('active');
@@ -698,14 +738,14 @@
             }
         };
 
-        const inventory = {
-            render: () => {
+        const inventoryManager = {
+            render: (q="") => {
                 const t = document.querySelector('#inventory-table tbody'); t.innerHTML = '';
-                const q = document.getElementById('inv-search').value.toLowerCase();
-                db.products.filter(p => p.name.toLowerCase().includes(q)).forEach(p => {
+                const term = q.toLowerCase();
+                db.products.filter(p => p.name.toLowerCase().includes(term) || p.barcode.includes(term)).forEach(p => {
                     t.innerHTML += `<tr>
-                        <td>${p.name}</td><td>${p.category}</td>
-                        <td><span class="${p.stock<5?'text-danger':''}">${p.stock}</span></td>
+                        <td>${p.name}</td><td>${p.barcode}</td><td>${p.category}</td>
+                        <td><span style="color:${p.stock<=p.minStock?'var(--danger)':'inherit'}">${p.stock}</span></td>
                         <td>${db.settings.curr}${p.price}</td>
                         <td>
                             <button class="btn btn-secondary" style="padding:4px;" onclick="inventory.edit(${p.id})"><i class="fas fa-edit"></i></button>
@@ -714,6 +754,7 @@
                     </tr>`;
                 });
             },
+            // Using 'inventory' alias for shorter HTML calls
             showModal: () => {
                 document.getElementById('p-id').value = '';
                 document.querySelectorAll('#prod-modal input').forEach(i => i.value = '');
@@ -727,56 +768,95 @@
                     barcode: document.getElementById('p-barcode').value,
                     category: document.getElementById('p-cat').value,
                     price: parseFloat(document.getElementById('p-price').value) || 0,
+                    cost: parseFloat(document.getElementById('p-cost').value) || 0,
                     stock: parseInt(document.getElementById('p-stock').value) || 0,
+                    minStock: parseInt(document.getElementById('p-min').value) || 0,
                     image: document.getElementById('p-img').value
                 };
-                if(id) { const idx = db.products.findIndex(x=>x.id==id); db.products[idx] = p; }
-                else db.products.push(p);
-                app.save(); inventory.render(); pos.init();
+                if(id) db.products[db.products.findIndex(x=>x.id==id)] = p; else db.products.push(p);
+                app.save(); inventoryManager.render(); pos.init();
                 document.getElementById('prod-modal').classList.remove('active');
             },
             edit: (id) => {
-                const p = db.products.find(x=>x.id===id);
+                const p = db.products.find(x=>x.id==id);
                 document.getElementById('p-id').value = p.id;
                 document.getElementById('p-name').value = p.name;
                 document.getElementById('p-barcode').value = p.barcode;
                 document.getElementById('p-cat').value = p.category;
                 document.getElementById('p-price').value = p.price;
+                document.getElementById('p-cost').value = p.cost;
                 document.getElementById('p-stock').value = p.stock;
+                document.getElementById('p-min').value = p.minStock;
                 document.getElementById('p-img').value = p.image;
                 document.getElementById('prod-modal').classList.add('active');
             },
             del: (id) => {
-                if(confirm("Delete?")) { db.products = db.products.filter(x=>x.id!==id); app.save(); inventory.render(); pos.init(); }
+                if(confirm("Delete?")) { db.products = db.products.filter(x=>x.id!=id); app.save(); inventoryManager.render(); pos.init(); }
+            },
+            importBtn: () => document.getElementById('import-file').click(),
+            processImport: (inp) => {
+                const f = inp.files[0];
+                const r = new FileReader();
+                r.onload = (e) => {
+                    const lines = e.target.result.split('\n');
+                    let c=0;
+                    lines.forEach(l => {
+                        const d = l.split(' - ');
+                        if(d.length >= 4) {
+                            db.products.push({
+                                id: Date.now()+c, name: d[0], barcode: d[1], category: d[2], 
+                                price: parseFloat(d[3]), stock: parseInt(d[5]||0), minStock: 5, image: ""
+                            });
+                            c++;
+                        }
+                    });
+                    app.save(); inventoryManager.render(); pos.init(); app.toast(`Imported ${c} items`);
+                };
+                r.readAsText(f);
             }
         };
+        // Alias for cleaner onclicks
+        const inventory = inventoryManager;
 
         const customers = {
             render: () => {
                 const t = document.querySelector('#customer-table tbody'); t.innerHTML = '';
                 db.customers.forEach(c => {
-                    t.innerHTML += `<tr><td>${c.name}</td><td>${c.phone}</td><td>${c.points||0}</td><td>${db.settings.curr}0.00</td></tr>`;
+                    t.innerHTML += `<tr><td>${c.name}</td><td>${c.phone}</td><td>${c.points||0}</td><td>${db.settings.curr}${(c.totalSpent||0).toFixed(2)}</td></tr>`;
                 });
             },
             showModal: () => document.getElementById('cust-modal').classList.add('active'),
             save: () => {
                 db.customers.push({ id:Date.now(), name:document.getElementById('c-name').value, phone:document.getElementById('c-phone').value });
-                app.save(); customers.render(); pos.init();
+                app.save(); customers.render(); pos.populateCustomers();
                 document.getElementById('cust-modal').classList.remove('active');
             }
         };
 
-        const reports = {
-            render: () => {
-                const t = document.querySelector('#report-table tbody'); t.innerHTML = '';
-                db.sales.slice().reverse().forEach(s => {
-                    t.innerHTML += `<tr><td>#${s.id}</td><td>${new Date(s.date).toLocaleString()}</td><td>${db.settings.curr}${s.total.toFixed(2)}</td><td>${s.items.length}</td></tr>`;
-                });
-            },
-            filter: (type) => alert("Filter logic for " + type + " would go here.")
-        };
+        // Shortcuts
+        window.addEventListener('keydown', (e) => {
+            if(document.querySelector('.modal-overlay.active')) return;
+            switch(e.key) {
+                case 'F1': e.preventDefault(); app.router('pos'); break;
+                case 'F3': e.preventDefault(); app.router('customers'); break;
+                case 'F4': e.preventDefault(); app.router('inventory'); break;
+                case 'F5': e.preventDefault(); app.router('settings'); break;
+                case 'F6': e.preventDefault(); pos.holdOrder(); break;
+                case 'F9': e.preventDefault(); pos.showCheckout(); break;
+                case 'F12': e.preventDefault(); app.router('reports'); break;
+            }
+        });
 
-        // Init
+        // Image Paste
+        document.getElementById('p-img').addEventListener('paste', (e) => {
+            const item = (e.clipboardData || e.originalEvent.clipboardData).items[0];
+            if(item.kind === 'file') {
+                const reader = new FileReader();
+                reader.onload = (ev) => { document.getElementById('p-img').value = ev.target.result; };
+                reader.readAsDataURL(item.getAsFile());
+            }
+        });
+
         app.init();
     </script>
 </body>
