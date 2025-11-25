@@ -489,7 +489,7 @@
             </div>
         </div>
 
-        <!-- REPORTS (DESKTOP MATCHED) -->
+        <!-- REPORTS -->
         <div id="reports-view" class="view-container">
             <div class="scroll-content">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
@@ -595,10 +595,7 @@
                 <div class="card">
                     <h3 data-i18n="danger_zone">Danger Zone</h3>
                     <div style="margin-top:16px; display:flex; flex-direction:column; gap:12px;">
-                        <button class="btn btn-secondary" onclick="document.getElementById('db-import').click()"><i class="fas fa-file-import"></i> <span data-i18n="import_db">Import Database</span></button>
-                        <input type="file" id="db-import" class="hidden" accept=".json" onchange="app.importData(this)">
-                        <button class="btn btn-secondary" onclick="app.exportData()"><i class="fas fa-download"></i> <span data-i18n="backup_data">Backup Data</span></button>
-                        <button class="btn btn-danger" onclick="app.reset()"><i class="fas fa-trash"></i> <span data-i18n="factory_reset">Factory Reset</span></button>
+                        <button class="btn btn-danger" onclick="app.reset()" style="width:100%;"><i class="fas fa-trash"></i> <span data-i18n="factory_reset">Factory Reset</span></button>
                     </div>
                 </div>
             </div>
@@ -630,7 +627,7 @@
             </div>
         </div>
 
-        <!-- CHECKOUT OVERLAY (FULL SCREEN PRO MODE) -->
+        <!-- CHECKOUT OVERLAY -->
         <div id="checkout-overlay" class="overlay">
             <div class="overlay-header">
                 <h3 data-i18n="checkout">Checkout</h3>
@@ -655,15 +652,15 @@
                 <div class="quick-cash-grid" id="quick-cash-grid"></div>
 
                 <div class="numpad">
-                    <button class="pad-btn" onclick="pos.pad('1')">1</button>
-                    <button class="pad-btn" onclick="pos.pad('2')">2</button>
-                    <button class="pad-btn" onclick="pos.pad('3')">3</button>
-                    <button class="pad-btn" onclick="pos.pad('4')">4</button>
-                    <button class="pad-btn" onclick="pos.pad('5')">5</button>
-                    <button class="pad-btn" onclick="pos.pad('6')">6</button>
                     <button class="pad-btn" onclick="pos.pad('7')">7</button>
                     <button class="pad-btn" onclick="pos.pad('8')">8</button>
                     <button class="pad-btn" onclick="pos.pad('9')">9</button>
+                    <button class="pad-btn" onclick="pos.pad('4')">4</button>
+                    <button class="pad-btn" onclick="pos.pad('5')">5</button>
+                    <button class="pad-btn" onclick="pos.pad('6')">6</button>
+                    <button class="pad-btn" onclick="pos.pad('1')">1</button>
+                    <button class="pad-btn" onclick="pos.pad('2')">2</button>
+                    <button class="pad-btn" onclick="pos.pad('3')">3</button>
                     <button class="pad-btn text-danger" onclick="pos.pad('C')">C</button>
                     <button class="pad-btn" onclick="pos.pad('0')">0</button>
                     <button class="pad-btn" onclick="pos.pad('.')">.</button>
@@ -720,7 +717,7 @@
             </div>
         </div>
 
-        <!-- MODAL DRAWER (Add/Edit Product/Customer) -->
+        <!-- MODAL DRAWER -->
         <div id="general-modal" class="drawer-overlay">
             <div class="drawer">
                 <div style="display:flex; justify-content:space-between; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border);">
@@ -779,7 +776,21 @@
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // FIREBASE INIT
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const appInstance = initializeApp(firebaseConfig);
+        const auth = getAuth(appInstance);
+        const dbInstance = getFirestore(appInstance);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        let currentUser = null;
+        
+        // TRANSLATIONS & LOCAL STATE
         const TRANSLATIONS = {
             "English": {
                 dashboard: "Dashboard", pos: "POS", inventory: "Inventory", customers: "Customers", analytics: "Analytics", settings: "Settings", more: "More",
@@ -817,46 +828,99 @@
             }
         };
 
+        // LOCAL STATE (Mirrors Firestore)
         const db = {
             products: [], customers: [], sales: [],
             settings: { 
-                storeName: "LIKApos", currency: "€", taxRate: 10, taxType: "exclusive", nextSaleId: 1000, 
+                storeName: "LIKApos", currency: "€", taxRate: 10, taxType: "exclusive", 
                 language: "English", showImages: true, paperSize: "a4" 
             }
         };
 
-        const app = {
-            init: () => {
-                const s = localStorage.getItem('likapos_mob_v2');
-                if(s) Object.assign(db, JSON.parse(s));
-                else app.seed();
+        // MAIN APP LOGIC
+        window.app = {
+            init: async () => {
+                // AUTHENTICATION
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        currentUser = user;
+                        app.setupListeners();
+                        app.applyTranslations();
+                        app.router('dashboard');
+                    }
+                });
+            },
+            
+            setupListeners: () => {
+                if (!currentUser) return;
                 
-                app.applyTranslations();
-                app.router('dashboard');
-                pos.init();
-                inventoryManager.render();
+                // PRODUCTS LISTENER
+                const prodRef = collection(dbInstance, 'artifacts', appId, 'public', 'data', 'products');
+                onSnapshot(prodRef, (snapshot) => {
+                    db.products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    pos.init(); // Refresh categories
+                    if(document.getElementById('pos-view').classList.contains('active')) pos.renderGrid();
+                    if(document.getElementById('inventory-view').classList.contains('active')) inventoryManager.render();
+                    if(document.getElementById('dashboard-view').classList.contains('active')) app.dash();
+                });
+
+                // CUSTOMERS LISTENER
+                const custRef = collection(dbInstance, 'artifacts', appId, 'public', 'data', 'customers');
+                onSnapshot(custRef, (snapshot) => {
+                    db.customers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    pos.init(); // Refresh dropdown
+                    if(document.getElementById('customers-view').classList.contains('active')) customerManager.render();
+                });
+
+                // SALES LISTENER
+                const saleRef = collection(dbInstance, 'artifacts', appId, 'public', 'data', 'sales');
+                onSnapshot(saleRef, (snapshot) => {
+                    db.sales = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    if(document.getElementById('dashboard-view').classList.contains('active')) app.dash();
+                    if(document.getElementById('reports-view').classList.contains('active')) reports.render();
+                });
+
+                // SETTINGS LISTENER
+                const setRef = doc(dbInstance, 'artifacts', appId, 'public', 'data', 'settings', 'config');
+                onSnapshot(setRef, (docSnap) => {
+                    if (docSnap.exists()) {
+                        Object.assign(db.settings, docSnap.data());
+                        app.applyTranslations();
+                        // Update inputs if settings view is active
+                        if(document.getElementById('settings-view').classList.contains('active')) {
+                             document.getElementById('st-name').value = db.settings.storeName;
+                             document.getElementById('st-tax').value = db.settings.taxRate;
+                             document.getElementById('st-currency').value = db.settings.currency;
+                             document.getElementById('st-lang').value = db.settings.language;
+                             document.getElementById('st-tax-type').value = db.settings.taxType;
+                             document.getElementById('st-paper').value = db.settings.paperSize;
+                             document.getElementById('st-images').checked = db.settings.showImages;
+                        }
+                        if(document.getElementById('pos-view').classList.contains('active')) pos.renderGrid();
+                    } else {
+                        // Create default settings if missing
+                        setDoc(setRef, db.settings);
+                    }
+                });
             },
-            seed: () => {
-                db.products = [
-                    { id: 1, name: "Espresso Macchiato", price: 1.20, cost: 0.50, stock: 100, minStock: 20, barcode: "1001", category: "Coffee", image: "https://images.unsplash.com/photo-1485808191679-5f8c7c835587?w=300" },
-                    { id: 2, name: "Cappuccino", price: 1.50, cost: 0.60, stock: 50, minStock: 15, barcode: "1002", category: "Coffee", image: "https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=300" },
-                    { id: 3, name: "Fresh Croissant", price: 2.00, cost: 0.80, stock: 12, minStock: 10, barcode: "2001", category: "Food", image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=300" },
-                    { id: 4, name: "Orange Juice", price: 2.50, cost: 1.00, stock: 5, minStock: 10, barcode: "3001", category: "Drinks", image: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=300" }
-                ];
-                db.customers = [{id:1, name:"Guest", phone:"", email:"", points:0, totalSpent:0}];
-                app.save();
-            },
-            save: () => localStorage.setItem('likapos_mob_v2', JSON.stringify(db)),
+
             t: (k) => (TRANSLATIONS[db.settings.language] || TRANSLATIONS["English"])[k] || k,
+            
             applyTranslations: () => {
                 document.querySelectorAll('[data-i18n]').forEach(el => el.innerText = app.t(el.getAttribute('data-i18n')));
                 document.querySelectorAll('[data-i18n-placeholder]').forEach(el => el.placeholder = app.t(el.getAttribute('data-i18n-placeholder')));
             },
+            
             updateLanguage: (l) => {
-                db.settings.language = l;
-                app.save();
-                app.applyTranslations();
+                app.updateSet('language', l);
             },
+
             router: (v) => {
                 document.querySelectorAll('.view-container').forEach(e => e.classList.remove('active'));
                 document.getElementById(v + '-view').classList.add('active');
@@ -871,6 +935,7 @@
                 if(v === 'customers') customerManager.render();
                 if(v === 'reports') reports.render();
                 if(v === 'settings') {
+                    // Inputs updated by listener, but force check here just in case
                     document.getElementById('st-name').value = db.settings.storeName;
                     document.getElementById('st-tax').value = db.settings.taxRate;
                     document.getElementById('st-currency').value = db.settings.currency;
@@ -880,6 +945,7 @@
                     document.getElementById('st-images').checked = db.settings.showImages;
                 }
             },
+            
             dash: () => {
                 const today = new Date().toDateString();
                 const sales = db.sales.filter(s => new Date(s.date).toDateString() === today);
@@ -888,62 +954,86 @@
                 document.getElementById('dash-tx').innerText = sales.length;
                 document.getElementById('dash-lowstock').innerText = db.products.filter(p=>p.stock<=p.minStock).length;
             },
+            
             openMore: () => document.getElementById('more-drawer').classList.add('active'),
             closeMore: () => document.getElementById('more-drawer').classList.remove('active'),
             openSupport: () => document.getElementById('support-modal').classList.add('active'),
+            
             toggleTheme: () => {
                 const h = document.documentElement;
                 h.setAttribute('data-theme', h.getAttribute('data-theme')==='dark'?'light':'dark');
             },
+            
             fmt: (n) => db.settings.currency + parseFloat(n).toFixed(2),
+            
             toast: (m) => {
                 const t = document.getElementById('toast');
                 document.getElementById('toast-msg').innerText = m;
                 t.style.transform = 'translateX(-50%) translateY(0)';
                 setTimeout(() => t.style.transform = 'translateX(-50%) translateY(-100px)', 2500);
             },
-            updateSet: (k,v) => { 
-                db.settings[k] = v; app.save(); app.applyTranslations();
-                if(k === 'showImages') pos.renderGrid(); 
-                if(k === 'taxType' || k === 'taxRate') pos.updateTotals();
+            
+            updateSet: (k, v) => { 
+                const setRef = doc(dbInstance, 'artifacts', appId, 'public', 'data', 'settings', 'config');
+                updateDoc(setRef, { [k]: v }).catch(e => setDoc(setRef, { [k]: v }, { merge: true }));
             },
+            
+            // Placeholder exports/imports handled locally for now or could use JSON with Firestore logic
+            // For simplicity in this cloud version, file import parses and uploads to Firestore
             exportData: () => {
                 const blob = new Blob([JSON.stringify(db)], {type: "application/json"});
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = "likapos_mobile_backup.json";
+                a.download = "likapos_backup.json";
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
             },
+            
             importData: (input) => {
                 const file = input.files[0];
                 if (!file) return;
                 const reader = new FileReader();
-                reader.onload = (e) => {
+                reader.onload = async (e) => {
                     try {
-                        Object.assign(db, JSON.parse(e.target.result));
-                        app.save(); location.reload();
+                        const data = JSON.parse(e.target.result);
+                        // Batch upload not efficient for huge files in client, doing loop for simplicity
+                        if(data.products) data.products.forEach(p => addDoc(collection(dbInstance, 'artifacts', appId, 'public', 'data', 'products'), p));
+                        if(data.customers) data.customers.forEach(c => addDoc(collection(dbInstance, 'artifacts', appId, 'public', 'data', 'customers'), c));
+                        if(data.settings) app.updateSet(data.settings);
+                        app.toast("Import Started (Syncing...)");
                     } catch (err) { alert("Invalid File"); }
                 };
                 reader.readAsText(file);
             },
-            reset: () => { if(confirm("Reset?")) { localStorage.clear(); location.reload(); } }
+            
+            reset: async () => { 
+                if(confirm("This will delete ALL data from the cloud. Are you sure?")) { 
+                    // In real app, use backend admin sdk to delete collections. Client side requires looping.
+                    const pDel = db.products.map(p => deleteDoc(doc(dbInstance, 'artifacts', appId, 'public', 'data', 'products', p.id)));
+                    const cDel = db.customers.map(c => deleteDoc(doc(dbInstance, 'artifacts', appId, 'public', 'data', 'customers', c.id)));
+                    const sDel = db.sales.map(s => deleteDoc(doc(dbInstance, 'artifacts', appId, 'public', 'data', 'sales', s.id)));
+                    await Promise.all([...pDel, ...cDel, ...sDel]);
+                    app.toast("System Reset Complete");
+                } 
+            }
         };
 
-        const pos = {
-            cart: [], tenderedInput: "", viewMode: 'grid',
+        window.pos = {
+            cart: [], tenderedInput: "", viewMode: 'grid', currentTotal: 0,
+            
             init: () => {
                 const sel = document.getElementById('pos-category');
+                sel.innerHTML = '<option value="">All</option>';
                 const cats = [...new Set(db.products.map(p=>p.category))];
                 cats.forEach(c => sel.innerHTML += `<option value="${c}">${c}</option>`);
                 
-                // Customers
                 const cSel = document.getElementById('pos-customer');
                 cSel.innerHTML = `<option value="">${app.t('guest_customer')}</option>`;
                 db.customers.forEach(c => cSel.innerHTML += `<option value="${c.name}">${c.name}</option>`);
             },
+            
             toggleView: () => {
                 pos.viewMode = pos.viewMode === 'grid' ? 'list' : 'grid';
                 const grid = document.getElementById('pos-grid');
@@ -951,11 +1041,13 @@
                 if(pos.viewMode === 'grid') { grid.classList.remove('list-view'); grid.classList.add('grid-view'); icon.className = 'fas fa-list'; } 
                 else { grid.classList.remove('grid-view'); grid.classList.add('list-view'); icon.className = 'fas fa-th'; }
             },
+
             renderGrid: () => {
                 const term = document.getElementById('pos-search').value.toLowerCase();
                 const cat = document.getElementById('pos-category').value;
                 const grid = document.getElementById('pos-grid'); grid.innerHTML = '';
                 const showImg = db.settings.showImages;
+                
                 db.products.filter(p => (p.name.toLowerCase().includes(term) || (p.barcode && p.barcode.includes(term))) && (cat===""||p.category===cat)).forEach(p => {
                     const inCart = pos.cart.find(i => i.id === p.id);
                     const cartQty = inCart ? inCart.qty : 0;
@@ -971,6 +1063,7 @@
                     grid.appendChild(el);
                 });
             },
+            
             addToCart: (id) => {
                 const p = db.products.find(x=>x.id===id);
                 const existing = pos.cart.find(i=>i.id===id);
@@ -979,6 +1072,7 @@
                 if(existing) existing.qty++; else pos.cart.push({id:id, qty:1, price:p.price, name:p.name});
                 pos.renderGrid(); pos.updateTotals();
             },
+            
             updateTotals: () => {
                 const rawTotal = pos.cart.reduce((a,b)=>a+(b.price*b.qty),0);
                 const count = pos.cart.reduce((a,b)=>a+b.qty,0);
@@ -991,21 +1085,25 @@
                 document.getElementById('cart-total').innerText = app.fmt(total); document.getElementById('cart-tax').innerText = app.fmt(tax);
                 pos.renderCartList();
             },
+            
             renderCartList: () => {
                 const l = document.getElementById('cart-items-list'); l.innerHTML = '';
                 pos.cart.forEach((i, idx) => {
                     l.innerHTML += `<div class="list-item"><div><div style="font-weight:600;">${i.name}</div><div class="text-muted" style="font-size:12px;">${app.fmt(i.price)}</div></div><div style="display:flex; gap:12px; align-items:center;"><button class="btn btn-secondary" style="width:30px; height:30px; padding:0;" onclick="pos.modQty(${idx},-1)">-</button><span class="font-mono">${i.qty}</span><button class="btn btn-secondary" style="width:30px; height:30px; padding:0;" onclick="pos.modQty(${idx},1)">+</button></div></div>`;
                 });
             },
+            
             modQty: (idx, d) => {
                 const i = pos.cart[idx]; const p = db.products.find(x=>x.id===i.id);
                 if(d>0 && i.qty >= p.stock) return app.toast("Max stock");
                 i.qty += d; if(i.qty<=0) pos.cart.splice(idx,1);
                 pos.renderGrid(); pos.updateTotals();
             },
+            
             clearCart: () => { pos.cart=[]; pos.renderGrid(); pos.updateTotals(); pos.closeCart(); },
             openCart: () => document.getElementById('cart-overlay').classList.add('active'),
             closeCart: () => document.getElementById('cart-overlay').classList.remove('active'),
+            
             showCheckout: () => {
                 pos.closeCart(); document.getElementById('checkout-overlay').classList.add('active');
                 const total = pos.currentTotal; document.getElementById('co-total').innerText = app.fmt(total);
@@ -1014,9 +1112,11 @@
                 const suggestions = [Math.ceil(total), Math.ceil(total/5)*5, Math.ceil(total/10)*10, 20, 50, 100];
                 [...new Set(suggestions)].filter(x => x >= total).sort((a,b)=>a-b).slice(0,7).forEach(amt => { grid.innerHTML += `<button class="cash-btn" onclick="pos.setCash(${amt})">${app.fmt(amt)}</button>`; });
             },
+            
             closeCheckout: () => document.getElementById('checkout-overlay').classList.remove('active'),
             pad: (k) => { if(k==='C') pos.tenderedInput = ""; else if(k==='.') { if(!pos.tenderedInput.includes('.')) pos.tenderedInput += '.'; } else pos.tenderedInput += k; pos.updateChange(); },
             setCash: (v) => { pos.tenderedInput = v.toString(); pos.updateChange(); },
+            
             updateChange: () => {
                 const t = document.getElementById('co-tendered'); t.innerText = pos.tenderedInput || "0";
                 const total = pos.currentTotal; const tend = parseFloat(pos.tenderedInput)||0;
@@ -1024,23 +1124,46 @@
                 const cEl = document.getElementById('co-change'); cEl.innerText = app.fmt(change);
                 if(change > 0) cEl.style.color = "var(--accent)"; else cEl.style.color = "var(--text-tertiary)";
             },
-            finalize: () => {
+            
+            finalize: async () => {
                 const total = pos.currentTotal; const tend = parseFloat(pos.tenderedInput)||0;
                 if(tend < total - 0.01) return app.toast("Insufficient Cash!");
-                pos.cart.forEach(i => { const p = db.products.find(x=>x.id===i.id); p.stock -= i.qty; });
                 
+                // Deduct Stock in Firestore
+                const batchPromises = pos.cart.map(i => {
+                    const p = db.products.find(x=>x.id===i.id);
+                    const ref = doc(dbInstance, 'artifacts', appId, 'public', 'data', 'products', i.id);
+                    return updateDoc(ref, { stock: p.stock - i.qty });
+                });
+                await Promise.all(batchPromises);
+                
+                // Update Customer
                 const custName = document.getElementById('pos-customer').value;
                 if(custName && custName !== "") {
                     const c = db.customers.find(x=>x.name === custName);
-                    if(c) { c.totalSpent += total; c.points += Math.floor(total); }
+                    if(c) { 
+                        const cRef = doc(dbInstance, 'artifacts', appId, 'public', 'data', 'customers', c.id);
+                        updateDoc(cRef, { 
+                            totalSpent: (c.totalSpent||0) + total, 
+                            points: (c.points||0) + Math.floor(total) 
+                        });
+                    }
                 }
 
-                db.sales.push({ id: db.settings.nextSaleId++, date: new Date().toISOString(), total: total, items: [...pos.cart], customer: custName || "Guest" });
-                app.save(); app.toast("Payment Successful!"); pos.cart = []; pos.renderGrid(); pos.updateTotals(); pos.closeCheckout(); customerManager.render(); reports.render();
+                // Add Sale
+                await addDoc(collection(dbInstance, 'artifacts', appId, 'public', 'data', 'sales'), {
+                    date: new Date().toISOString(),
+                    total: total,
+                    items: [...pos.cart],
+                    customer: custName || "Guest"
+                });
+
+                app.toast("Payment Successful!"); 
+                pos.cart = []; pos.renderGrid(); pos.updateTotals(); pos.closeCheckout();
             }
         };
 
-        const inventoryManager = {
+        window.inventoryManager = {
             render: (filter="") => {
                 const l = document.getElementById('inventory-list'); l.innerHTML = '';
                 const term = filter.toLowerCase();
@@ -1049,7 +1172,7 @@
                     const stockColor = isLow ? 'var(--danger)' : 'var(--accent)';
                     const badgeText = isLow ? 'Low Stock' : 'In Stock';
                     l.innerHTML += `
-                        <div class="inv-card" onclick="inventoryManager.edit(${p.id})">
+                        <div class="inv-card" onclick="inventoryManager.edit('${p.id}')">
                             <div class="inv-header">
                                 <div><div style="font-weight:600; font-size:14px;">${p.name}</div><div style="font-size:12px; color:var(--text-tertiary); font-family:'JetBrains Mono';">${p.barcode || 'No Barcode'}</div></div>
                                 <div class="inv-badge" style="color:${stockColor}; border-color:${stockColor};">${badgeText}</div>
@@ -1122,10 +1245,9 @@
                 const delBtn = document.createElement('button'); delBtn.className = 'btn btn-danger'; delBtn.innerText = app.t('delete'); delBtn.style.marginTop = '12px'; delBtn.onclick = () => inventoryManager.del(p.id);
                 btnContainer.appendChild(delBtn);
             },
-            save: () => {
+            save: async () => {
                 const id = document.getElementById('np-id')?.value;
                 const obj = {
-                    id: id ? parseInt(id) : Date.now(),
                     name: document.getElementById('np-name').value,
                     barcode: document.getElementById('np-barcode').value,
                     category: document.getElementById('np-cat').value,
@@ -1136,52 +1258,25 @@
                     image: document.getElementById('np-img').value || 'https://placehold.co/300'
                 };
                 if(!obj.name) return app.toast("Name required");
-                if(id) { const i = db.products.findIndex(x=>x.id==id); db.products[i] = obj; }
-                else db.products.push(obj);
-                app.save(); inventoryManager.render(); document.getElementById('general-modal').classList.remove('active'); pos.init();
+                
+                if(id) {
+                    const ref = doc(dbInstance, 'artifacts', appId, 'public', 'data', 'products', id);
+                    await updateDoc(ref, obj);
+                } else {
+                    await addDoc(collection(dbInstance, 'artifacts', appId, 'public', 'data', 'products'), obj);
+                }
+                document.getElementById('general-modal').classList.remove('active');
+                app.toast("Saved");
             },
-            del: (id) => { if(confirm("Delete?")) { db.products=db.products.filter(x=>x.id!=id); app.save(); inventoryManager.render(); document.getElementById('general-modal').classList.remove('active'); pos.init(); } },
-            importTXT: (input) => {
-                const file = input.files[0]; if(!file) return;
-                const r = new FileReader();
-                r.onload = (e) => {
-                    const lines = e.target.result.split('\n'); let count=0;
-                    lines.forEach(line => {
-                        const parts = line.split(' - ');
-                        if(parts.length >= 4) {
-                            const name = parts[0].trim();
-                            if(!db.products.some(p=>p.name === name)) {
-                                db.products.push({
-                                    id: Date.now() + Math.floor(Math.random()*1000),
-                                    name: name,
-                                    barcode: parts[1]?.trim()||"",
-                                    category: parts[2]?.trim() || "General",
-                                    price: parseFloat(parts[3]) || 0,
-                                    cost: parseFloat(parts[4]) || 0,
-                                    stock: parseInt(parts[5]) || 0,
-                                    minStock: parseInt(parts[6]) || 0,
-                                    image: parts[7]?.trim() || ""
-                                });
-                                count++;
-                            }
-                        }
-                    });
-                    app.save(); inventoryManager.render(); app.toast(`Imported ${count} items`);
-                };
-                r.readAsText(file);
-            },
-            downloadTXTTemplate: () => {
-                let txt = "NAME - BARCODE - CATEGORY - PRICE - COST - STOCK - MINSTOCK - IMAGEURL\n";
-                db.products.forEach(p => { txt += `${p.name} - ${p.barcode||''} - ${p.category} - ${p.price} - ${p.cost||0} - ${p.stock} - ${p.minStock||0} - ${p.image||''}\n`; });
-                const blob = new Blob([txt], { type: 'text/plain;charset=utf-8;' });
-                const link = document.createElement("a");
-                const url = URL.createObjectURL(blob);
-                link.setAttribute("href", url); link.setAttribute("download", "inventory_export.txt"); 
-                document.body.appendChild(link); link.click(); document.body.removeChild(link);
+            del: async (id) => { 
+                if(confirm("Delete?")) { 
+                    await deleteDoc(doc(dbInstance, 'artifacts', appId, 'public', 'data', 'products', id));
+                    document.getElementById('general-modal').classList.remove('active');
+                } 
             }
         };
 
-        const customerManager = {
+        window.customerManager = {
             render: (filter = "") => {
                 const list = document.getElementById('customer-list'); list.innerHTML = '';
                 const term = filter.toLowerCase();
@@ -1189,7 +1284,7 @@
                     const isVIP = (c.totalSpent || 0) > 500;
                     const badgeClass = isVIP ? 'vip' : 'regular';
                     const badgeText = isVIP ? app.t('vip') : app.t('regular');
-                    list.innerHTML += `<div class="cust-card" onclick="customerManager.edit(${c.id})"><div class="cust-header"><div style="font-weight:600; font-size:14px;">${c.name}</div><div class="cust-badge ${badgeClass}">${badgeText}</div></div><div style="display:flex; flex-direction:column; gap:4px; margin-bottom:8px;"><div class="cust-info-row"><i class="fas fa-phone"></i> ${c.phone || 'N/A'}</div><div class="cust-info-row"><i class="fas fa-envelope"></i> ${c.email || 'N/A'}</div></div><div class="cust-stats"><div><div class="cust-stat-label">${app.t('points')}</div><div class="cust-stat-val text-accent">${c.points || 0}</div></div><div><div class="cust-stat-label">${app.t('ltv')}</div><div class="cust-stat-val">${app.fmt(c.totalSpent || 0)}</div></div></div></div>`;
+                    list.innerHTML += `<div class="cust-card" onclick="customerManager.edit('${c.id}')"><div class="cust-header"><div style="font-weight:600; font-size:14px;">${c.name}</div><div class="cust-badge ${badgeClass}">${badgeText}</div></div><div style="display:flex; flex-direction:column; gap:4px; margin-bottom:8px;"><div class="cust-info-row"><i class="fas fa-phone"></i> ${c.phone || 'N/A'}</div><div class="cust-info-row"><i class="fas fa-envelope"></i> ${c.email || 'N/A'}</div></div><div class="cust-stats"><div><div class="cust-stat-label">${app.t('points')}</div><div class="cust-stat-val text-accent">${c.points || 0}</div></div><div><div class="cust-stat-label">${app.t('ltv')}</div><div class="cust-stat-val">${app.fmt(c.totalSpent || 0)}</div></div></div></div>`;
                 });
             },
             showAddModal: () => {
@@ -1209,19 +1304,28 @@
                 const delBtn = document.createElement('button'); delBtn.className = 'btn btn-danger'; delBtn.innerText = app.t('delete'); delBtn.style.marginTop = '12px'; delBtn.onclick = () => customerManager.del(c.id);
                 btnContainer.appendChild(delBtn);
             },
-            save: () => {
+            save: async () => {
                 const id = document.getElementById('nc-id')?.value;
                 const name = document.getElementById('nc-name').value;
                 if(!name) return app.toast("Name Required");
-                const data = { id: id ? parseInt(id) : Date.now(), name: name, phone: document.getElementById('nc-phone').value, email: document.getElementById('nc-email').value, points: 0, totalSpent: 0 };
-                if(id) { const idx = db.customers.findIndex(x => x.id == id); data.points = db.customers[idx].points; data.totalSpent = db.customers[idx].totalSpent; db.customers[idx] = data; } 
-                else { db.customers.push(data); }
-                app.save(); customerManager.render(); pos.init(); document.getElementById('general-modal').classList.remove('active'); app.toast("Customer Saved");
+                const data = { name: name, phone: document.getElementById('nc-phone').value, email: document.getElementById('nc-email').value };
+                
+                if(id) {
+                    await updateDoc(doc(dbInstance, 'artifacts', appId, 'public', 'data', 'customers', id), data);
+                } else {
+                    await addDoc(collection(dbInstance, 'artifacts', appId, 'public', 'data', 'customers'), { ...data, points: 0, totalSpent: 0 });
+                }
+                document.getElementById('general-modal').classList.remove('active'); app.toast("Customer Saved");
             },
-            del: (id) => { if(confirm("Delete Customer?")) { db.customers = db.customers.filter(x => x.id != id); app.save(); customerManager.render(); pos.init(); document.getElementById('general-modal').classList.remove('active'); } }
+            del: async (id) => { 
+                if(confirm("Delete Customer?")) { 
+                    await deleteDoc(doc(dbInstance, 'artifacts', appId, 'public', 'data', 'customers', id));
+                    document.getElementById('general-modal').classList.remove('active'); 
+                } 
+            }
         };
 
-        const reports = {
+        window.reports = {
             filter: 'today',
             setFilter: (f) => {
                 reports.filter = f;
@@ -1238,7 +1342,7 @@
                     if(reports.filter === 'week') { const w = new Date(start); w.setDate(w.getDate() - 7); return d >= w; }
                     if(reports.filter === 'month') return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
                     return true;
-                }).reverse();
+                }).sort((a,b) => new Date(b.date) - new Date(a.date));
             },
             render: () => {
                 const data = reports.getFiltered();
@@ -1255,11 +1359,13 @@
                 
                 data.forEach(s => {
                     const itemCount = s.items.reduce((a, b) => a + b.qty, 0);
+                    // Use substring of ID for display
+                    const displayId = s.id.toString().slice(-6);
                     list.innerHTML += `
-                        <div class="report-list-item" onclick="reports.view(${s.id})">
+                        <div class="report-list-item" onclick="reports.view('${s.id}')">
                             <div class="report-item-left">
                                 <div class="report-cust">${s.customer}</div>
-                                <div class="report-id">#${s.id} • ${new Date(s.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                                <div class="report-id">#${displayId} • ${new Date(s.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
                             </div>
                             <div class="report-item-right">
                                 <div class="report-total">${app.fmt(s.total)}</div>
@@ -1272,7 +1378,7 @@
             view: (id) => {
                 const s = db.sales.find(x => x.id === id);
                 if(!s) return;
-                document.getElementById('detail-id').innerText = "#" + s.id;
+                document.getElementById('detail-id').innerText = "#" + s.id.toString().slice(-6);
                 document.getElementById('detail-date').innerText = new Date(s.date).toLocaleString();
                 document.getElementById('detail-total').innerText = app.fmt(s.total);
                 const list = document.getElementById('detail-list'); list.innerHTML = '';
@@ -1304,7 +1410,7 @@
                 
                 data.forEach(s => {
                     html += `<tr>
-                        <td>#${s.id}</td>
+                        <td>#${s.id.toString().slice(-6)}</td>
                         <td>${new Date(s.date).toLocaleString()}</td>
                         <td>${s.customer}</td>
                         <td>${app.fmt(s.total)}</td>
