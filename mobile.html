@@ -595,6 +595,9 @@
                 <div class="card">
                     <h3 data-i18n="danger_zone">Danger Zone</h3>
                     <div style="margin-top:16px; display:flex; flex-direction:column; gap:12px;">
+                        <button class="btn btn-secondary" onclick="document.getElementById('db-import').click()"><i class="fas fa-file-import"></i> <span data-i18n="import_db">Import Database</span></button>
+                        <input type="file" id="db-import" class="hidden" accept=".json" onchange="app.importData(this)">
+                        <button class="btn btn-secondary" onclick="app.exportData()"><i class="fas fa-download"></i> <span data-i18n="backup_data">Backup Data</span></button>
                         <button class="btn btn-danger" onclick="app.reset()" style="width:100%;"><i class="fas fa-trash"></i> <span data-i18n="factory_reset">Factory Reset</span></button>
                     </div>
                 </div>
@@ -776,20 +779,7 @@
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, doc, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // FIREBASE INIT
-        const firebaseConfig = JSON.parse(__firebase_config);
-        const appInstance = initializeApp(firebaseConfig);
-        const auth = getAuth(appInstance);
-        const dbInstance = getFirestore(appInstance);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-
-        let currentUser = null;
-        
+    <script>
         // TRANSLATIONS & LOCAL STATE
         const TRANSLATIONS = {
             "English": {
@@ -828,88 +818,45 @@
             }
         };
 
-        // LOCAL STATE (Mirrors Firestore)
+        // LOCAL STATE
         const db = {
             products: [], customers: [], sales: [],
             settings: { 
                 storeName: "LIKApos", currency: "€", taxRate: 10, taxType: "exclusive", 
-                language: "English", showImages: true, paperSize: "a4" 
+                language: "English", showImages: true, paperSize: "a4", nextSaleId: 1000
             }
         };
 
         // MAIN APP LOGIC
         window.app = {
-            init: async () => {
-                // AUTHENTICATION
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
+            init: () => {
+                const s = localStorage.getItem('likapos_mob_v2');
+                if(s) Object.assign(db, JSON.parse(s));
+                
+                // Ensure zero data if fresh start
+                if(!s) {
+                    db.products = [];
+                    db.customers = [{id:1, name:"Guest", phone:"", email:"", points:0, totalSpent:0}];
+                    db.sales = [];
+                    app.save();
                 }
 
-                onAuthStateChanged(auth, (user) => {
-                    if (user) {
-                        currentUser = user;
-                        app.setupListeners();
-                        app.applyTranslations();
-                        app.router('dashboard');
-                    }
-                });
+                app.applyTranslations();
+                app.router('dashboard');
+                
+                // Init UI
+                document.getElementById('st-name').value = db.settings.storeName;
+                document.getElementById('st-tax').value = db.settings.taxRate;
+                document.getElementById('st-currency').value = db.settings.currency;
+                document.getElementById('st-lang').value = db.settings.language;
+                document.getElementById('st-tax-type').value = db.settings.taxType;
+                document.getElementById('st-paper').value = db.settings.paperSize;
+                document.getElementById('st-images').checked = db.settings.showImages;
+                
+                pos.init();
+                inventoryManager.render();
             },
             
-            setupListeners: () => {
-                if (!currentUser) return;
-                
-                // PRODUCTS LISTENER
-                const prodRef = collection(dbInstance, 'artifacts', appId, 'public', 'data', 'products');
-                onSnapshot(prodRef, (snapshot) => {
-                    db.products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    pos.init(); // Refresh categories
-                    if(document.getElementById('pos-view').classList.contains('active')) pos.renderGrid();
-                    if(document.getElementById('inventory-view').classList.contains('active')) inventoryManager.render();
-                    if(document.getElementById('dashboard-view').classList.contains('active')) app.dash();
-                });
-
-                // CUSTOMERS LISTENER
-                const custRef = collection(dbInstance, 'artifacts', appId, 'public', 'data', 'customers');
-                onSnapshot(custRef, (snapshot) => {
-                    db.customers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    pos.init(); // Refresh dropdown
-                    if(document.getElementById('customers-view').classList.contains('active')) customerManager.render();
-                });
-
-                // SALES LISTENER
-                const saleRef = collection(dbInstance, 'artifacts', appId, 'public', 'data', 'sales');
-                onSnapshot(saleRef, (snapshot) => {
-                    db.sales = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    if(document.getElementById('dashboard-view').classList.contains('active')) app.dash();
-                    if(document.getElementById('reports-view').classList.contains('active')) reports.render();
-                });
-
-                // SETTINGS LISTENER
-                const setRef = doc(dbInstance, 'artifacts', appId, 'public', 'data', 'settings', 'config');
-                onSnapshot(setRef, (docSnap) => {
-                    if (docSnap.exists()) {
-                        Object.assign(db.settings, docSnap.data());
-                        app.applyTranslations();
-                        // Update inputs if settings view is active
-                        if(document.getElementById('settings-view').classList.contains('active')) {
-                             document.getElementById('st-name').value = db.settings.storeName;
-                             document.getElementById('st-tax').value = db.settings.taxRate;
-                             document.getElementById('st-currency').value = db.settings.currency;
-                             document.getElementById('st-lang').value = db.settings.language;
-                             document.getElementById('st-tax-type').value = db.settings.taxType;
-                             document.getElementById('st-paper').value = db.settings.paperSize;
-                             document.getElementById('st-images').checked = db.settings.showImages;
-                        }
-                        if(document.getElementById('pos-view').classList.contains('active')) pos.renderGrid();
-                    } else {
-                        // Create default settings if missing
-                        setDoc(setRef, db.settings);
-                    }
-                });
-            },
-
             t: (k) => (TRANSLATIONS[db.settings.language] || TRANSLATIONS["English"])[k] || k,
             
             applyTranslations: () => {
@@ -934,16 +881,6 @@
                 if(v === 'inventory') inventoryManager.render();
                 if(v === 'customers') customerManager.render();
                 if(v === 'reports') reports.render();
-                if(v === 'settings') {
-                    // Inputs updated by listener, but force check here just in case
-                    document.getElementById('st-name').value = db.settings.storeName;
-                    document.getElementById('st-tax').value = db.settings.taxRate;
-                    document.getElementById('st-currency').value = db.settings.currency;
-                    document.getElementById('st-lang').value = db.settings.language;
-                    document.getElementById('st-tax-type').value = db.settings.taxType;
-                    document.getElementById('st-paper').value = db.settings.paperSize;
-                    document.getElementById('st-images').checked = db.settings.showImages;
-                }
             },
             
             dash: () => {
@@ -974,12 +911,15 @@
             },
             
             updateSet: (k, v) => { 
-                const setRef = doc(dbInstance, 'artifacts', appId, 'public', 'data', 'settings', 'config');
-                updateDoc(setRef, { [k]: v }).catch(e => setDoc(setRef, { [k]: v }, { merge: true }));
+                db.settings[k] = v;
+                app.save();
+                app.applyTranslations();
+                if(k === 'showImages') pos.renderGrid(); 
+                if(k === 'taxType' || k === 'taxRate') pos.updateTotals();
             },
             
-            // Placeholder exports/imports handled locally for now or could use JSON with Firestore logic
-            // For simplicity in this cloud version, file import parses and uploads to Firestore
+            save: () => localStorage.setItem('likapos_mob_v2', JSON.stringify(db)),
+            
             exportData: () => {
                 const blob = new Blob([JSON.stringify(db)], {type: "application/json"});
                 const url = URL.createObjectURL(blob);
@@ -995,27 +935,21 @@
                 const file = input.files[0];
                 if (!file) return;
                 const reader = new FileReader();
-                reader.onload = async (e) => {
+                reader.onload = (e) => {
                     try {
                         const data = JSON.parse(e.target.result);
-                        // Batch upload not efficient for huge files in client, doing loop for simplicity
-                        if(data.products) data.products.forEach(p => addDoc(collection(dbInstance, 'artifacts', appId, 'public', 'data', 'products'), p));
-                        if(data.customers) data.customers.forEach(c => addDoc(collection(dbInstance, 'artifacts', appId, 'public', 'data', 'customers'), c));
-                        if(data.settings) app.updateSet(data.settings);
-                        app.toast("Import Started (Syncing...)");
+                        Object.assign(db, data);
+                        app.save();
+                        location.reload();
                     } catch (err) { alert("Invalid File"); }
                 };
                 reader.readAsText(file);
             },
             
-            reset: async () => { 
-                if(confirm("This will delete ALL data from the cloud. Are you sure?")) { 
-                    // In real app, use backend admin sdk to delete collections. Client side requires looping.
-                    const pDel = db.products.map(p => deleteDoc(doc(dbInstance, 'artifacts', appId, 'public', 'data', 'products', p.id)));
-                    const cDel = db.customers.map(c => deleteDoc(doc(dbInstance, 'artifacts', appId, 'public', 'data', 'customers', c.id)));
-                    const sDel = db.sales.map(s => deleteDoc(doc(dbInstance, 'artifacts', appId, 'public', 'data', 'sales', s.id)));
-                    await Promise.all([...pDel, ...cDel, ...sDel]);
-                    app.toast("System Reset Complete");
+            reset: () => { 
+                if(confirm("Delete ALL data?")) { 
+                    localStorage.removeItem('likapos_mob_v2'); 
+                    location.reload(); 
                 } 
             }
         };
@@ -1125,41 +1059,39 @@
                 if(change > 0) cEl.style.color = "var(--accent)"; else cEl.style.color = "var(--text-tertiary)";
             },
             
-            finalize: async () => {
+            finalize: () => {
                 const total = pos.currentTotal; const tend = parseFloat(pos.tenderedInput)||0;
                 if(tend < total - 0.01) return app.toast("Insufficient Cash!");
                 
-                // Deduct Stock in Firestore
-                const batchPromises = pos.cart.map(i => {
+                // Deduct Stock
+                pos.cart.forEach(i => {
                     const p = db.products.find(x=>x.id===i.id);
-                    const ref = doc(dbInstance, 'artifacts', appId, 'public', 'data', 'products', i.id);
-                    return updateDoc(ref, { stock: p.stock - i.qty });
+                    p.stock -= i.qty;
                 });
-                await Promise.all(batchPromises);
                 
                 // Update Customer
                 const custName = document.getElementById('pos-customer').value;
                 if(custName && custName !== "") {
                     const c = db.customers.find(x=>x.name === custName);
                     if(c) { 
-                        const cRef = doc(dbInstance, 'artifacts', appId, 'public', 'data', 'customers', c.id);
-                        updateDoc(cRef, { 
-                            totalSpent: (c.totalSpent||0) + total, 
-                            points: (c.points||0) + Math.floor(total) 
-                        });
+                        c.totalSpent = (c.totalSpent||0) + total;
+                        c.points = (c.points||0) + Math.floor(total);
                     }
                 }
 
                 // Add Sale
-                await addDoc(collection(dbInstance, 'artifacts', appId, 'public', 'data', 'sales'), {
+                db.sales.push({
+                    id: db.settings.nextSaleId++,
                     date: new Date().toISOString(),
                     total: total,
                     items: [...pos.cart],
                     customer: custName || "Guest"
                 });
 
+                app.save();
                 app.toast("Payment Successful!"); 
                 pos.cart = []; pos.renderGrid(); pos.updateTotals(); pos.closeCheckout();
+                customerManager.render(); reports.render(); app.dash();
             }
         };
 
@@ -1225,7 +1157,8 @@
                 document.getElementById('general-modal').classList.add('active');
             },
             edit: (id) => {
-                const p = db.products.find(x=>x.id===id);
+                // ID is string or number in local storage, ensure comparison works
+                const p = db.products.find(x=>x.id==id);
                 inventoryManager.showAddModal(); 
                 document.getElementById('modal-title').innerText = app.t("update");
                 const hidden = document.createElement('input'); hidden.type='hidden'; hidden.id='np-id'; hidden.value=p.id;
@@ -1242,12 +1175,14 @@
                 inventoryManager.updatePreview();
                 
                 const btnContainer = document.querySelector('#modal-content .btn-primary').parentNode;
-                const delBtn = document.createElement('button'); delBtn.className = 'btn btn-danger'; delBtn.innerText = app.t('delete'); delBtn.style.marginTop = '12px'; delBtn.onclick = () => inventoryManager.del(p.id);
+                const delBtn = document.createElement('button'); delBtn.className = 'btn btn-danger'; delBtn.innerText = app.t('delete'); delBtn.style.marginTop = '12px'; 
+                delBtn.onclick = () => inventoryManager.del(p.id);
                 btnContainer.appendChild(delBtn);
             },
-            save: async () => {
+            save: () => {
                 const id = document.getElementById('np-id')?.value;
                 const obj = {
+                    id: id ? id : Date.now(), // Use existing ID if editing
                     name: document.getElementById('np-name').value,
                     barcode: document.getElementById('np-barcode').value,
                     category: document.getElementById('np-cat').value,
@@ -1260,19 +1195,63 @@
                 if(!obj.name) return app.toast("Name required");
                 
                 if(id) {
-                    const ref = doc(dbInstance, 'artifacts', appId, 'public', 'data', 'products', id);
-                    await updateDoc(ref, obj);
+                    const idx = db.products.findIndex(x=>x.id==id);
+                    db.products[idx] = obj;
                 } else {
-                    await addDoc(collection(dbInstance, 'artifacts', appId, 'public', 'data', 'products'), obj);
+                    db.products.push(obj);
                 }
+                app.save();
                 document.getElementById('general-modal').classList.remove('active');
                 app.toast("Saved");
+                inventoryManager.render();
+                pos.init(); // Refresh categories
             },
-            del: async (id) => { 
+            del: (id) => { 
                 if(confirm("Delete?")) { 
-                    await deleteDoc(doc(dbInstance, 'artifacts', appId, 'public', 'data', 'products', id));
+                    db.products = db.products.filter(p => p.id != id);
+                    app.save();
                     document.getElementById('general-modal').classList.remove('active');
+                    inventoryManager.render();
+                    pos.init();
                 } 
+            },
+            downloadTXTTemplate: () => {
+                let txt = "NAME - BARCODE - CATEGORY - PRICE - COST - STOCK - MINSTOCK - IMAGEURL\n";
+                db.products.forEach(p => { txt += `${p.name} - ${p.barcode||''} - ${p.category} - ${p.price} - ${p.cost||0} - ${p.stock} - ${p.minStock||0} - ${p.image||''}\n`; });
+                const blob = new Blob([txt], { type: 'text/plain;charset=utf-8;' });
+                const link = document.createElement("a");
+                const url = URL.createObjectURL(blob);
+                link.setAttribute("href", url); link.setAttribute("download", "inventory_export.txt"); 
+                document.body.appendChild(link); link.click(); document.body.removeChild(link);
+            },
+            importTXT: (input) => {
+                const file = input.files[0]; if(!file) return;
+                const r = new FileReader();
+                r.onload = (e) => {
+                    const lines = e.target.result.split('\n'); let count=0;
+                    lines.forEach(line => {
+                        const parts = line.split(' - ');
+                        if(parts.length >= 4) {
+                            const name = parts[0].trim();
+                            if(!db.products.some(p=>p.name === name)) {
+                                db.products.push({
+                                    id: Date.now() + Math.floor(Math.random()*1000),
+                                    name: name,
+                                    barcode: parts[1]?.trim()||"",
+                                    category: parts[2]?.trim() || "General",
+                                    price: parseFloat(parts[3]) || 0,
+                                    cost: parseFloat(parts[4]) || 0,
+                                    stock: parseInt(parts[5]) || 0,
+                                    minStock: parseInt(parts[6]) || 0,
+                                    image: parts[7]?.trim() || ""
+                                });
+                                count++;
+                            }
+                        }
+                    });
+                    app.save(); inventoryManager.render(); app.toast(`Imported ${count} items`);
+                };
+                r.readAsText(file);
             }
         };
 
@@ -1301,125 +1280,41 @@
                 document.getElementById('modal-content').appendChild(hidden);
                 document.getElementById('nc-name').value = c.name; document.getElementById('nc-phone').value = c.phone; document.getElementById('nc-email').value = c.email || '';
                 const btnContainer = document.querySelector('#modal-content .btn-primary').parentNode;
-                const delBtn = document.createElement('button'); delBtn.className = 'btn btn-danger'; delBtn.innerText = app.t('delete'); delBtn.style.marginTop = '12px'; delBtn.onclick = () => customerManager.del(c.id);
+                const delBtn = document.createElement('button'); delBtn.className = 'btn btn-danger'; delBtn.innerText = app.t('delete'); delBtn.style.marginTop = '12px'; 
+                delBtn.onclick = () => customerManager.del(c.id);
                 btnContainer.appendChild(delBtn);
             },
-            save: async () => {
+            save: () => {
                 const id = document.getElementById('nc-id')?.value;
                 const name = document.getElementById('nc-name').value;
                 if(!name) return app.toast("Name Required");
-                const data = { name: name, phone: document.getElementById('nc-phone').value, email: document.getElementById('nc-email').value };
+                
+                const data = { 
+                    id: id ? id : Date.now(),
+                    name: name, 
+                    phone: document.getElementById('nc-phone').value, 
+                    email: document.getElementById('nc-email').value, 
+                    points: 0, 
+                    totalSpent: 0 
+                };
                 
                 if(id) {
-                    await updateDoc(doc(dbInstance, 'artifacts', appId, 'public', 'data', 'customers', id), data);
+                    const idx = db.customers.findIndex(x => x.id == id);
+                    // Preserve stats
+                    data.points = db.customers[idx].points;
+                    data.totalSpent = db.customers[idx].totalSpent;
+                    db.customers[idx] = data;
                 } else {
-                    await addDoc(collection(dbInstance, 'artifacts', appId, 'public', 'data', 'customers'), { ...data, points: 0, totalSpent: 0 });
+                    db.customers.push(data);
                 }
-                document.getElementById('general-modal').classList.remove('active'); app.toast("Customer Saved");
+                app.save(); customerManager.render(); pos.init(); document.getElementById('general-modal').classList.remove('active'); app.toast("Customer Saved");
             },
-            del: async (id) => { 
+            del: (id) => { 
                 if(confirm("Delete Customer?")) { 
-                    await deleteDoc(doc(dbInstance, 'artifacts', appId, 'public', 'data', 'customers', id));
+                    db.customers = db.customers.filter(x => x.id != id);
+                    app.save(); customerManager.render(); pos.init(); 
                     document.getElementById('general-modal').classList.remove('active'); 
                 } 
-            }
-        };
-
-        window.reports = {
-            filter: 'today',
-            setFilter: (f) => {
-                reports.filter = f;
-                document.querySelectorAll('.report-filters .btn').forEach(b => b.classList.remove('active'));
-                document.getElementById('filter-'+f).classList.add('active');
-                reports.render();
-            },
-            getFiltered: () => {
-                const now = new Date();
-                const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-                return db.sales.filter(s => {
-                    const d = new Date(s.date);
-                    if(reports.filter === 'today') return d >= start;
-                    if(reports.filter === 'week') { const w = new Date(start); w.setDate(w.getDate() - 7); return d >= w; }
-                    if(reports.filter === 'month') return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-                    return true;
-                }).sort((a,b) => new Date(b.date) - new Date(a.date));
-            },
-            render: () => {
-                const data = reports.getFiltered();
-                const total = data.reduce((a,b) => a + b.total, 0);
-                const count = data.length;
-                const avg = count > 0 ? total / count : 0;
-
-                document.getElementById('rep-revenue').innerText = app.fmt(total);
-                document.getElementById('rep-orders').innerText = count;
-                document.getElementById('rep-avg').innerText = app.fmt(avg);
-
-                const list = document.getElementById('report-list');
-                list.innerHTML = '';
-                
-                data.forEach(s => {
-                    const itemCount = s.items.reduce((a, b) => a + b.qty, 0);
-                    // Use substring of ID for display
-                    const displayId = s.id.toString().slice(-6);
-                    list.innerHTML += `
-                        <div class="report-list-item" onclick="reports.view('${s.id}')">
-                            <div class="report-item-left">
-                                <div class="report-cust">${s.customer}</div>
-                                <div class="report-id">#${displayId} • ${new Date(s.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
-                            </div>
-                            <div class="report-item-right">
-                                <div class="report-total">${app.fmt(s.total)}</div>
-                                <div class="report-meta">${itemCount} items • Cash</div>
-                            </div>
-                        </div>
-                    `;
-                });
-            },
-            view: (id) => {
-                const s = db.sales.find(x => x.id === id);
-                if(!s) return;
-                document.getElementById('detail-id').innerText = "#" + s.id.toString().slice(-6);
-                document.getElementById('detail-date').innerText = new Date(s.date).toLocaleString();
-                document.getElementById('detail-total').innerText = app.fmt(s.total);
-                const list = document.getElementById('detail-list'); list.innerHTML = '';
-                s.items.forEach(i => {
-                    list.innerHTML += `<div style="padding:12px 0; border-bottom:1px solid var(--border); display:flex; justify-content:space-between;"><div><div style="font-weight:500;">${i.name}</div><div class="text-muted" style="font-size:11px;">${i.qty} x ${app.fmt(i.price)}</div></div><div class="font-mono">${app.fmt(i.qty * i.price)}</div></div>`;
-                });
-                document.getElementById('detail-modal').classList.add('active');
-            },
-            exportPDF: () => {
-                const data = reports.getFiltered();
-                const total = data.reduce((a,b) => a + b.total, 0);
-                const printArea = document.getElementById('printable-area');
-                
-                let html = `
-                    <div style="text-align:center; margin-bottom:20px;">
-                        <h1>${db.settings.storeName}</h1>
-                        <h3>Sales Report - ${reports.filter.toUpperCase()}</h3>
-                        <p>Generated: ${new Date().toLocaleString()}</p>
-                    </div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:20px; border:1px solid #000; padding:10px;">
-                        <div><strong>Revenue:</strong> ${app.fmt(total)}</div>
-                        <div><strong>Orders:</strong> ${data.length}</div>
-                        <div><strong>Avg:</strong> ${app.fmt(data.length ? total/data.length : 0)}</div>
-                    </div>
-                    <table>
-                        <thead><tr><th>ID</th><th>Date</th><th>Customer</th><th>Total</th></tr></thead>
-                        <tbody>
-                `;
-                
-                data.forEach(s => {
-                    html += `<tr>
-                        <td>#${s.id.toString().slice(-6)}</td>
-                        <td>${new Date(s.date).toLocaleString()}</td>
-                        <td>${s.customer}</td>
-                        <td>${app.fmt(s.total)}</td>
-                    </tr>`;
-                });
-                
-                html += `</tbody></table>`;
-                printArea.innerHTML = html;
-                window.print();
             }
         };
 
