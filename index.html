@@ -1,39 +1,1319 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIKApos - Loading...</title>
-    
-    <style>
-        /* ... CSS for loading screen ... */
-    </style>
-
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8XSLX790TS"></script>
     <script>
-        function detectAndRedirect() {
-            const width = window.innerWidth;
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-8XSLX790TS');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>LIKApos Mobile</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#1A1D23">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            /* Palette */
+            --bg-app: #121418;
+            --bg-surface: #1E2229;
+            --bg-nav: #252A34;
+            --primary: #0F1A2F;
+            --secondary: #00D4FF;
+            --accent: #00E5A0;
+            --danger: #FF4B55;
+            --warning: #FFB84C;
+            --info: #8B5CF6;
+            --text-primary: #FFFFFF;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-tertiary: rgba(255, 255, 255, 0.5);
+            --border: rgba(255, 255, 255, 0.08);
             
-            // 1. MOBILE: Phones (Width <= 768px)
-            if (width <= 768) {
-                // Prevents back-button loops by replacing current history entry
-                window.location.replace("mobile.html");
-            } 
-            // 2. TABLET: iPads/Tablets (Width between 769px and 1024px)
-            else if (width <= 1024) {
-                window.location.replace("tablet.html");
-            } 
-            // 3. DESKTOP: Laptops/Monitors (Width > 1024px)
-            else {
-                window.location.replace("desktop.html");
-            }
+            /* Spacing & Layout */
+            --nav-height: 80px;
+            --header-height: 60px;
+            --radius-md: 16px;
+            --safe-top: env(safe-area-inset-top);
+            --safe-bottom: env(safe-area-inset-bottom);
+            --shadow-float: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        // Execute immediately before the page fully paints
-        detectAndRedirect();
-    </script>
+        [data-theme="light"] {
+            --bg-app: #F5F7FA;
+            --bg-surface: #FFFFFF;
+            --bg-nav: #FFFFFF;
+            --secondary: #007AFF;
+            --accent: #34C759;
+            --text-primary: #1C1C1E;
+            --text-secondary: #8E8E93;
+            --text-tertiary: #C7C7CC;
+            --border: #E5E5EA;
+            --shadow-float: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; user-select: none; }
+        
+        body {
+            background-color: var(--bg-app);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            font-size: 14px;
+        }
+
+        /* --- LAYOUT STRUCTURE --- */
+        #app {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+            position: relative;
+        }
+
+        header {
+            flex-shrink: 0;
+            height: calc(var(--header-height) + var(--safe-top));
+            padding-top: var(--safe-top);
+            padding-left: 20px;
+            padding-right: 20px;
+            background: var(--bg-surface);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            z-index: 50;
+        }
+
+        .view-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden; /* Individual views handle their own scroll */
+            display: none;
+            opacity: 0;
+            /* transition: opacity 0.2s ease; */ /* Removed transition to make switching snappy */
+        }
+
+        .view-container.active {
+            display: flex; /* Changed to flex for better layout control */
+            flex-direction: column;
+            opacity: 1;
+        }
+        
+        /* Dashboard, Inventory, etc specific scrolling */
+        .scroll-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            padding-bottom: calc(var(--nav-height) + var(--safe-bottom) + 20px);
+        }
+
+        /* --- POS SPECIFIC LAYOUT --- */
+        .pos-header-bar {
+            flex-shrink: 0;
+            padding: 12px 16px;
+            background: var(--bg-app);
+            display: flex;
+            gap: 12px;
+            z-index: 20;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .pos-grid-wrapper {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            padding-bottom: 120px; /* EXTRA PADDING FOR FROZEN BAR */
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* --- FROZEN FLOATING CART BAR --- */
+        .floating-cart-bar {
+            position: fixed; /* STRICTLY FIXED */
+            bottom: calc(var(--nav-height) + var(--safe-bottom) + 12px);
+            left: 12px;
+            right: 12px;
+            height: 64px;
+            background: var(--bg-surface);
+            border: 1px solid var(--accent);
+            border-radius: 16px;
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            z-index: 80; /* Above Grid, Below Nav/Modals */
+            transform: translateY(150%);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .floating-cart-bar.visible { transform: translateY(0); }
+        
+        .cart-summary { display: flex; flex-direction: column; justify-content: center; }
+        .cart-count { font-size: 11px; color: var(--text-tertiary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .cart-total { font-weight: 700; font-size: 18px; color: var(--text-primary); font-family: 'JetBrains Mono'; }
+
+        /* --- BOTTOM NAV --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: calc(var(--nav-height) + var(--safe-bottom));
+            background: var(--bg-nav);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            padding-top: 12px;
+            padding-bottom: var(--safe-bottom);
+            z-index: 100;
+        }
+
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-tertiary);
+            font-size: 11px;
+            font-weight: 500;
+            width: 70px;
+            background: none; border: none;
+        }
+        .nav-btn i { font-size: 20px; transition: transform 0.2s; }
+        .nav-btn.active { color: var(--secondary); }
+        .nav-btn-pos {
+            position: relative; top: -25px; background: linear-gradient(135deg, var(--secondary), #00A3FF);
+            width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 20px rgba(0, 212, 255, 0.4); color: #fff !important; border: 4px solid var(--bg-app);
+        }
+        .nav-btn-pos i { font-size: 24px; }
+        .nav-btn-pos:active { transform: scale(0.95); }
+
+        /* --- UI COMPONENTS --- */
+        .card { background: var(--bg-surface); border-radius: var(--radius-md); padding: 16px; margin-bottom: 16px; border: 1px solid var(--border); }
+        .btn { border: none; border-radius: 12px; padding: 14px; font-weight: 600; font-size: 14px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: transform 0.1s; }
+        .btn:active { transform: scale(0.97); }
+        .btn-primary { background: var(--secondary); color: #fff; }
+        .btn-success { background: var(--accent); color: #111827; }
+        .btn-secondary { background: var(--bg-app); color: var(--text-primary); border: 1px solid var(--border); }
+        .btn-danger { background: rgba(255, 75, 85, 0.1); color: var(--danger); border: 1px solid rgba(255, 75, 85, 0.2); }
+        input, select { width: 100%; padding: 12px; background: var(--bg-app); border: 1px solid var(--border); border-radius: 12px; color: var(--text-primary); font-size: 16px; }
+
+        /* Helpers for settings forms */
+        .form-group { margin-bottom: 16px; }
+        .form-label { display: block; font-size: 12px; color: var(--text-tertiary); margin-bottom: 6px; font-weight: 500; }
+        .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; }
+        .toggle-switch { position: relative; width: 44px; height: 24px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--bg-app); border: 1px solid var(--border); transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: var(--text-tertiary); transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--secondary); border-color: var(--secondary); }
+        input:checked + .slider:before { transform: translateX(20px); background-color: #fff; }
+
+        /* --- PROFESSIONAL POS GRID: DUAL MODE SYSTEM --- */
+        
+        .pos-grid { display: grid; gap: 16px; }
+        
+        /* 1. GRID MODE (Default) - PIXEL PERFECT SQUARES */
+        .pos-grid.grid-view { grid-template-columns: repeat(2, 1fr); }
+        .pos-grid.grid-view .prod-card { flex-direction: column; }
+        
+        /* STRICT 1:1 ASPECT RATIO FOR GRID */
+        .pos-grid.grid-view .prod-img-container {
+            width: 100%;
+            padding-top: 100%; /* Force 1:1 Aspect Ratio using padding hack for max compatibility */
+            position: relative;
+            background: #000;
+        }
+        .pos-grid.grid-view .prod-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block; /* Remove inline gap */
+        }
+        
+        /* 2. LIST MODE - FIXED SQUARE THUMBNAILS */
+        .pos-grid.list-view { grid-template-columns: 1fr; }
+        .pos-grid.list-view .prod-card { flex-direction: row; height: 100px; align-items: stretch; }
+        
+        .pos-grid.list-view .prod-img-container {
+            height: 100%;
+            width: 100px; /* Fixed width for thumbnail */
+            flex-shrink: 0;
+            border-right: 1px solid var(--border);
+            position: relative;
+            background: #000;
+        }
+        .pos-grid.list-view .prod-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Shared Card Styles - HARDWARE ACCELERATION FIX */
+        .prod-card {
+            background: var(--bg-surface);
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            border: 1px solid var(--border);
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            /* REMOVED MASK IMAGE TO FIX IMAGE VISIBILITY BUGS */
+            transform: translateZ(0); 
+        }
+        .prod-card:active { transform: scale(0.96); }
+        
+        .prod-info { padding: 12px; display: flex; flex-direction: column; gap: 4px; flex: 1; justify-content: space-between; }
+        .prod-name { font-size: 14px; font-weight: 600; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        
+        .prod-meta { display: flex; justify-content: space-between; align-items: flex-end; margin-top: auto; }
+        .prod-price { font-size: 15px; color: var(--secondary); font-family: 'JetBrains Mono'; font-weight: 700; }
+        .prod-stock-badge { font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.05); color: var(--text-tertiary); border: 1px solid var(--border); }
+
+        .stock-indicator { position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: rgba(0,0,0,0.5); z-index: 2; }
+        .stock-fill { height: 100%; transition: width 0.3s ease, background-color 0.3s ease; }
+
+        /* --- INVENTORY & CUSTOMER RICH LISTS --- */
+        .inv-card, .cust-card {
+            background: var(--bg-surface); border-radius: 12px; padding: 16px; border: 1px solid var(--border); margin-bottom: 12px;
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .inv-header, .cust-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .inv-badge, .cust-badge { font-size: 10px; padding: 2px 6px; border-radius: 4px; background: var(--bg-nav); border: 1px solid var(--border); color: var(--text-secondary); }
+        .cust-badge.vip { color: #FFD700; border-color: #FFD700; background: rgba(255, 215, 0, 0.1); }
+        
+        .inv-stats, .cust-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center; background: var(--bg-app); border-radius: 8px; padding: 8px; }
+        .cust-stats { grid-template-columns: repeat(2, 1fr); } /* Customers only need 2 cols */
+        
+        .inv-stat-label, .cust-stat-label { font-size: 10px; color: var(--text-tertiary); margin-bottom: 2px; text-transform: uppercase; }
+        .inv-stat-val, .cust-stat-val { font-size: 12px; font-weight: 600; font-family: 'JetBrains Mono'; }
+        
+        .cust-info-row { font-size: 12px; color: var(--text-secondary); display: flex; gap: 12px; align-items: center; }
+        .cust-info-row i { width: 16px; text-align: center; color: var(--text-tertiary); }
+
+        /* --- REPORT SPECIFIC STYLES --- */
+        .report-filters { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 16px; padding-bottom: 4px; }
+        .report-filters .btn { white-space: nowrap; padding: 8px 16px; font-size: 12px; }
+        .report-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+        .report-stat-card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px; text-align: center; }
+        .report-stat-label { font-size: 10px; color: var(--text-tertiary); margin-bottom: 4px; text-transform: uppercase; }
+        .report-stat-val { font-size: 14px; font-weight: 700; font-family: 'JetBrains Mono'; }
+        
+        .report-list-item {
+            background: var(--bg-surface); border-radius: 12px; padding: 12px; border: 1px solid var(--border); margin-bottom: 8px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .report-item-left { display: flex; flex-direction: column; gap: 4px; }
+        .report-item-right { text-align: right; display: flex; flex-direction: column; gap: 4px; }
+        .report-id { font-size: 11px; color: var(--text-tertiary); font-family: 'JetBrains Mono'; }
+        .report-cust { font-size: 13px; font-weight: 600; }
+        .report-total { font-size: 14px; font-weight: 700; color: var(--text-primary); font-family: 'JetBrains Mono'; }
+        .report-meta { font-size: 10px; color: var(--text-secondary); }
+
+        /* --- OVERLAYS (Cart, Checkout) --- */
+        .overlay { position: fixed; inset: 0; background: var(--bg-app); z-index: 2000; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); display: flex; flex-direction: column; padding-top: var(--safe-top); padding-bottom: var(--safe-bottom); }
+        .overlay.active { transform: translateY(0); }
+        
+        .overlay-header { padding: 16px; border-bottom: 1px solid var(--border); background: var(--bg-surface); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+        .overlay-content { flex: 1; overflow-y: auto; padding: 16px; }
+        .overlay-footer { padding: 16px; border-top: 1px solid var(--border); background: var(--bg-surface); flex-shrink: 0; }
+
+        /* --- CHECKOUT KEYPAD --- */
+        .checkout-grid { display: grid; grid-template-columns: 1fr 300px; height: 100%; }
+        .amount-display { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px; text-align: right; margin-bottom: 16px; }
+        .amount-label { font-size: 12px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+        .amount-value { font-size: 32px; font-weight: 700; font-family: 'JetBrains Mono'; color: var(--text-primary); }
+        .amount-value.highlight { color: var(--accent); }
+
+        .quick-cash-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
+        .cash-btn { background: var(--bg-nav); border: 1px solid var(--border); color: var(--text-primary); padding: 12px 0; border-radius: 8px; font-weight: 600; font-family: 'JetBrains Mono'; font-size: 13px; }
+        .cash-btn:active { background: var(--secondary); color: #fff; }
+
+        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; flex: 1; }
+        .pad-btn { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; font-size: 24px; font-weight: 500; color: var(--text-primary); display: flex; align-items: center; justify-content: center; transition: background 0.1s; }
+        .pad-btn:active { background: rgba(255,255,255,0.1); }
+        
+        /* Drawer & Utils */
+        .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 150; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .drawer-overlay.active { opacity: 1; pointer-events: auto; }
+        .drawer { position: absolute; bottom: 0; left: 0; width: 100%; background: var(--bg-surface); border-radius: 24px 24px 0 0; padding: 24px; transform: translateY(100%); transition: transform 0.3s; padding-bottom: calc(24px + var(--safe-bottom)); max-height: 90vh; display: flex; flex-direction: column; }
+        .drawer-overlay.active .drawer { transform: translateY(0); }
+        
+        .hidden { display: none !important; }
+        .text-accent { color: var(--accent); }
+        .text-danger { color: var(--danger); }
+        .text-warning { color: var(--warning); }
+        
+        .list-item { background: var(--bg-surface); padding: 16px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); margin-bottom: 8px; }
+        
+        /* Print Styles */
+        @media print {
+            body { background: white; color: black; }
+            #app, .overlay, .drawer-overlay { display: none !important; }
+            #printable-area { display: block !important; padding: 20px; font-family: sans-serif; }
+            table { width: 100%; border-collapse: collapse; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background: #eee; }
+        }
+
+        /* --- SUPPORT MODAL STYLES --- */
+        .support-item {
+            display: flex; align-items: center; gap: 16px; padding: 16px; background: var(--bg-app); border: 1px solid var(--border);
+            border-radius: 12px; margin-bottom: 12px; text-decoration: none; color: var(--text-primary); transition: background 0.2s;
+        }
+        .support-item:active { background: var(--bg-nav); }
+        .support-icon {
+            width: 40px; height: 40px; border-radius: 50%; background: var(--bg-surface); border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--secondary);
+        }
+        .support-info h4 { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+        .support-info p { font-size: 11px; color: var(--text-tertiary); }
+
+    </style>
 </head>
 <body>
-    <div class="loader"></div>
-    <div class="text">Loading LIKApos...</div>
+    <div id="app">
+        <header>
+            <h3 id="header-title" style="font-size: 18px; font-weight: 700;">Dashboard</h3>
+            <div style="display:flex; gap:12px;">
+                <button class="nav-btn" style="width:auto; color:var(--text-primary);" onclick="app.openSupport()"><i class="fas fa-headset"></i></button>
+                <button class="nav-btn" style="width:auto; color:var(--text-primary);" onclick="app.toggleTheme()"><i class="fas fa-moon" id="theme-icon"></i></button>
+            </div>
+        </header>
+
+        <div id="dashboard-view" class="view-container active">
+            <div class="scroll-content">
+                <div class="card stat-card" style="display:flex; gap:16px; align-items:center;">
+                    <div class="stat-icon" style="background: rgba(0, 212, 255, 0.15); color: var(--secondary); width:48px; height:48px; display:flex; align-items:center; justify-content:center; border-radius:12px; font-size:20px;"><i class="fas fa-wallet"></i></div>
+                    <div>
+                        <div class="text-muted" style="font-size:12px;" data-i18n="today_sales">Today's Sales</div>
+                        <div class="stat-val" style="font-size:24px; font-weight:700; font-family:'JetBrains Mono';" id="dash-sales">€0.00</div>
+                    </div>
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-bottom:24px;">
+                     <div class="card" style="padding:16px;">
+                        <div class="text-muted" style="font-size:11px; margin-bottom:4px;" data-i18n="transactions">Tx Count</div>
+                        <div class="stat-val" id="dash-tx" style="font-size:20px; font-family:'JetBrains Mono';">0</div>
+                     </div>
+                     <div class="card" style="padding:16px;">
+                        <div class="text-muted" style="font-size:11px; margin-bottom:4px;" data-i18n="low_stock">Low Stock</div>
+                        <div class="stat-val text-danger" id="dash-lowstock" style="font-size:20px; font-family:'JetBrains Mono';">0</div>
+                     </div>
+                </div>
+                <h3 style="margin-bottom:12px;" data-i18n="quick_actions">Quick Actions</h3>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+                    <button class="btn btn-secondary" onclick="inventoryManager.showAddModal()"><i class="fas fa-plus"></i> <span data-i18n="add_product">Add Product</span></button>
+                    <button class="btn btn-secondary" onclick="customerManager.showAddModal()"><i class="fas fa-user-plus"></i> <span data-i18n="add_customer">Add Customer</span></button>
+                    <button class="btn btn-secondary" onclick="app.router('reports')"><i class="fas fa-chart-bar"></i> <span data-i18n="reports">Reports</span></button>
+                    <button class="btn btn-secondary" onclick="app.router('settings')"><i class="fas fa-cog"></i> <span data-i18n="settings">Settings</span></button>
+                </div>
+            </div>
+        </div>
+
+        <div id="pos-view" class="view-container">
+            <div class="pos-header-bar">
+                <div style="position:relative; flex:1;">
+                    <i class="fas fa-search" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-tertiary);"></i>
+                    <input type="text" id="pos-search" data-i18n-placeholder="search_ph" placeholder="Search products..." onkeyup="pos.renderGrid()" style="padding-left:36px;">
+                </div>
+                <select id="pos-category" onchange="pos.renderGrid()" style="width:50px; padding:0; text-align:center;">
+                    <option value="">All</option>
+                </select>
+                <button class="btn btn-secondary" onclick="pos.toggleView()" style="width:40px; padding:0; justify-content:center;">
+                    <i id="view-icon" class="fas fa-list"></i>
+                </button>
+            </div>
+            
+            <div class="pos-grid-wrapper">
+                <div id="pos-grid" class="pos-grid grid-view"></div>
+            </div>
+
+            <div id="pos-float-bar" class="floating-cart-bar" onclick="pos.openCart()">
+                <div class="cart-summary">
+                    <span class="cart-count"><span id="float-count">0</span> Items</span>
+                    <span class="cart-total" id="float-total">€0.00</span>
+                </div>
+                <button class="btn btn-success" style="width: auto; padding: 0 20px; height: 40px; border-radius: 20px; font-size:12px;">
+                    <span data-i18n="view_cart">VIEW CART</span> <i class="fas fa-chevron-up" style="margin-left:4px;"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="inventory-view" class="view-container">
+            <div class="scroll-content">
+                <div style="display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap;">
+                    <input type="text" data-i18n-placeholder="search_inventory" placeholder="Search..." onkeyup="inventoryManager.render(this.value)" style="flex:1;">
+                    <button class="btn btn-secondary" style="width:40px; padding:0;" onclick="inventoryManager.downloadTXTTemplate()"><i class="fas fa-file-export"></i></button>
+                    <button class="btn btn-secondary" style="width:40px; padding:0;" onclick="document.getElementById('txt-import').click()"><i class="fas fa-file-import"></i></button>
+                    <input type="file" id="txt-import" class="hidden" accept=".txt" onchange="inventoryManager.importTXT(this)">
+                    <button class="btn btn-primary" style="width:40px; padding:0;" onclick="inventoryManager.showAddModal()"><i class="fas fa-plus"></i></button>
+                </div>
+                <div id="inventory-list"></div>
+            </div>
+        </div>
+
+        <div id="customers-view" class="view-container">
+            <div class="scroll-content">
+                <div style="display:flex; gap:10px; margin-bottom:16px;">
+                    <input type="text" data-i18n-placeholder="search_customers" placeholder="Search Customers..." onkeyup="customerManager.render(this.value)">
+                    <button class="btn btn-primary" style="width:50px;" onclick="customerManager.showAddModal()"><i class="fas fa-user-plus"></i></button>
+                </div>
+                <div id="customer-list"></div>
+            </div>
+        </div>
+
+        <div id="reports-view" class="view-container">
+            <div class="scroll-content">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                    <h3 data-i18n="sales_performance">Sales Performance</h3>
+                    <button class="btn btn-primary" style="width:auto; padding: 6px 12px; font-size:11px;" onclick="reports.exportPDF()"><i class="fas fa-file-pdf"></i> <span data-i18n="export_pdf">Export PDF</span></button>
+                </div>
+                
+                <div class="report-filters">
+                    <button class="btn btn-secondary active" id="filter-today" onclick="reports.setFilter('today')" data-i18n="today">Today</button>
+                    <button class="btn btn-secondary" id="filter-week" onclick="reports.setFilter('week')" data-i18n="week">Week</button>
+                    <button class="btn btn-secondary" id="filter-month" onclick="reports.setFilter('month')" data-i18n="month">Month</button>
+                    <button class="btn btn-secondary" id="filter-all" onclick="reports.setFilter('all')" data-i18n="all">All</button>
+                </div>
+
+                <div class="report-stats-grid">
+                    <div class="report-stat-card">
+                        <div class="report-stat-label" data-i18n="total_revenue">Revenue</div>
+                        <div class="report-stat-val text-secondary" id="rep-revenue">€0.00</div>
+                    </div>
+                    <div class="report-stat-card">
+                        <div class="report-stat-label" data-i18n="total_orders">Orders</div>
+                        <div class="report-stat-val text-accent" id="rep-orders">0</div>
+                    </div>
+                    <div class="report-stat-card">
+                        <div class="report-stat-label" data-i18n="avg_order">Avg Value</div>
+                        <div class="report-stat-val" id="rep-avg">€0.00</div>
+                    </div>
+                </div>
+
+                <div id="report-list"></div>
+            </div>
+        </div>
+        
+        <div id="settings-view" class="view-container">
+            <div class="scroll-content">
+                <div class="card">
+                    <h3 data-i18n="system_language">System Language</h3>
+                    <div style="margin-top:16px;">
+                        <div class="form-group">
+                             <label class="form-label" data-i18n="select_language">Select Language</label>
+                             <select id="st-lang" onchange="app.updateLanguage(this.value)">
+                                <option value="English">English</option>
+                                <option value="Albanian">Albanian (Shqip)</option>
+                             </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 data-i18n="general_config">General Configuration</h3>
+                    <div style="margin-top:16px;">
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="store_name">Store Name</label>
+                            <input type="text" id="st-name" onchange="app.updateSet('storeName', this.value)">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="currency">Currency Symbol</label>
+                            <select id="st-currency" onchange="app.updateSet('currency', this.value)">
+                                <option value="€">EUR (€)</option>
+                                <option value="$">USD ($)</option>
+                                <option value="£">GBP (£)</option>
+                                <option value="L">ALL (L)</option>
+                            </select>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <div class="form-group">
+                                <label class="form-label" data-i18n="tax_rate">Tax Rate (%)</label>
+                                <input type="number" id="st-tax" onchange="app.updateSet('taxRate', this.value)">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" data-i18n="tax_type">Tax Type</label>
+                                <select id="st-tax-type" onchange="app.updateSet('taxType', this.value)">
+                                    <option value="exclusive">Exclusive (Add on)</option>
+                                    <option value="inclusive">Inclusive (Included)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 data-i18n="system_preferences">System Preferences</h3>
+                    <div style="margin-top:16px;">
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="paper_format">Paper Format</label>
+                             <select id="st-paper" onchange="app.updateSet('paperSize', this.value)">
+                                <option value="a4">A4 (International)</option>
+                                <option value="letter">Letter (USA)</option>
+                                <option value="legal">Legal</option>
+                             </select>
+                        </div>
+                        <div class="setting-row">
+                            <div>
+                                <div style="font-weight: 500; font-size:14px;" data-i18n="show_photos">Show Product Photos</div>
+                                <div class="text-muted" style="font-size:11px;">Display images in POS grid</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="st-images" onchange="app.updateSet('showImages', this.checked)">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 data-i18n="danger_zone">Danger Zone</h3>
+                    <div style="margin-top:16px; display:flex; flex-direction:column; gap:12px;">
+                        <button class="btn btn-secondary" onclick="document.getElementById('db-import').click()"><i class="fas fa-file-import"></i> <span data-i18n="import_db">Import Database</span></button>
+                        <input type="file" id="db-import" class="hidden" accept=".json" onchange="app.importData(this)">
+                        <button class="btn btn-secondary" onclick="app.exportData()"><i class="fas fa-download"></i> <span data-i18n="backup_data">Backup Data</span></button>
+                        <button class="btn btn-danger" onclick="app.reset()" style="width:100%;"><i class="fas fa-trash"></i> <span data-i18n="factory_reset">Factory Reset</span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="cart-overlay" class="overlay">
+            <div class="overlay-header">
+                <h3 data-i18n="current_order">Current Order</h3>
+                <button onclick="pos.closeCart()" style="background:none; border:none; color:var(--text-primary); font-size:24px;"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="overlay-content">
+                <select id="pos-customer" style="margin-bottom:16px;" onchange="pos.updateTotals()">
+                    <option value="">Guest Customer</option>
+                </select>
+                <div id="cart-items-list"></div>
+            </div>
+            <div class="overlay-footer">
+                <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:13px;" class="text-muted">
+                    <span data-i18n="tax">Tax</span> <span id="cart-tax" class="font-mono">€0.00</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:16px; font-size:22px; font-weight:700;">
+                    <span data-i18n="total">Total</span> <span id="cart-total" class="font-mono text-secondary">€0.00</span>
+                </div>
+                <div style="display:flex; gap:12px;">
+                    <button class="btn btn-danger" style="width:60px;" onclick="pos.clearCart()"><i class="fas fa-trash"></i></button>
+                    <button class="btn btn-success" onclick="pos.showCheckout()" data-i18n="checkout">CHECKOUT</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="checkout-overlay" class="overlay">
+            <div class="overlay-header">
+                <h3 data-i18n="checkout">Checkout</h3>
+                <button onclick="pos.closeCheckout()" style="background:none; border:none; color:var(--text-primary); font-size:24px;"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="overlay-content" style="display:flex; flex-direction:column; height:100%; padding: 20px;">
+                <div class="amount-display">
+                    <div class="amount-label" data-i18n="total_due">Total Due</div>
+                    <div class="amount-value highlight" id="co-total">€0.00</div>
+                </div>
+                
+                <div class="amount-display" style="border-color: var(--secondary);">
+                    <div class="amount-label" data-i18n="amount_tendered">Amount Tendered</div>
+                    <div class="amount-value" id="co-tendered">0</div>
+                </div>
+                
+                <div class="amount-display" style="background: transparent; border:none; padding:0; margin-bottom:20px;">
+                    <div class="amount-label" style="text-align:right;" data-i18n="change_due">Change Due</div>
+                    <div class="amount-value" id="co-change" style="font-size:24px; color:var(--text-tertiary);">€0.00</div>
+                </div>
+
+                <div class="quick-cash-grid" id="quick-cash-grid"></div>
+
+                <div class="numpad">
+                    <button class="pad-btn" onclick="pos.pad('7')">7</button>
+                    <button class="pad-btn" onclick="pos.pad('8')">8</button>
+                    <button class="pad-btn" onclick="pos.pad('9')">9</button>
+                    <button class="pad-btn" onclick="pos.pad('4')">4</button>
+                    <button class="pad-btn" onclick="pos.pad('5')">5</button>
+                    <button class="pad-btn" onclick="pos.pad('6')">6</button>
+                    <button class="pad-btn" onclick="pos.pad('1')">1</button>
+                    <button class="pad-btn" onclick="pos.pad('2')">2</button>
+                    <button class="pad-btn" onclick="pos.pad('3')">3</button>
+                    <button class="pad-btn text-danger" onclick="pos.pad('C')">C</button>
+                    <button class="pad-btn" onclick="pos.pad('0')">0</button>
+                    <button class="pad-btn" onclick="pos.pad('.')">.</button>
+                </div>
+                
+                <button class="btn btn-success" style="margin-top:20px; height:60px; font-size:18px;" onclick="pos.finalize()" data-i18n="complete_tx">COMPLETE TRANSACTION</button>
+            </div>
+        </div>
+
+        <div id="support-modal" class="drawer-overlay">
+            <div class="drawer">
+                <div style="display:flex; justify-content:space-between; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border);">
+                    <h3 id="support-title" style="font-size:18px; font-weight:700;">Support</h3>
+                    <button onclick="document.getElementById('support-modal').classList.remove('active')" style="border:none; background:none; color:var(--text-primary); font-size:18px;"><i class="fas fa-times"></i></button>
+                </div>
+                <div id="support-content" style="flex:1; overflow-y:auto; padding-bottom:24px;">
+                    <a href="https://likaapps.com" target="_blank" class="support-item">
+                        <div class="support-icon"><i class="fas fa-globe"></i></div>
+                        <div class="support-info">
+                            <h4>Website</h4>
+                            <p>likaapps.com</p>
+                        </div>
+                    </a>
+                    <a href="https://chat.whatsapp.com/Ie2Hcd3p4KkG2FtNsOk3rS" target="_blank" class="support-item">
+                        <div class="support-icon" style="color:#25D366;"><i class="fab fa-whatsapp"></i></div>
+                        <div class="support-info">
+                            <h4>WhatsApp Support</h4>
+                            <p>Realtime chat support</p>
+                        </div>
+                    </a>
+                    <a href="https://instagram.com/lika.apps" target="_blank" class="support-item">
+                        <div class="support-icon" style="color:#E1306C;"><i class="fab fa-instagram"></i></div>
+                        <div class="support-info">
+                            <h4>Instagram</h4>
+                            <p>@lika.apps</p>
+                        </div>
+                    </a>
+                    <a href="https://tiktok.com/@lika.apps" target="_blank" class="support-item">
+                        <div class="support-icon" style="color:var(--text-primary);"><i class="fab fa-tiktok"></i></div>
+                        <div class="support-info">
+                            <h4>TikTok</h4>
+                            <p>@lika.apps</p>
+                        </div>
+                    </a>
+                    <a href="mailto:lika.apps@proton.me" class="support-item">
+                        <div class="support-icon" style="color:#0077CC;"><i class="fas fa-envelope"></i></div>
+                        <div class="support-info">
+                            <h4>Email</h4>
+                            <p>lika.apps@proton.me</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="general-modal" class="drawer-overlay">
+            <div class="drawer">
+                <div style="display:flex; justify-content:space-between; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border);">
+                    <h3 id="modal-title">Edit</h3>
+                    <button onclick="document.getElementById('general-modal').classList.remove('active')" style="border:none; background:none; color:var(--text-primary); font-size:18px;"><i class="fas fa-times"></i></button>
+                </div>
+                <div id="modal-content" style="flex:1; overflow-y:auto; padding-bottom:24px;"></div>
+            </div>
+        </div>
+        
+        <div id="detail-modal" class="drawer-overlay">
+            <div class="drawer">
+                 <div style="display:flex; justify-content:space-between; margin-bottom:16px; border-bottom:1px solid var(--border); padding-bottom:12px;">
+                    <div>
+                        <h3 id="detail-id" class="font-mono text-secondary">#1000</h3>
+                        <div id="detail-date" class="text-muted" style="font-size:11px;"></div>
+                    </div>
+                    <button onclick="document.getElementById('detail-modal').classList.remove('active')" style="background:none; border:none; color:var(--text-primary); font-size:18px;"><i class="fas fa-times"></i></button>
+                </div>
+                <div id="detail-list" style="flex:1; overflow-y:auto;"></div>
+                <div style="border-top:1px solid var(--border); padding-top:16px; margin-top:16px;">
+                     <div style="display:flex; justify-content:space-between; font-weight:700; font-size:18px;">
+                        <span data-i18n="total">Total</span>
+                        <span id="detail-total" class="font-mono text-accent"></span>
+                     </div>
+                </div>
+            </div>
+        </div>
+        
+        <nav class="bottom-nav">
+            <button class="nav-btn active" id="nav-dashboard" onclick="app.router('dashboard')"><i class="fas fa-home"></i><span data-i18n="dashboard">Dashboard</span></button>
+            <button class="nav-btn nav-btn-pos" id="nav-pos" onclick="app.router('pos')"><i class="fas fa-calculator"></i></button>
+            <button class="nav-btn" id="nav-more" onclick="app.openMore()"><i class="fas fa-th-large"></i><span data-i18n="more">More</span></button>
+        </nav>
+        
+        <div id="more-drawer" class="drawer-overlay" onclick="this.classList.remove('active')">
+            <div class="drawer" onclick="event.stopPropagation()">
+                <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px;">
+                    <div class="nav-btn" onclick="app.router('inventory'); app.closeMore();"><i class="fas fa-boxes text-accent"></i><span data-i18n="inventory">Inventory</span></div>
+                    <div class="nav-btn" onclick="app.router('customers'); app.closeMore();"><i class="fas fa-users text-secondary"></i><span data-i18n="customers">Customers</span></div>
+                    <div class="nav-btn" onclick="app.router('reports'); app.closeMore();"><i class="fas fa-chart-pie text-warning"></i><span data-i18n="reports">Reports</span></div>
+                    <div class="nav-btn" onclick="app.router('settings'); app.closeMore();"><i class="fas fa-cog"></i><span data-i18n="settings">Settings</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="printable-area" class="hidden"></div>
+
+        <div id="toast" style="position:fixed; top:20px; left:50%; transform:translateX(-50%) translateY(-100px); background:var(--bg-surface); color:#fff; padding:12px 24px; border-radius:50px; z-index:3000; border:1px solid var(--secondary); transition:transform 0.4s;">
+            <i class="fas fa-check"></i> <span id="toast-msg">Success</span>
+        </div>
+    </div>
+
+    <script>
+        // TRANSLATIONS & LOCAL STATE
+        const TRANSLATIONS = {
+            "English": {
+                dashboard: "Dashboard", pos: "POS", inventory: "Inventory", customers: "Customers", analytics: "Analytics", settings: "Settings", more: "More",
+                today_sales: "Today's Sales", transactions: "Transactions", low_stock: "Low Stock",
+                quick_actions: "Quick Actions", add_product: "Add Product", add_customer: "Add Customer", reports: "Reports",
+                search_ph: "Search products...", items: "Items", view_cart: "VIEW CART",
+                search_inventory: "Search Inventory...", search_customers: "Search Customers...",
+                total_revenue: "Total Revenue", total_orders: "Total Orders", avg_order: "Avg. Order", today: "Today", week: "Week", month: "Month", all: "All",
+                sales_performance: "Sales Performance", export_pdf: "Export PDF",
+                general_config: "General Configuration", store_name: "Store Name", tax_rate: "Tax Rate (%)", tax_type: "Tax Type", currency: "Currency Symbol",
+                system_language: "System Language", select_language: "Select Language",
+                system_preferences: "System Preferences", paper_format: "Paper Format", show_photos: "Show Product Photos",
+                danger_zone: "Danger Zone", import_db: "Import Database", backup_data: "Backup Data", factory_reset: "Factory Reset",
+                current_order: "Current Order", guest_customer: "Guest Customer", tax: "Tax", total: "Total", checkout: "CHECKOUT",
+                total_due: "Total Due", amount_tendered: "Amount Tendered", change_due: "Change Due", complete_tx: "COMPLETE TRANSACTION",
+                name: "Name", price: "Price", cost: "Cost", stock: "Stock", min_stock: "Min Stock", barcode: "Barcode", category: "Category", image_url: "Image URL", save: "Save", update: "Update", delete: "Delete",
+                phone: "Phone", email: "Email", points: "Points", ltv: "LTV", status: "Status", vip: "Gold VIP", regular: "Regular", customer_profile: "Customer Profile", save_customer: "Save Customer"
+            },
+            "Albanian": {
+                dashboard: "Ballina", pos: "Arka", inventory: "Stoku", customers: "Klientët", analytics: "Analitika", settings: "Cilësimet", more: "Më shumë",
+                today_sales: "Shitjet Sot", transactions: "Transaksionet", low_stock: "Stok i ulët",
+                quick_actions: "Veprime të shpejta", add_product: "Shto Produkt", add_customer: "Shto Klient", reports: "Raporte",
+                search_ph: "Kërko produkte...", items: "Artikuj", view_cart: "SHIKO SHPORTËN",
+                search_inventory: "Kërko Stokun...", search_customers: "Kërko Klientët...",
+                total_revenue: "Totali i të Ardhurave", total_orders: "Totali i Porosive", avg_order: "Mesatarja", today: "Sot", week: "Javë", month: "Muaj", all: "Të gjitha",
+                sales_performance: "Performanca e Shitjeve", export_pdf: "Eksporto PDF",
+                general_config: "Konfigurimi i Përgjithshëm", store_name: "Emri i Dyqanit", tax_rate: "Taksa (%)", tax_type: "Lloji i Taksës", currency: "Monedha",
+                system_language: "Gjuha e Sistemit", select_language: "Zgjidh Gjuhën",
+                system_preferences: "Preferencat e Sistemit", paper_format: "Formati i Letrës", show_photos: "Shfaq Fotot e Produkteve",
+                danger_zone: "Zona e Rrezikut", import_db: "Importo Bazën e të Dhënave", backup_data: "Ruaj të Dhënat", factory_reset: "Rivendos Sistemin",
+                current_order: "Porosia Aktuale", guest_customer: "Klient Mysafir", tax: "Taksa", total: "Totali", checkout: "PAGUAJ",
+                total_due: "Totali për të paguar", amount_tendered: "Shuma e marrë", change_due: "Kusuri", complete_tx: "PËRFUNDO TRANSAKSIONIN",
+                name: "Emri", price: "Çmimi", cost: "Kosto", stock: "Stoku", min_stock: "Stok Minimal", barcode: "Barkodi", category: "Kategoria", image_url: "Linku i Fotos", save: "Ruaj", update: "Përditëso", delete: "Fshij",
+                phone: "Tel", email: "Email", points: "Pikët", ltv: "LTV", status: "Statusi", vip: "Gold VIP", regular: "I rregullt", customer_profile: "Profili i Klientit", save_customer: "Ruaj Klientin"
+            }
+        };
+
+        // LOCAL STATE
+        const db = {
+            products: [], customers: [], sales: [],
+            settings: { 
+                storeName: "LIKApos", currency: "€", taxRate: 10, taxType: "exclusive", 
+                language: "English", showImages: true, paperSize: "a4", nextSaleId: 1000
+            }
+        };
+
+        // MAIN APP LOGIC
+        window.app = {
+            init: () => {
+                // FIXED: Now uses main database key (likapos_db) instead of mobile-only key
+                const s = localStorage.getItem('likapos_db');
+                if(s) {
+                     Object.assign(db, JSON.parse(s));
+                } else {
+                     app.loadDefaultData();
+                     app.save();
+                }
+
+                app.applyTranslations();
+                app.router('dashboard');
+                
+                // Init UI
+                document.getElementById('st-name').value = db.settings.storeName;
+                document.getElementById('st-tax').value = db.settings.taxRate;
+                document.getElementById('st-currency').value = db.settings.currency;
+                document.getElementById('st-lang').value = db.settings.language;
+                document.getElementById('st-tax-type').value = db.settings.taxType;
+                document.getElementById('st-paper').value = db.settings.paperSize;
+                document.getElementById('st-images').checked = db.settings.showImages;
+                
+                pos.init();
+                inventoryManager.render();
+            },
+            
+            // NEW: Matches Desktop Default Data Logic
+            loadDefaultData: () => {
+                 db.products = [
+                    { id: 101, name: "Fanta 0.5l", barcode: "50001", price: 1.00, cost: 0.50, stock: 100, category: "Beverages", minStock: 20, image: "https://britishessentials.com/cdn/shop/products/April0938_x700.jpg?v=1617962710" },
+                    { id: 102, name: "Croissant 7 Days 40gr", barcode: "50002", price: 1.50, cost: 0.75, stock: 50, category: "Bakery", minStock: 10, image: "https://marketonline.mk/wp-content/uploads/2020/03/25862-1.jpg" },
+                    { id: 103, name: "KitKat 36gr", barcode: "50003", price: 0.80, cost: 0.25, stock: 150, category: "Snacks", minStock: 25, image: "https://cdn.mafrservices.com/pim-content/EGY/media/product/390205/1751374803/390205_main.jpg?im=Resize=376" },
+                    { id: 104, name: "CocaCola 150ml", barcode: "50004", price: 1.20, cost: 0.60, stock: 120, category: "Beverages", minStock: 15, image: "https://assets.sainsburys-groceries.co.uk/gol/7965334/1/640x640.jpg" }
+                ];
+                db.customers = [{ id: 1, name: "Guest", phone: "", points: 0, totalSpent: 0 }];
+                db.sales = [];
+                db.settings.currency = "€";
+            },
+            
+            t: (k) => (TRANSLATIONS[db.settings.language] || TRANSLATIONS["English"])[k] || k,
+            
+            applyTranslations: () => {
+                document.querySelectorAll('[data-i18n]').forEach(el => el.innerText = app.t(el.getAttribute('data-i18n')));
+                document.querySelectorAll('[data-i18n-placeholder]').forEach(el => el.placeholder = app.t(el.getAttribute('data-i18n-placeholder')));
+            },
+            
+            updateLanguage: (l) => {
+                app.updateSet('language', l);
+            },
+
+            router: (v) => {
+                document.querySelectorAll('.view-container').forEach(e => e.classList.remove('active'));
+                document.getElementById(v + '-view').classList.add('active');
+                document.querySelectorAll('.nav-btn').forEach(e => e.classList.remove('active'));
+                const nav = v === 'pos' ? 'nav-pos' : (v === 'dashboard' ? 'nav-dashboard' : 'nav-more');
+                document.getElementById(nav).classList.add('active');
+                document.getElementById('header-title').innerText = app.t(v);
+                
+                if(v === 'dashboard') app.dash();
+                if(v === 'pos') pos.renderGrid();
+                if(v === 'inventory') inventoryManager.render();
+                if(v === 'customers') customerManager.render();
+                if(v === 'reports') reports.render();
+            },
+            
+            dash: () => {
+                const today = new Date().toDateString();
+                const sales = db.sales.filter(s => new Date(s.date).toDateString() === today);
+                const total = sales.reduce((a,b) => a+b.total,0);
+                document.getElementById('dash-sales').innerText = app.fmt(total);
+                document.getElementById('dash-tx').innerText = sales.length;
+                document.getElementById('dash-lowstock').innerText = db.products.filter(p=>p.stock<=p.minStock).length;
+            },
+            
+            openMore: () => document.getElementById('more-drawer').classList.add('active'),
+            closeMore: () => document.getElementById('more-drawer').classList.remove('active'),
+            openSupport: () => document.getElementById('support-modal').classList.add('active'),
+            
+            toggleTheme: () => {
+                const h = document.documentElement;
+                h.setAttribute('data-theme', h.getAttribute('data-theme')==='dark'?'light':'dark');
+            },
+            
+            fmt: (n) => db.settings.currency + parseFloat(n).toFixed(2),
+            
+            toast: (m) => {
+                const t = document.getElementById('toast');
+                document.getElementById('toast-msg').innerText = m;
+                t.style.transform = 'translateX(-50%) translateY(0)';
+                setTimeout(() => t.style.transform = 'translateX(-50%) translateY(-100px)', 2500);
+            },
+            
+            updateSet: (k, v) => { 
+                db.settings[k] = v;
+                app.save();
+                app.applyTranslations();
+                if(k === 'showImages') pos.renderGrid(); 
+                if(k === 'taxType' || k === 'taxRate') pos.updateTotals();
+            },
+            
+            // FIXED: Saves to main DB key now
+            save: () => localStorage.setItem('likapos_db', JSON.stringify(db)),
+            
+            exportData: () => {
+                const blob = new Blob([JSON.stringify(db)], {type: "application/json"});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = "likapos_backup.json";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            },
+            
+            importData: (input) => {
+                const file = input.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        Object.assign(db, data);
+                        app.save();
+                        location.reload();
+                    } catch (err) { alert("Invalid File"); }
+                };
+                reader.readAsText(file);
+            },
+            
+            reset: () => { 
+                if(confirm("Delete ALL data?")) { 
+                    localStorage.removeItem('likapos_db'); 
+                    location.reload(); 
+                } 
+            }
+        };
+
+        window.pos = {
+            cart: [], tenderedInput: "", viewMode: 'grid', currentTotal: 0,
+            
+            init: () => {
+                const sel = document.getElementById('pos-category');
+                sel.innerHTML = '<option value="">All</option>';
+                const cats = [...new Set(db.products.map(p=>p.category))];
+                cats.forEach(c => sel.innerHTML += `<option value="${c}">${c}</option>`);
+                
+                const cSel = document.getElementById('pos-customer');
+                cSel.innerHTML = `<option value="">${app.t('guest_customer')}</option>`;
+                db.customers.forEach(c => cSel.innerHTML += `<option value="${c.name}">${c.name}</option>`);
+            },
+            
+            toggleView: () => {
+                pos.viewMode = pos.viewMode === 'grid' ? 'list' : 'grid';
+                const grid = document.getElementById('pos-grid');
+                const icon = document.getElementById('view-icon');
+                if(pos.viewMode === 'grid') { grid.classList.remove('list-view'); grid.classList.add('grid-view'); icon.className = 'fas fa-list'; } 
+                else { grid.classList.remove('grid-view'); grid.classList.add('list-view'); icon.className = 'fas fa-th'; }
+            },
+
+            renderGrid: () => {
+                const term = document.getElementById('pos-search').value.toLowerCase();
+                const cat = document.getElementById('pos-category').value;
+                const grid = document.getElementById('pos-grid'); grid.innerHTML = '';
+                const showImg = db.settings.showImages;
+                
+                db.products.filter(p => (p.name.toLowerCase().includes(term) || (p.barcode && p.barcode.includes(term))) && (cat===""||p.category===cat)).forEach(p => {
+                    const inCart = pos.cart.find(i => i.id === p.id);
+                    const cartQty = inCart ? inCart.qty : 0;
+                    const realStock = p.stock - cartQty;
+                    let barColor = 'var(--accent)';
+                    if(realStock <= p.minStock) barColor = 'var(--warning)';
+                    if(realStock <= 0) barColor = 'var(--danger)';
+                    let pct = Math.min(100, (realStock/(p.minStock*3 || 20))*100); 
+                    const el = document.createElement('div'); el.className = 'prod-card'; el.onclick = () => pos.addToCart(p.id);
+                    let imgHTML = '';
+                    if(showImg) { 
+                        // UPDATED: Robust image handling with fallback for broken links
+                        const imgSrc = p.image && p.image.trim() !== '' ? p.image : 'https://placehold.co/300?text=No+Image';
+                        imgHTML = `<div class="prod-img-container"><img src="${imgSrc}" class="prod-img" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/300?text=Error';"><div class="stock-indicator"><div class="stock-fill" style="width:${pct}%; background:${barColor};"></div></div></div>`; 
+                    }
+                    el.innerHTML = `${imgHTML}<div class="prod-info"><div class="prod-name">${p.name}</div><div class="prod-meta"><span class="prod-price">${app.fmt(p.price)}</span><span class="prod-stock-badge">${realStock}</span></div></div>`;
+                    grid.appendChild(el);
+                });
+            },
+            
+            addToCart: (id) => {
+                const p = db.products.find(x=>x.id===id);
+                const existing = pos.cart.find(i=>i.id===id);
+                const currentQty = existing ? existing.qty : 0;
+                if(p.stock <= currentQty) return app.toast("Out of stock!");
+                if(existing) existing.qty++; else pos.cart.push({id:id, qty:1, price:p.price, name:p.name});
+                pos.renderGrid(); pos.updateTotals();
+            },
+            
+            updateTotals: () => {
+                const rawTotal = pos.cart.reduce((a,b)=>a+(b.price*b.qty),0);
+                const count = pos.cart.reduce((a,b)=>a+b.qty,0);
+                let subtotal, tax, total; const rate = parseFloat(db.settings.taxRate);
+                if (db.settings.taxType === 'inclusive') { total = rawTotal; subtotal = total / (1 + (rate / 100)); tax = total - subtotal; } 
+                else { subtotal = rawTotal; tax = subtotal * (rate / 100); total = subtotal + tax; }
+                pos.currentTotal = total;
+                document.getElementById('float-count').innerText = count; document.getElementById('float-total').innerText = app.fmt(total);
+                const bar = document.getElementById('pos-float-bar'); if(count>0) bar.classList.add('visible'); else bar.classList.remove('visible');
+                document.getElementById('cart-total').innerText = app.fmt(total); document.getElementById('cart-tax').innerText = app.fmt(tax);
+                pos.renderCartList();
+            },
+            
+            renderCartList: () => {
+                const l = document.getElementById('cart-items-list'); l.innerHTML = '';
+                pos.cart.forEach((i, idx) => {
+                    l.innerHTML += `<div class="list-item"><div><div style="font-weight:600;">${i.name}</div><div class="text-muted" style="font-size:12px;">${app.fmt(i.price)}</div></div><div style="display:flex; gap:12px; align-items:center;"><button class="btn btn-secondary" style="width:30px; height:30px; padding:0;" onclick="pos.modQty(${idx},-1)">-</button><span class="font-mono">${i.qty}</span><button class="btn btn-secondary" style="width:30px; height:30px; padding:0;" onclick="pos.modQty(${idx},1)">+</button></div></div>`;
+                });
+            },
+            
+            modQty: (idx, d) => {
+                const i = pos.cart[idx]; const p = db.products.find(x=>x.id===i.id);
+                if(d>0 && i.qty >= p.stock) return app.toast("Max stock");
+                i.qty += d; if(i.qty<=0) pos.cart.splice(idx,1);
+                pos.renderGrid(); pos.updateTotals();
+            },
+            
+            clearCart: () => { pos.cart=[]; pos.renderGrid(); pos.updateTotals(); pos.closeCart(); },
+            openCart: () => document.getElementById('cart-overlay').classList.add('active'),
+            closeCart: () => document.getElementById('cart-overlay').classList.remove('active'),
+            
+            showCheckout: () => {
+                pos.closeCart(); document.getElementById('checkout-overlay').classList.add('active');
+                const total = pos.currentTotal; document.getElementById('co-total').innerText = app.fmt(total);
+                pos.tenderedInput = ""; pos.updateChange();
+                const grid = document.getElementById('quick-cash-grid'); grid.innerHTML = `<button class="cash-btn" onclick="pos.setCash(${total})">Exact</button>`;
+                const suggestions = [Math.ceil(total), Math.ceil(total/5)*5, Math.ceil(total/10)*10, 20, 50, 100];
+                [...new Set(suggestions)].filter(x => x >= total).sort((a,b)=>a-b).slice(0,7).forEach(amt => { grid.innerHTML += `<button class="cash-btn" onclick="pos.setCash(${amt})">${app.fmt(amt)}</button>`; });
+            },
+            
+            closeCheckout: () => document.getElementById('checkout-overlay').classList.remove('active'),
+            pad: (k) => { if(k==='C') pos.tenderedInput = ""; else if(k==='.') { if(!pos.tenderedInput.includes('.')) pos.tenderedInput += '.'; } else pos.tenderedInput += k; pos.updateChange(); },
+            setCash: (v) => { pos.tenderedInput = v.toString(); pos.updateChange(); },
+            
+            updateChange: () => {
+                const t = document.getElementById('co-tendered'); t.innerText = pos.tenderedInput || "0";
+                const total = pos.currentTotal; const tend = parseFloat(pos.tenderedInput)||0;
+                const change = Math.max(0, tend - total);
+                const cEl = document.getElementById('co-change'); cEl.innerText = app.fmt(change);
+                if(change > 0) cEl.style.color = "var(--accent)"; else cEl.style.color = "var(--text-tertiary)";
+            },
+            
+            finalize: () => {
+                const total = pos.currentTotal; const tend = parseFloat(pos.tenderedInput)||0;
+                if(tend < total - 0.01) return app.toast("Insufficient Cash!");
+                
+                // Deduct Stock
+                pos.cart.forEach(i => {
+                    const p = db.products.find(x=>x.id===i.id);
+                    p.stock -= i.qty;
+                });
+                
+                // Update Customer
+                const custName = document.getElementById('pos-customer').value;
+                if(custName && custName !== "") {
+                    const c = db.customers.find(x=>x.name === custName);
+                    if(c) { 
+                        c.totalSpent = (c.totalSpent||0) + total;
+                        c.points = (c.points||0) + Math.floor(total);
+                    }
+                }
+
+                // Add Sale
+                db.sales.push({
+                    id: db.settings.nextSaleId++,
+                    date: new Date().toISOString(),
+                    total: total,
+                    items: [...pos.cart],
+                    customer: custName || "Guest"
+                });
+
+                app.save();
+                app.toast("Payment Successful!"); 
+                pos.cart = []; pos.renderGrid(); pos.updateTotals(); pos.closeCheckout();
+                customerManager.render(); reports.render(); app.dash();
+            }
+        };
+
+        window.inventoryManager = {
+            render: (filter="") => {
+                const l = document.getElementById('inventory-list'); l.innerHTML = '';
+                const term = filter.toLowerCase();
+                db.products.filter(p=>(p.name.toLowerCase().includes(term) || (p.barcode && p.barcode.includes(term)))).forEach(p => {
+                    const isLow = p.stock <= p.minStock;
+                    const stockColor = isLow ? 'var(--danger)' : 'var(--accent)';
+                    const badgeText = isLow ? 'Low Stock' : 'In Stock';
+                    l.innerHTML += `
+                        <div class="inv-card" onclick="inventoryManager.edit('${p.id}')">
+                            <div class="inv-header">
+                                <div><div style="font-weight:600; font-size:14px;">${p.name}</div><div style="font-size:12px; color:var(--text-tertiary); font-family:'JetBrains Mono';">${p.barcode || 'No Barcode'}</div></div>
+                                <div class="inv-badge" style="color:${stockColor}; border-color:${stockColor};">${badgeText}</div>
+                            </div>
+                            <div class="inv-stats">
+                                <div><div class="inv-stat-label">Price</div><div class="inv-stat-val">${app.fmt(p.price)}</div></div>
+                                <div><div class="inv-stat-label">Cost</div><div class="inv-stat-val">${app.fmt(p.cost||0)}</div></div>
+                                <div><div class="inv-stat-label">Stock</div><div class="inv-stat-val" style="color:${stockColor}">${p.stock}</div></div>
+                                <div><div class="inv-stat-label">Min</div><div class="inv-stat-val">${p.minStock||0}</div></div>
+                            </div>
+                        </div>
+                    `;
+                });
+            },
+            updatePreview: () => {
+                const url = document.getElementById('np-img').value;
+                const img = document.getElementById('preview-img');
+                if(url) { img.src = url; img.style.display = 'block'; } else { img.style.display = 'none'; }
+            },
+            showAddModal: () => {
+                const d = document.getElementById('modal-content');
+                document.getElementById('modal-title').innerText = app.t("add_product");
+                d.innerHTML = `
+                    <div style="display:flex; flex-direction:column; gap:16px;">
+                        <div class="form-group"><label class="form-label">${app.t('name')}</label><input id="np-name" placeholder="Enter product name"></div>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+                            <div class="form-group"><label class="form-label">${app.t('barcode')}</label><input id="np-barcode" placeholder="Scan/Type"></div>
+                            <div class="form-group"><label class="form-label">${app.t('category')}</label><input id="np-cat" list="cat-list" placeholder="Select"><datalist id="cat-list"></datalist></div>
+                        </div>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+                            <div class="form-group"><label class="form-label">${app.t('price')}</label><input id="np-price" type="number" placeholder="0.00"></div>
+                            <div class="form-group"><label class="form-label">${app.t('cost')}</label><input id="np-cost" type="number" placeholder="0.00"></div>
+                        </div>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+                            <div class="form-group"><label class="form-label">${app.t('stock')}</label><input id="np-stock" type="number" placeholder="0"></div>
+                            <div class="form-group"><label class="form-label">${app.t('min_stock')}</label><input id="np-min" type="number" placeholder="0"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">${app.t('image_url')}</label><input id="np-img" placeholder="https://..." oninput="inventoryManager.updatePreview()">
+                            <div style="margin-top:8px; height:150px; background:#000; border-radius:8px; display:flex; align-items:center; justify-content:center; overflow:hidden; border:1px solid var(--border);">
+                                <img id="preview-img" style="width:100%; height:100%; object-fit:contain; display:none;">
+                                <span style="color:var(--text-tertiary); font-size:12px;">Preview</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="inventoryManager.save()">${app.t('save')}</button>
+                    </div>`;
+                
+                const list = document.getElementById('cat-list');
+                [...new Set(db.products.map(p=>p.category))].forEach(c => list.innerHTML += `<option value="${c}">`);
+                document.getElementById('general-modal').classList.add('active');
+            },
+            edit: (id) => {
+                // ID is string or number in local storage, ensure comparison works
+                const p = db.products.find(x=>x.id==id);
+                inventoryManager.showAddModal(); 
+                document.getElementById('modal-title').innerText = app.t("update");
+                const hidden = document.createElement('input'); hidden.type='hidden'; hidden.id='np-id'; hidden.value=p.id;
+                document.getElementById('modal-content').appendChild(hidden);
+                
+                document.getElementById('np-name').value = p.name;
+                document.getElementById('np-barcode').value = p.barcode || '';
+                document.getElementById('np-cat').value = p.category;
+                document.getElementById('np-price').value = p.price;
+                document.getElementById('np-cost').value = p.cost || 0;
+                document.getElementById('np-stock').value = p.stock;
+                document.getElementById('np-min').value = p.minStock || 0;
+                document.getElementById('np-img').value = p.image || '';
+                inventoryManager.updatePreview();
+                
+                const btnContainer = document.querySelector('#modal-content .btn-primary').parentNode;
+                const delBtn = document.createElement('button'); delBtn.className = 'btn btn-danger'; delBtn.innerText = app.t('delete'); delBtn.style.marginTop = '12px'; 
+                delBtn.onclick = () => inventoryManager.del(p.id);
+                btnContainer.appendChild(delBtn);
+            },
+            save: () => {
+                const id = document.getElementById('np-id')?.value;
+                const obj = {
+                    id: id ? id : Date.now(), // Use existing ID if editing
+                    name: document.getElementById('np-name').value,
+                    barcode: document.getElementById('np-barcode').value,
+                    category: document.getElementById('np-cat').value,
+                    price: parseFloat(document.getElementById('np-price').value)||0,
+                    cost: parseFloat(document.getElementById('np-cost').value)||0,
+                    stock: parseInt(document.getElementById('np-stock').value)||0,
+                    minStock: parseInt(document.getElementById('np-min').value)||0,
+                    image: document.getElementById('np-img').value || 'https://placehold.co/300'
+                };
+                if(!obj.name) return app.toast("Name required");
+                
+                if(id) {
+                    const idx = db.products.findIndex(x=>x.id==id);
+                    db.products[idx] = obj;
+                } else {
+                    db.products.push(obj);
+                }
+                app.save();
+                document.getElementById('general-modal').classList.remove('active');
+                app.toast("Saved");
+                inventoryManager.render();
+                pos.init(); // Refresh categories
+            },
+            del: (id) => { 
+                if(confirm("Delete?")) { 
+                    db.products = db.products.filter(p => p.id != id);
+                    app.save();
+                    document.getElementById('general-modal').classList.remove('active');
+                    inventoryManager.render();
+                    pos.init();
+                } 
+            },
+            downloadTXTTemplate: () => {
+                let txt = "NAME - BARCODE - CATEGORY - PRICE - COST - STOCK - MINSTOCK - IMAGEURL\n";
+                db.products.forEach(p => { txt += `${p.name} - ${p.barcode||''} - ${p.category} - ${p.price} - ${p.cost||0} - ${p.stock} - ${p.minStock||0} - ${p.image||''}\n`; });
+                const blob = new Blob([txt], { type: 'text/plain;charset=utf-8;' });
+                const link = document.createElement("a");
+                const url = URL.createObjectURL(blob);
+                link.setAttribute("href", url); link.setAttribute("download", "inventory_export.txt"); 
+                document.body.appendChild(link); link.click(); document.body.removeChild(link);
+            },
+            importTXT: (input) => {
+                const file = input.files[0]; if(!file) return;
+                const r = new FileReader();
+                r.onload = (e) => {
+                    const lines = e.target.result.split('\n'); let count=0;
+                    lines.forEach(line => {
+                        const parts = line.split(' - ');
+                        if(parts.length >= 4) {
+                            const name = parts[0].trim();
+                            if(!db.products.some(p=>p.name === name)) {
+                                db.products.push({
+                                    id: Date.now() + Math.floor(Math.random()*1000),
+                                    name: name,
+                                    barcode: parts[1]?.trim()||"",
+                                    category: parts[2]?.trim() || "General",
+                                    price: parseFloat(parts[3]) || 0,
+                                    cost: parseFloat(parts[4]) || 0,
+                                    stock: parseInt(parts[5]) || 0,
+                                    minStock: parseInt(parts[6]) || 0,
+                                    image: parts[7]?.trim() || ""
+                                });
+                                count++;
+                            }
+                        }
+                    });
+                    app.save(); inventoryManager.render(); app.toast(`Imported ${count} items`);
+                };
+                r.readAsText(file);
+            }
+        };
+
+        window.customerManager = {
+            render: (filter = "") => {
+                const list = document.getElementById('customer-list'); list.innerHTML = '';
+                const term = filter.toLowerCase();
+                db.customers.filter(c => c.name.toLowerCase().includes(term) || c.phone.includes(term)).forEach(c => {
+                    const isVIP = (c.totalSpent || 0) > 500;
+                    const badgeClass = isVIP ? 'vip' : 'regular';
+                    const badgeText = isVIP ? app.t('vip') : app.t('regular');
+                    list.innerHTML += `<div class="cust-card" onclick="customerManager.edit('${c.id}')"><div class="cust-header"><div style="font-weight:600; font-size:14px;">${c.name}</div><div class="cust-badge ${badgeClass}">${badgeText}</div></div><div style="display:flex; flex-direction:column; gap:4px; margin-bottom:8px;"><div class="cust-info-row"><i class="fas fa-phone"></i> ${c.phone || 'N/A'}</div><div class="cust-info-row"><i class="fas fa-envelope"></i> ${c.email || 'N/A'}</div></div><div class="cust-stats"><div><div class="cust-stat-label">${app.t('points')}</div><div class="cust-stat-val text-accent">${c.points || 0}</div></div><div><div class="cust-stat-label">${app.t('ltv')}</div><div class="cust-stat-val">${app.fmt(c.totalSpent || 0)}</div></div></div></div>`;
+                });
+            },
+            showAddModal: () => {
+                const d = document.getElementById('modal-content');
+                document.getElementById('modal-title').innerText = app.t("add_customer");
+                d.innerHTML = `<div style="display:flex; flex-direction:column; gap:16px;"><div class="form-group"><label class="form-label">${app.t('name')}</label><input id="nc-name" placeholder="Full Name"></div><div class="form-group"><label class="form-label">${app.t('phone')}</label><input id="nc-phone" placeholder="Phone Number"></div><div class="form-group"><label class="form-label">${app.t('email')}</label><input id="nc-email" placeholder="Email Address"></div><button class="btn btn-primary" onclick="customerManager.save()">${app.t('save_customer')}</button></div>`;
+                document.getElementById('general-modal').classList.add('active');
+            },
+            edit: (id) => {
+                const c = db.customers.find(x => x.id == id);
+                customerManager.showAddModal();
+                document.getElementById('modal-title').innerText = app.t("customer_profile");
+                const hidden = document.createElement('input'); hidden.type='hidden'; hidden.id='nc-id'; hidden.value=c.id;
+                document.getElementById('modal-content').appendChild(hidden);
+                document.getElementById('nc-name').value = c.name; document.getElementById('nc-phone').value = c.phone; document.getElementById('nc-email').value = c.email || '';
+                const btnContainer = document.querySelector('#modal-content .btn-primary').parentNode;
+                const delBtn = document.createElement('button'); delBtn.className = 'btn btn-danger'; delBtn.innerText = app.t('delete'); delBtn.style.marginTop = '12px'; 
+                delBtn.onclick = () => customerManager.del(c.id);
+                btnContainer.appendChild(delBtn);
+            },
+            save: () => {
+                const id = document.getElementById('nc-id')?.value;
+                const name = document.getElementById('nc-name').value;
+                if(!name) return app.toast("Name Required");
+                
+                const data = { 
+                    id: id ? id : Date.now(),
+                    name: name, 
+                    phone: document.getElementById('nc-phone').value, 
+                    email: document.getElementById('nc-email').value, 
+                    points: 0, 
+                    totalSpent: 0 
+                };
+                
+                if(id) {
+                    const idx = db.customers.findIndex(x => x.id == id);
+                    // Preserve stats
+                    data.points = db.customers[idx].points;
+                    data.totalSpent = db.customers[idx].totalSpent;
+                    db.customers[idx] = data;
+                } else {
+                    db.customers.push(data);
+                }
+                app.save(); customerManager.render(); pos.init(); document.getElementById('general-modal').classList.remove('active'); app.toast("Customer Saved");
+            },
+            del: (id) => { 
+                if(confirm("Delete Customer?")) { 
+                    db.customers = db.customers.filter(x => x.id != id);
+                    app.save(); customerManager.render(); pos.init(); 
+                    document.getElementById('general-modal').classList.remove('active'); 
+                } 
+            }
+        };
+
+        app.init();
+    </script>
 </body>
 </html>
