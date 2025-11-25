@@ -227,22 +227,59 @@
         
         .pos-grid { display: grid; gap: 16px; }
         
-        /* 1. GRID MODE (Default) */
+        /* 1. GRID MODE (Default) - PIXEL PERFECT SQUARES */
         .pos-grid.grid-view { grid-template-columns: repeat(2, 1fr); }
         .pos-grid.grid-view .prod-card { flex-direction: column; }
-        .pos-grid.grid-view .prod-img-container { width: 100%; aspect-ratio: 1/1; }
         
-        /* 2. LIST MODE */
+        /* STRICT 1:1 ASPECT RATIO FOR GRID */
+        .pos-grid.grid-view .prod-img-container {
+            width: 100%;
+            padding-top: 100%; /* Force 1:1 Aspect Ratio using padding hack for max compatibility */
+            position: relative;
+            background: #000;
+        }
+        .pos-grid.grid-view .prod-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block; /* Remove inline gap */
+        }
+        
+        /* 2. LIST MODE - FIXED SQUARE THUMBNAILS */
         .pos-grid.list-view { grid-template-columns: 1fr; }
         .pos-grid.list-view .prod-card { flex-direction: row; height: 100px; align-items: stretch; }
-        .pos-grid.list-view .prod-img-container { height: 100%; width: 100px; flex-shrink: 0; border-right: 1px solid var(--border); }
-
-        /* Shared Card Styles */
-        .prod-card { background: var(--bg-surface); border-radius: 16px; overflow: hidden; display: flex; border: 1px solid var(--border); position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-        .prod-card:active { transform: scale(0.96); }
         
-        .prod-img-container { position: relative; background: #000; }
-        .prod-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; }
+        .pos-grid.list-view .prod-img-container {
+            height: 100%;
+            width: 100px; /* Fixed width for thumbnail */
+            flex-shrink: 0;
+            border-right: 1px solid var(--border);
+            position: relative;
+            background: #000;
+        }
+        .pos-grid.list-view .prod-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Shared Card Styles - HARDWARE ACCELERATION FIX */
+        .prod-card {
+            background: var(--bg-surface);
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            border: 1px solid var(--border);
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateZ(0); /* Forces GPU rasterization to fix border-radius clipping on iOS */
+            -webkit-mask-image: -webkit-radial-gradient(white, black); /* Alternative clipping fix */
+        }
+        .prod-card:active { transform: scale(0.96); }
         
         .prod-info { padding: 12px; display: flex; flex-direction: column; gap: 4px; flex: 1; justify-content: space-between; }
         .prod-name { font-size: 14px; font-weight: 600; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
@@ -251,7 +288,7 @@
         .prod-price { font-size: 15px; color: var(--secondary); font-family: 'JetBrains Mono'; font-weight: 700; }
         .prod-stock-badge { font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.05); color: var(--text-tertiary); border: 1px solid var(--border); }
 
-        .stock-indicator { position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: rgba(0,0,0,0.5); }
+        .stock-indicator { position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: rgba(0,0,0,0.5); z-index: 2; }
         .stock-fill { height: 100%; transition: width 0.3s ease, background-color 0.3s ease; }
 
         /* --- INVENTORY & CUSTOMER RICH LISTS --- */
