@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8XSLX790TS"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-8XSLX790TS');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LIKApos Tablet</title>
+    
+    <link rel="icon" type="image/png" href="https://realfavicongenerator.net/files/56477a3f-ceaa-4bcb-8de8-c8c79a099f2d/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="https://realfavicongenerator.net/files/56477a3f-ceaa-4bcb-8de8-c8c79a099f2d/favicon.svg" />
+    <link rel="shortcut icon" href="https://realfavicongenerator.net/files/56477a3f-ceaa-4bcb-8de8-c8c79a099f2d/favicon.ico" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-app: #1A1D23;
+            --bg-surface: #252A34;
+            --bg-sidebar: #0F1A2F;
+            --bg-input: #1A1D23;
+            --primary: #0F1A2F;
+            --secondary: #00D4FF;
+            --accent: #00E5A0;
+            --danger: #FF4B55;
+            --warning: #FFB84C;
+            --info: #8B5CF6;
+            --text-primary: rgba(255, 255, 255, 0.95);
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-tertiary: rgba(255, 255, 255, 0.5);
+            --border: rgba(255, 255, 255, 0.08);
+            --hover-overlay: rgba(255,255,255,0.05);
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 18px;
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.4);
+            --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="light"] {
+            --bg-app: #F3F4F6;
+            --bg-surface: #FFFFFF;
+            --bg-sidebar: #FFFFFF;
+            --bg-input: #FFFFFF;
+            --primary: #FFFFFF; 
+            --secondary: #0077CC; 
+            --accent: #00A86B;    
+            --danger: #DC2626;
+            --warning: #D97706;
+            --info: #7C3AED;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --text-tertiary: #9CA3AF;
+            --border: #E5E7EB;
+            --hover-overlay: rgba(0,0,0,0.05);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            background-color: var(--bg-app);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            height: 100vh; 
+            font-size: 15px; /* Slightly larger text for tablet */
+            transition: background 0.3s;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+        /* Animations */
+        .animate-fade-up { animation: fadeInUp 0.4s var(--ease-smooth); }
+        .animate-slide { animation: slideInRight 0.4s var(--ease-smooth); }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+        /* LAYOUT */
+        #app { display: flex; height: 100vh; width: 100vw; }
+        
+        /* TABLET SIDEBAR (Slim by default) */
+        #sidebar {
+            width: 80px; /* Slim width */
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            display: flex; flex-direction: column; z-index: 50;
+            transition: width 0.3s var(--ease-spring);
+            overflow: hidden;
+        }
+        #sidebar.expanded { width: 260px; }
+
+        .brand { 
+            padding: 24px; font-size: 20px; font-weight: 700; display: flex; align-items: center; justify-content: center; 
+            border-bottom: 1px solid var(--border); height: 80px;
+        }
+        #sidebar.expanded .brand { justify-content: flex-start; gap: 12px; }
+        .brand span { display: none; }
+        #sidebar.expanded .brand span { display: inline; }
+
+        .nav-container { padding: 16px 0; flex: 1; display: flex; flex-direction: column; align-items: center; }
+        #sidebar.expanded .nav-container { align-items: stretch; }
+
+        .nav-item {
+            position: relative; display: flex; align-items: center; justify-content: center; 
+            width: 50px; height: 50px; margin-bottom: 8px; border-radius: 12px;
+            color: var(--text-secondary); text-decoration: none; cursor: pointer; transition: all 0.2s; font-weight: 500;
+        }
+        #sidebar.expanded .nav-item { width: auto; height: auto; padding: 14px 24px; justify-content: flex-start; gap: 12px; border-radius: 0; margin-bottom: 0; }
+        
+        .nav-item i { font-size: 20px; }
+        .nav-item span:not(.shortcut-badge) { display: none; }
+        #sidebar.expanded .nav-item span:not(.shortcut-badge) { display: inline; }
+        
+        .nav-item:hover, .nav-item.active { color: var(--text-primary); background: var(--hover-overlay); }
+        .nav-item.active i { color: var(--secondary); }
+
+        .shortcut-badge { display: none; } /* Hide shortcuts on slim sidebar */
+
+        #main { flex: 1; display: flex; flex-direction: column; background: var(--bg-app); position: relative; overflow: hidden; }
+
+        header {
+            height: 70px; padding: 0 24px;
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid var(--border); background: var(--bg-surface);
+        }
+
+        /* TOUCH FRIENDLY BUTTONS */
+        .btn {
+            border: none; border-radius: var(--radius-sm); padding: 12px 20px; font-weight: 600; font-size: 14px; cursor: pointer;
+            transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; /* Touch target */
+        }
+        .btn-primary { background: linear-gradient(135deg, var(--secondary) 0%, #00A3FF 100%); color: #fff; }
+        .btn-secondary { background: var(--bg-app); color: var(--text-primary); border: 1px solid var(--border); }
+        .btn-danger { background: rgba(255, 75, 85, 0.1); color: var(--danger); border: 1px solid rgba(255, 75, 85, 0.2); }
+        .btn-success { background: var(--accent); color: #fff; }
+
+        input, select {
+            background: var(--bg-input); border: 1px solid var(--border); color: var(--text-primary); 
+            padding: 12px 16px; border-radius: var(--radius-sm); width: 100%; min-height: 48px; /* Touch target */
+        }
+
+        .card {
+            background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 20px;
+        }
+
+        /* VIEWS */
+        .view-container { display: none; padding: 24px; height: 100%; overflow-y: auto; }
+        .view-container.active { display: block; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 24px; }
+        .stat-card { display: flex; flex-direction: column; gap: 8px; }
+        .stat-val { font-size: 26px; font-weight: 700; font-family: 'JetBrains Mono'; }
+        
+        /* POS LAYOUT (Tablet Optimized) */
+        .pos-layout { display: grid; grid-template-columns: 1fr 340px; gap: 20px; height: 100%; overflow: hidden; }
+        
+        /* If tablet is in portrait, stack them? Optional, but Grid usually fits */
+        @media (max-width: 900px) {
+             .pos-layout { grid-template-columns: 1fr 300px; gap: 16px; }
+        }
+
+        .product-grid { 
+            display: grid; gap: 12px; padding-right: 4px; overflow-y: auto; align-content: start; 
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); /* Smaller cards for tablet */
+        }
+        
+        .prod-card {
+            background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md); 
+            cursor: pointer; display: flex; flex-direction: column; overflow: hidden; min-height: 180px;
+        }
+        .prod-img-container { height: 110px; background: var(--bg-app); display: flex; align-items: center; justify-content: center; }
+        .prod-img { width: 100%; height: 100%; object-fit: cover; }
+        .prod-info { padding: 10px; display: flex; flex-direction: column; gap: 4px; }
+        .prod-price { background: var(--hover-overlay); color: var(--secondary); padding: 4px 8px; border-radius: 4px; align-self: flex-start; font-weight: 600; font-size: 12px; }
+
+        /* CART */
+        .cart-panel {
+            background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-lg); 
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        .cart-items { flex: 1; overflow-y: auto; padding: 16px; }
+        .cart-item { 
+            background: var(--bg-app); margin-bottom: 8px; padding: 12px; border-radius: 8px; 
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        /* MODALS */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 2000; 
+            display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        
+        .modal {
+            background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-lg); 
+            padding: 32px; width: 90%; max-width: 600px; transform: scale(0.95); transition: transform 0.3s;
+        }
+        .modal-overlay.active .modal { transform: scale(1); }
+
+        /* UTILS */
+        .text-accent { color: var(--accent); }
+        .text-secondary { color: var(--secondary); }
+        .text-muted { color: var(--text-tertiary); }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .hidden { display: none !important; }
+        
+        .table-container { overflow-x: auto; background: var(--bg-surface); border-radius: var(--radius-md); }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th, td { padding: 16px; text-align: left; border-bottom: 1px solid var(--border); }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <nav id="sidebar">
+            <div class="brand" onclick="document.getElementById('sidebar').classList.toggle('expanded')">
+                <i class="fas fa-cube" style="color: var(--secondary); font-size: 24px;"></i>
+                <span>LIKApos</span>
+            </div>
+            <div class="nav-container">
+                <a onclick="app.router('dashboard')" class="nav-item active" id="nav-dashboard"><i class="fas fa-chart-pie"></i> <span data-i18n="dashboard">Dashboard</span></a>
+                <a onclick="app.router('pos')" class="nav-item" id="nav-pos"><i class="fas fa-calculator"></i> <span data-i18n="pos">POS</span></a>
+                <a onclick="app.router('inventory')" class="nav-item" id="nav-inventory"><i class="fas fa-boxes"></i> <span data-i18n="inventory">Inventory</span></a>
+                <a onclick="app.router('customers')" class="nav-item" id="nav-customers"><i class="fas fa-users"></i> <span data-i18n="customers">Customers</span></a>
+                <a onclick="app.router('reports')" class="nav-item" id="nav-reports"><i class="fas fa-chart-bar"></i> <span data-i18n="analytics">Analytics</span></a>
+                <div style="height: 24px;"></div>
+                <a onclick="app.router('settings')" class="nav-item" id="nav-settings"><i class="fas fa-cog"></i> <span data-i18n="settings">Settings</span></a>
+            </div>
+            <div style="padding: 20px; text-align:center; cursor:pointer;" onclick="document.getElementById('sidebar').classList.toggle('expanded')">
+                <i class="fas fa-angle-double-right" style="color:var(--text-tertiary)"></i>
+            </div>
+        </nav>
+
+        <main id="main">
+            <header>
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <button class="btn btn-secondary" style="width: 44px;" onclick="document.getElementById('sidebar').classList.toggle('expanded')"><i class="fas fa-bars"></i></button>
+                    <h2 id="header-title" class="animate-fade-up">Dashboard</h2>
+                </div>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div id="connection-status" style="width:10px; height:10px; border-radius:50%; background:var(--accent);"></div>
+                    <button class="btn btn-secondary" onclick="app.toggleTheme()"><i class="fas fa-moon" id="theme-icon"></i></button>
+                </div>
+            </header>
+
+            <div id="dashboard-view" class="view-container active animate-slide">
+                <div class="stats-grid">
+                    <div class="card stat-card">
+                        <span class="text-muted">REVENUE</span>
+                        <div class="stat-val text-secondary" id="dash-sales">€0.00</div>
+                    </div>
+                    <div class="card stat-card">
+                        <span class="text-muted">ORDERS</span>
+                        <div class="stat-val text-accent" id="dash-tx">0</div>
+                    </div>
+                    <div class="card stat-card">
+                        <span class="text-muted">LOW STOCK</span>
+                        <div class="stat-val text-warning" id="dash-lowstock">0</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 style="margin-bottom: 24px;">Quick Actions</h3>
+                    <div id="dash-quick-actions" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+                        <button class="btn btn-primary" onclick="app.router('pos')"><i class="fas fa-cash-register"></i> New Sale</button>
+                        <button class="btn btn-secondary" onclick="inventoryManager.showAddModal()"><i class="fas fa-plus"></i> Add Product</button>
+                        <button class="btn btn-secondary" onclick="customerManager.showAddModal()"><i class="fas fa-user-plus"></i> Add Customer</button>
+                        <button class="btn btn-secondary" onclick="app.router('reports')"><i class="fas fa-file-alt"></i> View Reports</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="pos-view" class="view-container">
+                <div class="pos-layout">
+                    <div style="display: flex; flex-direction: column; gap: 16px; overflow: hidden;">
+                        <div style="display: grid; grid-template-columns: 1fr auto; gap: 12px;">
+                            <input type="text" id="pos-search" placeholder="Search..." onkeyup="pos.filterProducts()">
+                            <select id="pos-category" style="width: 140px;" onchange="pos.filterProducts()"><option value="">All</option></select>
+                        </div>
+                        <div id="pos-grid" class="product-grid custom-scroll"></div>
+                    </div>
+
+                    <div class="cart-panel">
+                        <div style="padding: 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--hover-overlay);">
+                            <div style="font-weight: 600;">Order</div>
+                            <button class="btn btn-danger" style="padding: 8px 12px;" onclick="pos.clearCart()"><i class="fas fa-trash"></i></button>
+                        </div>
+                        <div style="padding: 12px;">
+                             <select id="pos-customer" style="padding: 8px;"><option value="">Guest Customer</option></select>
+                        </div>
+                        <div id="cart-items" class="cart-items custom-scroll"></div>
+                        <div style="padding: 20px; background: var(--hover-overlay); border-top: 1px solid var(--border);">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span class="text-muted">Subtotal</span><span id="cart-subtotal" class="font-mono">€0.00</span></div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 16px;"><span class="text-muted">Tax</span><span id="cart-tax" class="font-mono">€0.00</span></div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 24px; font-size: 24px; font-weight: 700;"><span>Total</span><span id="cart-total" class="font-mono text-accent">€0.00</span></div>
+                            <button class="btn btn-success" style="width: 100%; padding: 16px; font-size: 18px;" onclick="pos.showCheckout()">PAY NOW</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="inventory-view" class="view-container">
+                <div style="margin-bottom: 20px; display: grid; grid-template-columns: 1fr auto; gap: 12px;">
+                    <input type="text" id="inventory-search" placeholder="Search inventory..." onkeyup="inventoryManager.render(this.value)">
+                    <button class="btn btn-primary" onclick="inventoryManager.showAddModal()"><i class="fas fa-plus"></i></button>
+                </div>
+                <div class="table-container">
+                    <table id="inventory-table">
+                        <thead><tr><th>Item</th><th>Stock</th><th>Price</th><th>Action</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="customers-view" class="view-container">
+                 <div style="margin-bottom: 20px; display: grid; grid-template-columns: 1fr auto; gap: 12px;">
+                    <input type="text" placeholder="Search customers..." onkeyup="customerManager.render(this.value)">
+                    <button class="btn btn-primary" onclick="customerManager.showAddModal()"><i class="fas fa-user-plus"></i></button>
+                </div>
+                <div class="table-container">
+                    <table id="customer-table"><thead><tr><th>Name</th><th>Phone</th><th>Actions</th></tr></thead><tbody></tbody></table>
+                </div>
+            </div>
+
+            <div id="reports-view" class="view-container">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
+                    <h3>Sales</h3>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn btn-secondary" onclick="reports.setFilter('today')">Today</button>
+                        <button class="btn btn-secondary" onclick="reports.setFilter('month')">Month</button>
+                    </div>
+                </div>
+                <div class="stats-grid">
+                    <div class="card stat-card"><span class="text-muted">REVENUE</span><div class="stat-val text-secondary" id="report-total">€0.00</div></div>
+                    <div class="card stat-card"><span class="text-muted">ORDERS</span><div class="stat-val text-accent" id="report-count">0</div></div>
+                </div>
+                <div class="table-container"><table id="sales-table"><thead><tr><th>Time</th><th>Customer</th><th>Total</th></tr></thead><tbody></tbody></table></div>
+            </div>
+
+            <div id="settings-view" class="view-container">
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                    <div class="card">
+                        <h3>Language</h3>
+                        <div style="margin-top: 16px;">
+                             <select id="setting-language-select" onchange="app.updateLanguage(this.value)">
+                                 <option value="English">English</option>
+                                 <option value="Albanian">Albanian (Shqip)</option>
+                             </select>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>Config</h3>
+                        <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 16px;">
+                            <input type="text" id="setting-store-name" placeholder="Store Name" onchange="app.updateSetting('storeName', this.value)">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                                <select id="setting-currency" onchange="app.updateSetting('currency', this.value)"><option value="€">EUR (€)</option><option value="$">USD ($)</option></select>
+                                <input type="number" id="setting-tax" placeholder="Tax %" onchange="app.updateSetting('taxRate', this.value)">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card" style="grid-column: span 2;">
+                        <h3>Data</h3>
+                        <div style="margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
+                            <button class="btn btn-secondary" onclick="app.exportData()">Backup</button>
+                            <button class="btn btn-danger" onclick="app.resetData()">Reset App</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="checkout-modal" class="modal-overlay">
+        <div class="modal" style="display: grid; grid-template-columns: 1fr 280px; gap: 24px;">
+            <div>
+                <h3 style="margin-bottom: 16px;">Checkout</h3>
+                <div class="card" style="text-align: right; margin-bottom: 24px; padding: 16px;">
+                    <span class="text-muted" style="font-size:12px;">DUE</span>
+                    <div class="font-mono text-accent" style="font-size: 32px; font-weight: 700;" id="checkout-total">€0.00</div>
+                </div>
+                <input type="number" id="checkout-cash" class="font-mono" style="font-size: 24px; height: 60px; margin-bottom: 16px;" placeholder="0.00" onkeyup="pos.calcChange()">
+                <div style="text-align: right;">
+                    <span class="text-muted" style="font-size:12px;">CHANGE</span>
+                    <div id="checkout-change" class="font-mono" style="font-size: 24px;">€0.00</div>
+                </div>
+                <button class="btn btn-success" style="width: 100%; margin-top: 24px; padding: 16px; font-size: 18px;" onclick="pos.finalizeSale()">COMPLETE</button>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; height: 350px;">
+                <button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('7')">7</button><button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('8')">8</button><button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('9')">9</button>
+                <button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('4')">4</button><button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('5')">5</button><button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('6')">6</button>
+                <button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('1')">1</button><button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('2')">2</button><button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('3')">3</button>
+                <button class="btn btn-danger" style="font-size: 24px;" onclick="pos.numpad('C')">C</button><button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('0')">0</button><button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('.')">.</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="product-modal" class="modal-overlay"><div class="modal"><h3 style="margin-bottom: 20px;">Product</h3><input type="hidden" id="prod-id"><div style="display: flex; flex-direction: column; gap: 16px;"><input type="text" id="prod-name" placeholder="Name"><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;"><input type="text" id="prod-barcode" placeholder="Barcode"><input type="text" id="prod-category" placeholder="Category" list="cat-list"><datalist id="cat-list"></datalist></div><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;"><input type="number" id="prod-price" placeholder="Price"><input type="number" id="prod-stock" placeholder="Stock"></div><input type="text" id="prod-image" placeholder="Image URL"></div><div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px;"><button class="btn btn-secondary" onclick="document.getElementById('product-modal').classList.remove('active')">Cancel</button><button class="btn btn-primary" onclick="inventoryManager.saveProduct()">Save</button></div></div></div>
+    
+    <div id="customer-modal" class="modal-overlay"><div class="modal"><h3 style="margin-bottom: 20px;">Customer</h3><input type="hidden" id="cust-id"><div style="display: flex; flex-direction: column; gap: 16px;"><input type="text" id="cust-name" placeholder="Name"><input type="text" id="cust-phone" placeholder="Phone"></div><div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px;"><button class="btn btn-secondary" onclick="document.getElementById('customer-modal').classList.remove('active')">Cancel</button><button class="btn btn-primary" onclick="customerManager.saveCustomer()">Save</button></div></div></div>
+
+    <div id="toast" style="position:fixed; top:20px; left:50%; transform:translateX(-50%); background:var(--bg-surface); padding:12px 24px; border:1px solid var(--secondary); border-radius:30px; opacity:0; transition:opacity 0.3s; pointer-events:none; z-index:3000;"><span id="toast-msg"></span></div>
+
+    <script>
+        // --- TRANSLATIONS ---
+        const TRANSLATIONS = {
+            "English": { dashboard: "Dashboard", pos: "POS", inventory: "Inventory", customers: "Customers", analytics: "Reports", settings: "Settings" },
+            "Albanian": { dashboard: "Ballina", pos: "Arka", inventory: "Stoku", customers: "Klientët", analytics: "Raporte", settings: "Cilësimet" }
+        };
+
+        // --- DATABASE ---
+        const db = { products: [], customers: [], sales: [], settings: { storeName: "LIKApos", currency: "€", taxRate: 10, nextSaleId: 1000, language: "English" } };
+
+        const app = {
+            init: () => {
+                const sDB = localStorage.getItem('likapos_db');
+                if(sDB) Object.assign(db, JSON.parse(sDB));
+                db.settings.language = localStorage.getItem('likapos_language') || "English";
+                app.applyTranslations();
+                pos.init();
+                inventoryManager.render();
+                app.updateDashboard();
+                app.checkConnection();
+                // Allow sidebar toggle by default if screen is smaller
+                if(window.innerWidth < 1000) document.getElementById('sidebar').classList.remove('expanded');
+            },
+            save: () => { localStorage.setItem('likapos_db', JSON.stringify(db)); },
+            t: (k) => { return (TRANSLATIONS[db.settings.language] || TRANSLATIONS["English"])[k] || k; },
+            applyTranslations: () => { document.querySelectorAll('[data-i18n]').forEach(el => el.innerText = app.t(el.getAttribute('data-i18n'))); },
+            updateLanguage: (v) => { db.settings.language = v; localStorage.setItem('likapos_language', v); app.save(); app.applyTranslations(); },
+            updateSetting: (k, v) => { db.settings[k] = v; app.save(); app.updateDashboard(); app.toast("Saved"); },
+            toggleTheme: () => {
+                const n = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', n);
+            },
+            router: (v) => {
+                document.querySelectorAll('.view-container').forEach(e => e.classList.remove('active', 'animate-slide'));
+                document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
+                document.getElementById(v+'-view').classList.add('active', 'animate-slide');
+                document.getElementById('nav-'+v).classList.add('active');
+                if(v==='dashboard') app.updateDashboard();
+                if(v==='reports') reports.render();
+            },
+            toast: (m) => {
+                const t = document.getElementById('toast'); document.getElementById('toast-msg').innerText = m;
+                t.style.opacity = '1'; setTimeout(() => t.style.opacity = '0', 3000);
+            },
+            updateDashboard: () => {
+                const today = new Date().toDateString();
+                const sales = db.sales.filter(s => new Date(s.date).toDateString() === today);
+                const total = sales.reduce((a, b) => a + b.total, 0);
+                const low = db.products.filter(p => p.stock <= 5).length;
+                
+                document.getElementById('dash-sales').innerText = db.settings.currency + total.toFixed(2);
+                document.getElementById('dash-tx').innerText = sales.length;
+                document.getElementById('dash-lowstock').innerText = low;
+            },
+            checkConnection: () => {
+                const el = document.getElementById('connection-status');
+                const u = () => el.style.background = navigator.onLine ? 'var(--accent)' : 'var(--danger)';
+                window.addEventListener('online', u); window.addEventListener('offline', u); u();
+            },
+            resetData: () => { if(confirm("Delete All Data?")) { localStorage.removeItem('likapos_db'); location.reload(); } },
+            exportData: () => {
+                const blob = new Blob([JSON.stringify(db)], {type: "application/json"});
+                const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "likapos_tablet_backup.json"; a.click();
+            }
+        };
+
+        const pos = {
+            cart: [], currentTotal: 0,
+            init: () => { pos.renderGrid(); pos.populateCats(); pos.populateCust(); },
+            populateCats: () => {
+                const c = [...new Set(db.products.map(p=>p.category))];
+                const s = document.getElementById('pos-category'); s.innerHTML = '<option value="">All</option>';
+                const l = document.getElementById('cat-list'); l.innerHTML = '';
+                c.forEach(x => { s.innerHTML += `<option value="${x}">${x}</option>`; l.innerHTML += `<option value="${x}">`; });
+            },
+            populateCust: () => {
+                const s = document.getElementById('pos-customer'); s.innerHTML = '<option value="">Guest</option>';
+                db.customers.forEach(x => s.innerHTML += `<option value="${x.id}">${x.name}</option>`);
+            },
+            filterProducts: () => pos.renderGrid(),
+            renderGrid: () => {
+                const q = document.getElementById('pos-search').value.toLowerCase();
+                const cat = document.getElementById('pos-category').value;
+                const c = document.getElementById('pos-grid'); c.innerHTML = '';
+                db.products.filter(p => (p.name.toLowerCase().includes(q) || p.barcode.includes(q)) && (cat === "" || p.category === cat)).forEach(p => {
+                    const el = document.createElement('div'); el.className = 'prod-card animate-fade-up'; el.onclick = () => pos.addToCart(p.id);
+                    const img = p.image ? `<div class="prod-img-container"><img src="${p.image}" class="prod-img"></div>` : `<div class="prod-img-container"><i class="fas fa-box" style="font-size:24px; color:var(--text-tertiary)"></i></div>`;
+                    el.innerHTML = `${img}<div class="prod-info"><div style="font-weight:600; font-size:13px;">${p.name}</div><div class="prod-price">${db.settings.currency}${p.price}</div></div>`;
+                    c.appendChild(el);
+                });
+            },
+            addToCart: (id) => {
+                const p = db.products.find(x => x.id == id);
+                if(p.stock <= 0) return app.toast("Out of Stock");
+                const ex = pos.cart.find(x => x.product.id == id);
+                if(ex) { if(ex.qty < p.stock) ex.qty++; } else { pos.cart.push({product:p, qty:1}); }
+                pos.renderCart();
+            },
+            renderCart: () => {
+                const c = document.getElementById('cart-items'); c.innerHTML = '';
+                let t = 0;
+                pos.cart.forEach((i, idx) => {
+                    t += i.product.price * i.qty;
+                    c.innerHTML += `<div class="cart-item"><div><b>${i.product.name}</b><br><span class="text-muted">${i.qty} x ${i.product.price}</span></div><div><button class="btn btn-secondary" style="padding:8px 12px" onclick="pos.upd(${idx},-1)">-</button> <span style="margin:0 8px; font-size:16px;">${i.qty}</span> <button class="btn btn-secondary" style="padding:8px 12px" onclick="pos.upd(${idx},1)">+</button></div></div>`;
+                });
+                pos.currentTotal = t;
+                const tax = t * (db.settings.taxRate / 100);
+                document.getElementById('cart-subtotal').innerText = db.settings.currency + t.toFixed(2);
+                document.getElementById('cart-tax').innerText = db.settings.currency + tax.toFixed(2);
+                document.getElementById('cart-total').innerText = db.settings.currency + (t+tax).toFixed(2);
+                document.getElementById('checkout-total').innerText = document.getElementById('cart-total').innerText;
+            },
+            upd: (i, d) => { const x = pos.cart[i]; const n = x.qty + d; if(n<=0) pos.cart.splice(i,1); else if(n<=x.product.stock) x.qty = n; pos.renderCart(); },
+            clearCart: () => { pos.cart=[]; pos.renderCart(); },
+            showCheckout: () => { if(pos.cart.length) { document.getElementById('checkout-modal').classList.add('active'); } },
+            numpad: (k) => { const i = document.getElementById('checkout-cash'); if(k==='C') i.value=''; else i.value+=k; pos.calcChange(); },
+            calcChange: () => {
+                const pay = parseFloat(document.getElementById('checkout-cash').value) || 0;
+                const tot = parseFloat(document.getElementById('cart-total').innerText.replace(db.settings.currency, ''));
+                document.getElementById('checkout-change').innerText = db.settings.currency + Math.max(0, pay - tot).toFixed(2);
+            },
+            finalizeSale: () => {
+                const pay = parseFloat(document.getElementById('checkout-cash').value) || 0;
+                const tot = parseFloat(document.getElementById('cart-total').innerText.replace(db.settings.currency, ''));
+                if(pay < tot) return app.toast("Insufficient Cash");
+                
+                pos.cart.forEach(i => db.products.find(x => x.id === i.product.id).stock -= i.qty);
+                db.sales.push({ id: db.settings.nextSaleId++, date: new Date().toISOString(), total: tot, items: [...pos.cart], customerId: document.getElementById('pos-customer').value });
+                app.save();
+                document.getElementById('checkout-modal').classList.remove('active');
+                pos.clearCart(); pos.renderGrid(); inventoryManager.render(); app.updateDashboard();
+                app.toast("Sale Complete");
+            }
+        };
+
+        const inventoryManager = {
+            render: (q="") => {
+                const t = document.querySelector('#inventory-table tbody'); t.innerHTML = '';
+                db.products.filter(p => p.name.toLowerCase().includes(q.toLowerCase())).forEach(p => {
+                    t.innerHTML += `<tr><td><div>${p.name}</div><div class="text-muted" style="font-size:11px">${p.barcode}</div></td><td>${p.stock}</td><td>${p.price}</td><td><button class="btn btn-secondary" onclick="inventoryManager.del(${p.id})"><i class="fas fa-trash"></i></button></td></tr>`;
+                });
+            },
+            showAddModal: () => document.getElementById('product-modal').classList.add('active'),
+            saveProduct: () => {
+                const n = document.getElementById('prod-name').value;
+                if(!n) return;
+                db.products.push({
+                    id: Date.now(), name: n, barcode: document.getElementById('prod-barcode').value,
+                    category: document.getElementById('prod-category').value || "General",
+                    price: parseFloat(document.getElementById('prod-price').value)||0,
+                    stock: parseInt(document.getElementById('prod-stock').value)||0,
+                    image: document.getElementById('prod-image').value
+                });
+                app.save(); inventoryManager.render(); pos.init(); document.getElementById('product-modal').classList.remove('active');
+            },
+            del: (id) => { if(confirm("Delete?")) { db.products = db.products.filter(x=>x.id!==id); app.save(); inventoryManager.render(); pos.init(); } }
+        };
+
+        const customerManager = {
+            render: (q="") => {
+                const t = document.querySelector('#customer-table tbody'); t.innerHTML = '';
+                db.customers.filter(c => c.name.toLowerCase().includes(q.toLowerCase())).forEach(c => {
+                    t.innerHTML += `<tr><td>${c.name}</td><td>${c.phone}</td><td><button class="btn btn-secondary" onclick="customerManager.del(${c.id})"><i class="fas fa-trash"></i></button></td></tr>`;
+                });
+            },
+            showAddModal: () => document.getElementById('customer-modal').classList.add('active'),
+            saveCustomer: () => {
+                db.customers.push({ id:Date.now(), name:document.getElementById('cust-name').value, phone:document.getElementById('cust-phone').value });
+                app.save(); customerManager.render(); pos.populateCust(); document.getElementById('customer-modal').classList.remove('active');
+            },
+            del: (id) => { if(confirm("Delete?")) { db.customers = db.customers.filter(x=>x.id!==id); app.save(); customerManager.render(); } }
+        };
+
+        const reports = {
+            filter: 'today',
+            setFilter: (f) => { reports.filter = f; reports.render(); },
+            render: () => {
+                const start = new Date(); start.setHours(0,0,0,0);
+                if(reports.filter === 'month') start.setDate(1);
+                const d = db.sales.filter(s => new Date(s.date) >= start).reverse();
+                document.getElementById('report-total').innerText = db.settings.currency + d.reduce((a,b)=>a+b.total,0).toFixed(2);
+                document.getElementById('report-count').innerText = d.length;
+                const t = document.querySelector('#sales-table tbody'); t.innerHTML = '';
+                d.forEach(s => t.innerHTML += `<tr><td>${new Date(s.date).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</td><td>${s.customerId?'User':'Guest'}</td><td>${db.settings.currency}${s.total.toFixed(2)}</td></tr>`);
+            }
+        };
+
+        app.init();
+    </script>
+</body>
+</html>

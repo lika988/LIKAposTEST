@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8XSLX790TS"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-8XSLX790TS');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>LIKApos Mobile</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="icon" type="image/png" href="https://realfavicongenerator.net/files/56477a3f-ceaa-4bcb-8de8-c8c79a099f2d/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="https://realfavicongenerator.net/files/56477a3f-ceaa-4bcb-8de8-c8c79a099f2d/favicon.svg" />
+    <link rel="shortcut icon" href="https://realfavicongenerator.net/files/56477a3f-ceaa-4bcb-8de8-c8c79a099f2d/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="https://realfavicongenerator.net/files/56477a3f-ceaa-4bcb-8de8-c8c79a099f2d/apple-touch-icon.png" />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-app: #1A1D23;
+            --bg-surface: #252A34;
+            --bg-input: #1A1D23;
+            --primary: #0F1A2F;
+            --secondary: #00D4FF;
+            --accent: #00E5A0;
+            --danger: #FF4B55;
+            --warning: #FFB84C;
+            --info: #8B5CF6;
+            --text-primary: rgba(255, 255, 255, 0.95);
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-tertiary: rgba(255, 255, 255, 0.5);
+            --text-inverse: #111827;
+            --border: rgba(255, 255, 255, 0.08);
+            --hover-overlay: rgba(255,255,255,0.05);
+            --radius-sm: 8px; /* Increased for mobile */
+            --radius-md: 14px;
+            --radius-lg: 18px;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.2);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.4);
+            --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+            --safe-top: env(safe-area-inset-top, 0px);
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+            --safe-left: env(safe-area-inset-left, 0px);
+            --safe-right: env(safe-area-inset-right, 0px);
+        }
+
+        [data-theme="light"] {
+            --bg-app: #F3F4F6;
+            --bg-surface: #FFFFFF;
+            --bg-input: #FFFFFF;
+            --primary: #FFFFFF; 
+            --secondary: #0077CC; 
+            --accent: #00A86B;    
+            --danger: #DC2626;
+            --warning: #D97706;
+            --info: #7C3AED;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --text-tertiary: #9CA3AF;
+            --text-inverse: #FFFFFF;
+            --border: #E5E7EB;
+            --hover-overlay: rgba(0,0,0,0.05);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            background-color: var(--bg-app);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            height: 100dvh; 
+            font-size: 16px; /* Base size for mobile */
+            line-height: 1.5;
+            transition: background-color 0.3s var(--ease-smooth);
+        }
+
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+        h1, h2, h3, h4 { font-weight: 600; color: var(--text-primary); }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .text-accent { color: var(--accent); }
+        .text-secondary { color: var(--secondary); }
+        .text-muted { color: var(--text-tertiary); }
+        .text-danger { color: var(--danger); }
+        
+        .mobile-hidden { display: none !important; }
+
+        /* Animations */
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        
+        .animate-slide { animation: slideInRight 0.3s var(--ease-smooth); }
+        .animate-fade-up { animation: fadeInUp 0.3s var(--ease-smooth); }
+        
+        #app { display: flex; flex-direction: column; height: 100dvh; width: 100vw; overflow: hidden; }
+
+        /* HEADER */
+        header {
+            min-height: calc(60px + var(--safe-top)); 
+            padding: var(--safe-top) 16px 0 16px;
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid var(--border); background: var(--bg-surface); z-index: 40;
+        }
+
+        #main { 
+            flex: 1; display: flex; flex-direction: column; 
+            background: var(--bg-app); position: relative; overflow: hidden; 
+            padding-bottom: calc(90px + var(--safe-bottom)); /* Space for bottom nav */
+        }
+
+        /* Buttons & Inputs - Touch Optimized */
+        .btn {
+            border: none; border-radius: var(--radius-sm); padding: 12px 20px; 
+            font-weight: 600; font-size: 14px; cursor: pointer; min-height: 48px;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn:active { transform: scale(0.96); }
+        .btn-primary { background: linear-gradient(135deg, var(--secondary) 0%, #00A3FF 100%); color: #fff; }
+        .btn-secondary { background: var(--bg-app); color: var(--text-primary); border: 1px solid var(--border); }
+        .btn-danger { background: rgba(255, 75, 85, 0.1); color: var(--danger); border: 1px solid rgba(255, 75, 85, 0.2); }
+        .btn-success { background: var(--accent); color: #fff; }
+
+        input, select {
+            background: var(--bg-input); border: 1px solid var(--border); 
+            color: var(--text-primary); padding: 12px 16px; border-radius: var(--radius-sm);
+            width: 100%; min-height: 48px; font-size: 16px;
+        }
+        input:focus, select:focus { border-color: var(--secondary); }
+        
+        /* VIEWS */
+        .view-container { 
+            display: none; padding: 16px; height: 100%; overflow-y: auto; 
+            padding-left: calc(16px + var(--safe-left)); padding-right: calc(16px + var(--safe-right));
+        }
+        .view-container.active { display: block; }
+
+        /* CARDS */
+        .card {
+            background: var(--bg-surface); border: 1px solid var(--border); 
+            border-radius: var(--radius-md); padding: 20px; position: relative; margin-bottom: 16px;
+        }
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 24px; }
+        .stat-card { display: flex; flex-direction: column; gap: 8px; }
+        .stat-val { font-size: 24px; font-weight: 700; font-family: 'JetBrains Mono'; }
+
+        /* POS LAYOUT */
+        .pos-layout { display: flex; flex-direction: column; height: 100%; gap: 0; position: relative; }
+        
+        .product-grid { 
+            display: grid; gap: 12px; padding-bottom: 100px; overflow-y: auto; align-content: start; 
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        }
+
+        .prod-card {
+            background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md); 
+            padding: 0; cursor: pointer; display: flex; flex-direction: column; overflow: hidden; height: 100%; 
+            position: relative; min-height: 180px;
+        }
+        .prod-img-container { width: 100%; height: 110px; background-color: var(--bg-app); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .prod-img { width: 100%; height: 100%; object-fit: cover; }
+        .prod-info { padding: 10px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
+        .prod-price { background: var(--hover-overlay); color: var(--secondary); padding: 2px 6px; border-radius: 4px; align-self: flex-start; font-family: 'JetBrains Mono'; font-weight: 600; font-size: 12px; }
+
+        /* CART PANEL (Slide up) */
+        .cart-panel {
+            position: fixed; bottom: calc(90px + var(--safe-bottom));
+            left: 0; right: 0; z-index: 90; height: 60px;
+            background: var(--bg-surface); border-radius: 20px 20px 0 0; 
+            transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
+            border-top: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden;
+        }
+        .cart-panel.expanded { height: calc(100% - 70px - var(--safe-top)); bottom: 0; z-index: 1500; padding-bottom: var(--safe-bottom); }
+
+        #mobile-cart-toggle {
+            display: flex; align-items: center; justify-content: space-between; padding: 0 20px; min-height: 60px;
+            border-bottom: 1px solid var(--border); cursor: pointer; width: 100%;
+        }
+        .cart-panel:not(.expanded) > div:not(#mobile-cart-toggle) { display: none; }
+        .cart-items { flex: 1; overflow-y: auto; padding: 16px; }
+        .cart-item { background: var(--bg-app); margin-bottom: 10px; padding: 12px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; }
+
+        /* BOTTOM NAV */
+        #bottom-nav {
+            display: block; position: fixed; bottom: 0; left: 0; right: 0; height: 80px; z-index: 1000; pointer-events: none;
+        }
+        .nav-bg-curve {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 80px; fill: var(--bg-surface);
+            filter: drop-shadow(0 -5px 10px rgba(0,0,0,0.1)); z-index: 1; pointer-events: auto;
+        }
+        .nav-content {
+            position: relative; width: 100%; height: 100%; display: flex; justify-content: space-between; align-items: flex-end;
+            z-index: 2; padding-bottom: calc(10px + var(--safe-bottom));
+        }
+        .nav-item-mobile {
+            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60px;
+            color: #9CA3AF; text-decoration: none; font-size: 11px; font-weight: 500; cursor: pointer; pointer-events: auto; padding-bottom: 5px;
+        }
+        .nav-item-mobile i { font-size: 22px; margin-bottom: 4px; }
+        .nav-item-mobile.active { color: #8B5CF6; }
+        .nav-item-mobile.active i { transform: translateY(-4px); }
+
+        .nav-center-wrapper { width: 80px; height: 80px; position: relative; display: flex; justify-content: center; pointer-events: none; margin-bottom: 25px; }
+        .floating-btn {
+            width: 60px; height: 60px; background: linear-gradient(135deg, #8B5CF6, #7C3AED); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; color: white; font-size: 24px;
+            box-shadow: 0 8px 20px rgba(124, 58, 237, 0.4); border: none; cursor: pointer; pointer-events: auto;
+            position: absolute; bottom: 0;
+        }
+        .floating-btn:active { transform: scale(0.95); }
+
+        /* MODALS (Mobile Full Screen) */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; 
+            display: flex; align-items: flex-end; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.3s;
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        
+        .modal {
+            background: var(--bg-surface); width: 100%; max-height: 90vh; border-radius: 20px 20px 0 0;
+            padding: 24px; display: flex; flex-direction: column; overflow-y: auto; transform: translateY(100%); transition: transform 0.3s var(--ease-spring);
+        }
+        .modal-overlay.active .modal { transform: translateY(0); }
+        
+        /* CHECKOUT MODAL MOBILE SPECIFIC */
+        #checkout-modal .modal { height: 95vh; padding-bottom: 100px; }
+        #checkout-actions { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-surface); padding: 16px 20px; z-index: 50; border-top: 1px solid var(--border); }
+        #quick-cash-suggestions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; width: 100%; }
+        #checkout-numpad { display: none; } /* Hide numpad on mobile, use native keyboard */
+        
+        /* TABLE FIXES */
+        .table-container { overflow-x: auto; background: var(--bg-surface); border-radius: var(--radius-md); border: 1px solid var(--border); }
+        table { width: 100%; border-collapse: collapse; min-width: 500px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); }
+        th { background: var(--bg-app); font-size: 11px; text-transform: uppercase; color: var(--text-tertiary); }
+
+        #toast {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); 
+            background: var(--bg-surface); border: 1px solid var(--secondary); color: var(--text-primary); 
+            padding: 12px 24px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            z-index: 3000; opacity: 0; transition: all 0.5s var(--ease-spring);
+            display: flex; align-items: center; gap: 8px; font-weight: 500; width: max-content;
+        }
+        #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        /* UTILS */
+        .hidden { display: none !important; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+        .status-dot.online { background-color: var(--accent); box-shadow: 0 0 5px var(--accent); }
+        .status-dot.offline { background-color: var(--danger); }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <header>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div id="connection-status" class="status-dot online"></div>
+                <h2 id="header-title" class="animate-fade-up" style="font-size: 18px;">Dashboard</h2>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <button id="header-theme-btn" class="btn btn-secondary" style="padding: 8px; width: 36px; height: 36px;" onclick="app.toggleTheme()"><i class="fas fa-moon" id="theme-icon"></i></button>
+                <button id="header-settings-btn" class="btn btn-secondary" style="padding: 8px; width: 36px; height: 36px;" onclick="app.router('settings')"><i class="fas fa-cog"></i></button>
+            </div>
+        </header>
+
+        <main id="main">
+            <div id="dashboard-view" class="view-container active animate-slide">
+                <div class="stats-grid">
+                    <div class="card stat-card">
+                        <span class="text-muted" style="font-size: 11px; text-transform: uppercase;" data-i18n="today_revenue">Revenue</span>
+                        <div class="stat-val text-secondary" id="dash-sales">€0.00</div>
+                    </div>
+                    <div class="card stat-card">
+                        <span class="text-muted" style="font-size: 11px; text-transform: uppercase;" data-i18n="transactions">Sales</span>
+                        <div class="stat-val text-accent" id="dash-tx">0</div>
+                    </div>
+                </div>
+                
+                <div class="card" style="margin-bottom: 24px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
+                        <span class="text-muted" style="font-size: 12px; text-transform: uppercase;" data-i18n="low_stock_alerts">Low Stock</span>
+                        <div class="stat-val text-warning" id="dash-lowstock" style="font-size: 18px;">0</div>
+                    </div>
+                    <button class="btn btn-secondary" style="width: 100%;" onclick="inventoryManager.filterLowStock()"><span data-i18n="click_view">View Items</span> <i class="fas fa-arrow-right"></i></button>
+                </div>
+
+                <h3 style="margin-bottom: 16px;" data-i18n="quick_actions">Quick Actions</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <button class="btn btn-primary" onclick="app.router('pos')"><i class="fas fa-calculator"></i> <span data-i18n="new_sale">Sale</span></button>
+                    <button class="btn btn-secondary" onclick="inventoryManager.showAddModal()"><i class="fas fa-plus"></i> <span data-i18n="add_product">Product</span></button>
+                    <button class="btn btn-secondary" onclick="customerManager.showAddModal()"><i class="fas fa-user-plus"></i> <span data-i18n="add_customer">Customer</span></button>
+                    <button class="btn btn-secondary" onclick="document.getElementById('help-modal').classList.add('active')"><i class="fas fa-question-circle"></i> <span>Help</span></button>
+                </div>
+            </div>
+
+            <div id="pos-view" class="view-container">
+                <div class="pos-layout">
+                    <div style="display: flex; flex-direction: column; gap: 12px; overflow: hidden;">
+                        <div style="display: grid; grid-template-columns: 1fr auto; gap: 8px;">
+                            <input type="text" id="pos-search" data-i18n-placeholder="search_products_ph" placeholder="Search..." onkeyup="pos.filterProducts()">
+                             <select id="pos-category" style="width: 110px;" onchange="pos.filterProducts()">
+                                <option value="" data-i18n="all_categories">All</option>
+                            </select>
+                        </div>
+                        <div id="pos-grid" class="product-grid custom-scroll"></div>
+                    </div>
+
+                    <div class="cart-panel" id="cart-panel">
+                        <div id="mobile-cart-toggle" onclick="pos.toggleMobileCart()">
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <div style="background: var(--secondary); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary); font-weight: bold;" id="mobile-cart-count">0</div>
+                                <span style="font-weight: 600;" data-i18n="current_order">Current Order</span>
+                            </div>
+                            <div style="display: flex; gap: 12px; align-items: center;">
+                                <span class="font-mono text-accent" style="font-weight: 700; font-size: 16px;" id="mobile-cart-total">€0.00</span>
+                                <i class="fas fa-chevron-up" id="mobile-cart-icon"></i>
+                            </div>
+                        </div>
+
+                        <div style="padding: 12px 16px; background: var(--bg-app); border-bottom: 1px solid var(--border); display: flex; gap: 8px;">
+                             <select id="pos-customer" style="padding: 0 12px; font-size: 14px; border: 1px solid var(--border); height: 40px; flex: 1;">
+                                <option value="" data-i18n="guest_customer">Guest</option>
+                             </select>
+                             <button class="btn btn-danger" style="padding: 0 12px; min-height: 40px;" onclick="pos.clearCart()"><i class="fas fa-trash"></i></button>
+                        </div>
+                        
+                        <div id="cart-items" class="cart-items custom-scroll"></div>
+                        
+                        <div style="padding: 20px; background: var(--bg-surface); border-top: 1px solid var(--border); margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: var(--text-secondary);">
+                                <span data-i18n="subtotal">Subtotal</span><span id="cart-subtotal" class="font-mono">€0.00</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 16px; font-size: 14px; color: var(--text-secondary);">
+                                <span data-i18n="tax">Tax</span><span id="cart-tax" class="font-mono">€0.00</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 24px; font-size: 22px; font-weight: 700;">
+                                <span data-i18n="total">Total</span><span id="cart-total" class="font-mono text-accent">€0.00</span>
+                            </div>
+                            <button id="cart-pay-btn" class="btn btn-success" style="width: 100%; font-size: 18px; padding: 16px;" onclick="pos.showCheckout()"><span data-i18n="pay_now">PAY</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="inventory-view" class="view-container">
+                <div style="margin-bottom: 16px; display: grid; grid-template-columns: 1fr auto; gap: 8px;">
+                     <input type="text" id="inventory-search" placeholder="Search..." onkeyup="inventoryManager.render(this.value)">
+                     <button class="btn btn-primary" onclick="inventoryManager.showAddModal()"><i class="fas fa-plus"></i></button>
+                </div>
+                <div class="table-container" style="margin-bottom: 80px;">
+                    <table id="inventory-table">
+                        <thead><tr><th data-i18n="product">Item</th><th data-i18n="stock">Qty</th><th data-i18n="price">Price</th><th></th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="reports-view" class="view-container">
+                 <div class="stats-grid">
+                    <div class="card stat-card">
+                        <span class="text-muted" data-i18n="total_revenue">Total Revenue</span>
+                        <div class="stat-val text-secondary" id="report-total">€0.00</div>
+                    </div>
+                    <div class="card stat-card">
+                        <span class="text-muted" data-i18n="total_orders">Orders</span>
+                        <div class="stat-val text-accent" id="report-count">0</div>
+                    </div>
+                </div>
+                
+                <div id="report-filters" style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 16px;">
+                    <button id="filter-today" class="btn btn-secondary" onclick="reports.setFilter('today')" data-i18n="today">Today</button>
+                    <button id="filter-week" class="btn btn-secondary" onclick="reports.setFilter('week')" data-i18n="week">Week</button>
+                    <button id="filter-month" class="btn btn-secondary" onclick="reports.setFilter('month')" data-i18n="month">Month</button>
+                </div>
+
+                <div class="table-container" style="margin-bottom: 80px;">
+                    <table id="sales-table">
+                        <thead><tr><th>Time</th><th>Total</th><th></th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="customers-view" class="view-container">
+                 <div style="margin-bottom: 16px; display: grid; grid-template-columns: 1fr auto; gap: 8px;">
+                     <input type="text" placeholder="Search..." onkeyup="customerManager.render(this.value)">
+                     <button class="btn btn-primary" onclick="customerManager.showAddModal()"><i class="fas fa-plus"></i></button>
+                </div>
+                 <div class="table-container">
+                    <table id="customer-table">
+                        <thead><tr><th>Name</th><th>Phone</th><th></th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+             </div>
+
+            <div id="settings-view" class="view-container">
+                <div style="display: flex; flex-direction: column; gap: 24px;">
+                    
+                    <div class="card">
+                         <h3 style="margin-bottom: 16px;" data-i18n="system_language">Language</h3>
+                         <select id="setting-language-select" onchange="app.updateLanguage(this.value)">
+                             <option value="English">English</option>
+                             <option value="Albanian">Albanian (Shqip)</option>
+                         </select>
+                    </div>
+
+                    <div class="card">
+                        <h3 style="margin-bottom: 16px;">Store Config</h3>
+                        <div style="display: flex; flex-direction: column; gap: 16px;">
+                            <div>
+                                <label class="text-muted" style="font-size: 12px; margin-bottom: 4px; display:block;" data-i18n="store_name">Store Name</label>
+                                <input type="text" id="setting-store-name" onchange="app.updateSetting('storeName', this.value)">
+                            </div>
+                            <div>
+                                <label class="text-muted" style="font-size: 12px; margin-bottom: 4px; display:block;">Currency & Tax %</label>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                     <select id="setting-currency" onchange="app.updateSetting('currency', this.value)">
+                                        <option value="€">EUR (€)</option>
+                                        <option value="$">USD ($)</option>
+                                    </select>
+                                    <input type="number" id="setting-tax" onchange="app.updateSetting('taxRate', this.value)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                         <h3 style="margin-bottom: 16px;">Data Management</h3>
+                         <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <button class="btn btn-secondary" onclick="app.exportData()">Backup Data</button>
+                            <button class="btn btn-danger" onclick="app.resetData()">Reset App</button>
+                         </div>
+                    </div>
+                    
+                    <div style="text-align: center; color: var(--text-tertiary); font-size: 12px; margin-bottom: 100px;">
+                        LIKApos Mobile v3.1<br>
+                        <a href="https://likapp.pages.dev" style="color: var(--secondary); text-decoration: none;">likapp.pages.dev</a>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <nav id="bottom-nav">
+            <svg class="nav-bg-curve" viewBox="0 0 375 80" preserveAspectRatio="none">
+                <path d="M0,20 L132,20 C142,20 145,20 150,30 C158,46 164,55 187.5,55 C211,55 217,46 225,30 C230,20 233,20 243,20 L375,20 L375,80 L0,80 Z"></path>
+            </svg>
+            <div class="nav-content">
+                <a onclick="app.router('inventory')" class="nav-item-mobile" id="mob-inventory">
+                    <i class="fas fa-boxes"></i>
+                    <span data-i18n="stock">Stock</span>
+                </a>
+                
+                <a onclick="app.router('customers')" class="nav-item-mobile" id="mob-customers">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+
+                <div class="nav-center-wrapper">
+                    <button onclick="app.router('pos')" class="floating-btn" id="mob-pos">
+                        <i class="fas fa-calculator"></i>
+                    </button>
+                </div>
+                
+                 <a onclick="app.router('settings')" class="nav-item-mobile" id="mob-settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Set.</span>
+                </a>
+
+                <a onclick="app.router('reports')" class="nav-item-mobile" id="mob-reports">
+                    <i class="fas fa-chart-bar"></i>
+                    <span data-i18n="reports">Reports</span>
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <div id="checkout-modal" class="modal-overlay">
+        <div class="modal">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                <h3>Checkout</h3>
+                <button class="btn btn-secondary" style="padding: 4px 12px;" onclick="document.getElementById('checkout-modal').classList.remove('active')"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <div class="card" style="text-align: center; padding: 20px; background: var(--bg-app);">
+                <span class="text-muted" style="font-size: 12px;">TOTAL DUE</span>
+                <div class="font-mono text-accent" style="font-size: 42px; font-weight: 700; margin: 5px 0;" id="checkout-total">€0.00</div>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <label class="text-muted" style="font-size: 12px; margin-bottom: 8px; display: block;">CASH RECEIVED</label>
+                <input type="number" id="checkout-cash" class="font-mono" style="font-size: 24px; height: 60px; text-align: center;" placeholder="0.00" onkeyup="pos.calcChange()">
+            </div>
+            
+            <div id="quick-cash-suggestions"></div>
+            
+            <div style="margin-top: 24px; text-align: center;">
+                 <span class="text-muted" style="font-size: 12px;">CHANGE DUE</span>
+                 <div id="checkout-change" class="font-mono" style="font-size: 32px; font-weight: 600;">€0.00</div>
+            </div>
+
+            <div id="checkout-actions">
+                <button class="btn btn-success" style="width: 100%; font-size: 18px; height: 55px;" onclick="pos.finalizeSale()">COMPLETE SALE</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="product-modal" class="modal-overlay">
+        <div class="modal">
+            <h3 id="product-modal-title" style="margin-bottom: 20px;">Add Product</h3>
+            <input type="hidden" id="prod-id">
+            <div style="display: flex; flex-direction: column; gap: 16px; padding-bottom: 80px;">
+                <div><label class="text-muted" style="font-size:12px;">Name</label><input type="text" id="prod-name"></div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+                    <div><label class="text-muted" style="font-size:12px;">Barcode</label><input type="text" id="prod-barcode"></div>
+                    <div><label class="text-muted" style="font-size:12px;">Category</label><input type="text" id="prod-category" list="category-list"><datalist id="category-list"></datalist></div>
+                </div>
+                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+                    <div><label class="text-muted" style="font-size:12px;">Price</label><input type="number" id="prod-price"></div>
+                    <div><label class="text-muted" style="font-size:12px;">Stock</label><input type="number" id="prod-stock"></div>
+                </div>
+                 <div><label class="text-muted" style="font-size:12px;">Image URL</label><input type="text" id="prod-image"></div>
+                 <input type="hidden" id="prod-cost" value="0"><input type="hidden" id="prod-min" value="5">
+                 <button class="btn btn-primary" onclick="inventoryManager.saveProduct()">Save Product</button>
+                 <button class="btn btn-secondary" onclick="inventoryManager.closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="customer-modal" class="modal-overlay">
+        <div class="modal">
+            <h3 style="margin-bottom: 20px;">Customer</h3>
+            <input type="hidden" id="cust-id">
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                 <div><label class="text-muted" style="font-size:12px;">Name</label><input type="text" id="cust-name"></div>
+                 <div><label class="text-muted" style="font-size:12px;">Phone</label><input type="tel" id="cust-phone"></div>
+                 <button class="btn btn-primary" onclick="customerManager.saveCustomer()">Save</button>
+                 <button class="btn btn-secondary" onclick="customerManager.closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="help-modal" class="modal-overlay">
+        <div class="modal">
+            <h3>Help & Support</h3>
+            <p class="text-muted" style="margin: 16px 0;">For full documentation, please visit the desktop version or our website.</p>
+            <a href="https://likapp.pages.dev" target="_blank" class="btn btn-secondary" style="text-decoration: none; margin-bottom: 16px;">Visit Website</a>
+            <button class="btn btn-primary" onclick="document.getElementById('help-modal').classList.remove('active')">Close</button>
+        </div>
+    </div>
+
+    <div id="toast"><i class="fas fa-info-circle"></i> <span id="toast-msg"></span></div>
+
+    <script>
+        // LANGUAGE & DB DEFINITIONS
+        const TRANSLATIONS = {
+            "English": { dashboard: "Dashboard", pos: "POS", inventory: "Inventory", settings: "Settings", reports: "Reports", stock: "Stock", today_revenue: "Revenue", transactions: "Orders", low_stock_alerts: "Low Stock", new_sale: "Sale", add_product: "Product", add_customer: "Customer", pay_now: "PAY", total: "Total", subtotal: "Subtotal", tax: "Tax", current_order: "Order", product: "Item", price: "Price" },
+            "Albanian": { dashboard: "Ballina", pos: "Arka", inventory: "Stoku", settings: "Cilësimet", reports: "Raporte", stock: "Stoku", today_revenue: "Të Hyrat", transactions: "Porositë", low_stock_alerts: "Stok i ulët", new_sale: "Shitje", add_product: "Produkt", add_customer: "Klient", pay_now: "PAGUAJ", total: "Totali", subtotal: "Nëntotali", tax: "Taksa", current_order: "Porosia", product: "Artikulli", price: "Çmimi" }
+        };
+
+        const db = { products: [], customers: [], sales: [], settings: { storeName: "LIKApos", currency: "€", taxRate: 10, taxType: "exclusive", nextSaleId: 1000, language: "English" } };
+
+        const app = {
+            init: () => {
+                const savedDB = localStorage.getItem('likapos_db');
+                const savedLang = localStorage.getItem('likapos_language');
+                if (savedDB) { Object.assign(db, JSON.parse(savedDB)); }
+                if (savedLang) { db.settings.language = savedLang; }
+                
+                app.launch();
+            },
+            launch: () => {
+                // Restore Settings
+                document.getElementById('setting-store-name').value = db.settings.storeName;
+                document.getElementById('setting-currency').value = db.settings.currency;
+                document.getElementById('setting-tax').value = db.settings.taxRate;
+                document.getElementById('setting-language-select').value = db.settings.language;
+                
+                const savedTheme = localStorage.getItem('likapos_theme') || 'dark';
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                document.getElementById('theme-icon').className = savedTheme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+
+                app.applyTranslations();
+                pos.init();
+                inventoryManager.render();
+                app.updateDashboard();
+                app.checkConnection();
+                
+                // Default Router
+                app.router('dashboard');
+            },
+            save: () => { localStorage.setItem('likapos_db', JSON.stringify(db)); },
+            t: (key) => { const dict = TRANSLATIONS[db.settings.language] || TRANSLATIONS["English"]; return dict[key] || key; },
+            applyTranslations: () => {
+                document.querySelectorAll('[data-i18n]').forEach(el => { el.innerText = app.t(el.getAttribute('data-i18n')); });
+            },
+            updateLanguage: (val) => { db.settings.language = val; localStorage.setItem('likapos_language', val); app.save(); app.applyTranslations(); },
+            updateSetting: (key, val) => { db.settings[key] = val; app.save(); app.toast("Saved"); app.updateDashboard(); },
+            toggleTheme: () => {
+                const n = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', n); localStorage.setItem('likapos_theme', n);
+                document.getElementById('theme-icon').className = n === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+            },
+            router: (view) => {
+                document.querySelectorAll('.view-container').forEach(e => e.classList.remove('active', 'animate-slide'));
+                document.querySelectorAll('.nav-item-mobile').forEach(e => e.classList.remove('active'));
+                document.querySelectorAll('.floating-btn').forEach(e => e.classList.remove('active'));
+                
+                document.getElementById(view + '-view').classList.add('active', 'animate-slide');
+                
+                if(view === 'pos') document.getElementById('mob-pos').classList.add('active');
+                else { const nav = document.getElementById('mob-' + view); if(nav) nav.classList.add('active'); }
+
+                if (view === 'reports') reports.render();
+                if (view === 'dashboard') app.updateDashboard();
+            },
+            toast: (msg) => {
+                const t = document.getElementById('toast'); document.getElementById('toast-msg').innerText = msg;
+                t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000);
+            },
+            updateDashboard: () => {
+                const today = new Date().toDateString();
+                const sales = db.sales.filter(s => new Date(s.date).toDateString() === today);
+                const total = sales.reduce((a, b) => a + b.total, 0);
+                const low = db.products.filter(p => p.stock <= p.minStock).length;
+                document.getElementById('dash-sales').innerText = db.settings.currency + total.toFixed(2);
+                document.getElementById('dash-tx').innerText = sales.length;
+                document.getElementById('dash-lowstock').innerText = low;
+            },
+            checkConnection: () => {
+                 const el = document.getElementById('connection-status');
+                 const up = () => el.className = navigator.onLine ? 'status-dot online' : 'status-dot offline';
+                 window.addEventListener('online', up); window.addEventListener('offline', up); up();
+            },
+            resetData: () => { if(confirm("Reset App?")) { localStorage.removeItem('likapos_db'); location.reload(); } },
+            exportData: () => {
+                const blob = new Blob([JSON.stringify(db)], {type: "application/json"});
+                const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "backup.json"; a.click();
+            }
+        };
+
+        const pos = {
+            cart: [], currentTotal: 0,
+            init: () => { pos.renderGrid(); pos.populateCategories(); pos.populateCustomers(); },
+            toggleMobileCart: () => {
+                const p = document.getElementById('cart-panel');
+                p.classList.toggle('expanded');
+                document.getElementById('mobile-cart-icon').className = p.classList.contains('expanded') ? 'fas fa-chevron-down' : 'fas fa-chevron-up';
+            },
+            populateCategories: () => {
+                const s = document.getElementById('pos-category'); s.innerHTML = '<option value="">All</option>';
+                [...new Set(db.products.map(p => p.category))].forEach(c => s.innerHTML += `<option value="${c}">${c}</option>`);
+                // Also update Product Modal list
+                document.getElementById('category-list').innerHTML = '';
+                [...new Set(db.products.map(p => p.category))].forEach(c => document.getElementById('category-list').innerHTML += `<option value="${c}">`);
+            },
+            populateCustomers: () => {
+                const s = document.getElementById('pos-customer'); s.innerHTML = '<option value="">Guest</option>';
+                db.customers.forEach(c => s.innerHTML += `<option value="${c.id}">${c.name}</option>`);
+            },
+            filterProducts: () => pos.renderGrid(),
+            renderGrid: () => {
+                const q = document.getElementById('pos-search').value.toLowerCase();
+                const cat = document.getElementById('pos-category').value;
+                const c = document.getElementById('pos-grid'); c.innerHTML = '';
+                
+                // Force grid re-render logic for mobile
+                db.products.filter(p => (p.name.toLowerCase().includes(q) || p.barcode.includes(q)) && (cat === "" || p.category === cat)).forEach(p => {
+                    const el = document.createElement('div'); el.className = 'prod-card animate-fade-up'; el.onclick = () => pos.addToCart(p.id);
+                    const img = p.image ? `<img src="${p.image}" class="prod-img" onerror="this.style.display='none'">` : '';
+                    el.innerHTML = `
+                        <div class="prod-img-container">${img}</div>
+                        <div class="prod-info">
+                            <div style="font-weight:600; font-size:13px; line-height:1.2;">${p.name}</div>
+                            <div style="display:flex; justify-content:space-between; margin-top:auto;">
+                                <div class="prod-price">${db.settings.currency}${p.price.toFixed(2)}</div>
+                                <div style="font-size:11px; color:${p.stock<=5?'var(--danger)':'var(--text-tertiary)'}">${p.stock} left</div>
+                            </div>
+                        </div>`;
+                    c.appendChild(el);
+                });
+            },
+            addToCart: (id) => {
+                const p = db.products.find(x => x.id == id);
+                if (p.stock <= 0) return app.toast("Out of Stock");
+                const ex = pos.cart.find(i => i.product.id === id);
+                if (ex) { if (ex.qty < p.stock) ex.qty++; } else { pos.cart.push({ product: p, qty: 1 }); }
+                pos.renderCart(); app.toast("Added");
+            },
+            renderCart: () => {
+                const c = document.getElementById('cart-items'); c.innerHTML = '';
+                let t = 0, q = 0;
+                pos.cart.forEach((i, idx) => {
+                    t += i.product.price * i.qty; q += i.qty;
+                    c.innerHTML += `
+                    <div class="cart-item">
+                        <div><div style="font-weight:600;">${i.product.name}</div><div style="font-size:12px;color:var(--text-tertiary)">${db.settings.currency}${i.product.price}</div></div>
+                        <div style="display:flex;align-items:center;gap:12px;">
+                            <button class="btn btn-secondary" style="padding:4px 12px;" onclick="pos.upd(${idx},-1)">-</button>
+                            <span class="font-mono" style="font-size:16px; width:20px; text-align:center;">${i.qty}</span>
+                            <button class="btn btn-secondary" style="padding:4px 12px;" onclick="pos.upd(${idx},1)">+</button>
+                        </div>
+                    </div>`;
+                });
+                
+                const tax = db.settings.taxType === 'inclusive' ? t - (t / (1 + db.settings.taxRate/100)) : t * (db.settings.taxRate/100);
+                const total = db.settings.taxType === 'inclusive' ? t : t + tax;
+                
+                pos.currentTotal = total;
+                document.getElementById('cart-subtotal').innerText = db.settings.currency + (total-tax).toFixed(2);
+                document.getElementById('cart-tax').innerText = db.settings.currency + tax.toFixed(2);
+                document.getElementById('cart-total').innerText = db.settings.currency + total.toFixed(2);
+                document.getElementById('mobile-cart-total').innerText = db.settings.currency + total.toFixed(2);
+                document.getElementById('mobile-cart-count').innerText = q;
+            },
+            upd: (i, d) => {
+                const item = pos.cart[i]; const n = item.qty + d;
+                if (n <= 0) pos.cart.splice(i, 1); else if (n <= item.product.stock) item.qty = n;
+                pos.renderCart();
+            },
+            clearCart: () => { pos.cart = []; pos.renderCart(); },
+            showCheckout: () => {
+                if(!pos.cart.length) return app.toast("Cart Empty");
+                document.getElementById('checkout-modal').classList.add('active');
+                document.getElementById('checkout-total').innerText = db.settings.currency + pos.currentTotal.toFixed(2);
+                document.getElementById('checkout-cash').value = '';
+                
+                const sugg = document.getElementById('quick-cash-suggestions'); sugg.innerHTML = '';
+                [Math.ceil(pos.currentTotal), Math.ceil(pos.currentTotal/5)*5, 10, 20, 50].forEach(a => {
+                    if(a >= pos.currentTotal && !sugg.innerHTML.includes(`>${a}<`)) 
+                        sugg.innerHTML += `<button class="btn btn-secondary" onclick="document.getElementById('checkout-cash').value='${a}';pos.calcChange()">${a}</button>`;
+                });
+            },
+            calcChange: () => {
+                const p = parseFloat(document.getElementById('checkout-cash').value)||0;
+                document.getElementById('checkout-change').innerText = db.settings.currency + Math.max(0, p - pos.currentTotal).toFixed(2);
+            },
+            finalizeSale: () => {
+                const pay = parseFloat(document.getElementById('checkout-cash').value)||0;
+                if(pay < pos.currentTotal) return app.toast("Insufficient Cash");
+                
+                pos.cart.forEach(i => db.products.find(p=>p.id===i.product.id).stock -= i.qty);
+                const s = { id: db.settings.nextSaleId++, date: new Date().toISOString(), total: pos.currentTotal, items: [...pos.cart], customerId: document.getElementById('pos-customer').value };
+                db.sales.push(s);
+                app.save(); app.toast("Sale Complete");
+                document.getElementById('checkout-modal').classList.remove('active');
+                pos.cart=[]; pos.renderCart(); pos.renderGrid(); inventoryManager.render(); app.updateDashboard();
+                document.getElementById('cart-panel').classList.remove('expanded'); pos.toggleMobileCart();
+            }
+        };
+
+        const inventoryManager = {
+            render: (q="") => {
+                const t = document.querySelector('#inventory-table tbody'); t.innerHTML = '';
+                db.products.filter(p=>p.name.toLowerCase().includes(q.toLowerCase())).forEach(p => {
+                    t.innerHTML += `<tr><td><div>${p.name}</div><div class="text-muted" style="font-size:10px">${p.barcode}</div></td><td>${p.stock}</td><td>${p.price}</td><td><button class="btn btn-secondary" style="padding:4px;" onclick="inventoryManager.del(${p.id})"><i class="fas fa-trash"></i></button></td></tr>`;
+                });
+            },
+            showAddModal: () => document.getElementById('product-modal').classList.add('active'),
+            closeModal: () => document.getElementById('product-modal').classList.remove('active'),
+            saveProduct: () => {
+                const n = document.getElementById('prod-name').value;
+                if(!n) return app.toast("Name Required");
+                db.products.push({
+                    id: Date.now(), name: n, barcode: document.getElementById('prod-barcode').value,
+                    category: document.getElementById('prod-category').value || 'General',
+                    price: parseFloat(document.getElementById('prod-price').value)||0,
+                    stock: parseInt(document.getElementById('prod-stock').value)||0,
+                    minStock: 5, image: document.getElementById('prod-image').value
+                });
+                app.save(); inventoryManager.closeModal(); inventoryManager.render(); pos.init(); app.updateDashboard();
+            },
+            del: (id) => { if(confirm("Delete?")) { db.products = db.products.filter(x=>x.id!==id); app.save(); inventoryManager.render(); pos.init(); } },
+            filterLowStock: () => { document.getElementById('inventory-search').value = ''; app.router('inventory'); }
+        };
+
+        const customerManager = {
+             render: (q="") => {
+                const t = document.querySelector('#customer-table tbody'); t.innerHTML = '';
+                db.customers.filter(c=>c.name.toLowerCase().includes(q.toLowerCase())).forEach(c => {
+                    t.innerHTML += `<tr><td>${c.name}</td><td>${c.phone}</td><td><button class="btn btn-secondary" onclick="customerManager.del(${c.id})"><i class="fas fa-trash"></i></button></td></tr>`;
+                });
+            },
+            showAddModal: () => document.getElementById('customer-modal').classList.add('active'),
+            closeModal: () => document.getElementById('customer-modal').classList.remove('active'),
+            saveCustomer: () => {
+                const n = document.getElementById('cust-name').value;
+                if(!n) return app.toast("Name Required");
+                db.customers.push({ id: Date.now(), name: n, phone: document.getElementById('cust-phone').value });
+                app.save(); customerManager.closeModal(); customerManager.render(); pos.populateCustomers();
+            },
+            del: (id) => { if(confirm("Delete?")) { db.customers = db.customers.filter(x=>x.id!==id); app.save(); customerManager.render(); pos.populateCustomers(); } }
+        };
+        
+        const reports = {
+            filter: 'today',
+            setFilter: (f) => { reports.filter = f; reports.render(); },
+            render: () => {
+                const start = new Date(); start.setHours(0,0,0,0);
+                if(reports.filter === 'week') start.setDate(start.getDate() - 7);
+                if(reports.filter === 'month') start.setMonth(start.getMonth() - 1);
+                
+                const data = db.sales.filter(s => new Date(s.date) >= start).reverse();
+                const total = data.reduce((a,b)=>a+b.total,0);
+                
+                document.getElementById('report-total').innerText = db.settings.currency + total.toFixed(2);
+                document.getElementById('report-count').innerText = data.length;
+                
+                const t = document.querySelector('#sales-table tbody'); t.innerHTML = '';
+                data.forEach(s => {
+                    t.innerHTML += `<tr><td style="font-size:12px;">${new Date(s.date).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</td><td>${db.settings.currency}${s.total.toFixed(2)}</td><td><i class="fas fa-check text-accent"></i></td></tr>`;
+                });
+            }
+        };
+
+        app.init();
+    </script>
+</body>
+</html>
