@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
+    <!-- ANALYTICS -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-8XSLX790TS"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -9,20 +10,33 @@
       gtag('config', 'G-8XSLX790TS');
     </script>
 
+    <!-- PEERJS FOR SYNC (From Desktop) -->
     <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 
     <meta charset="UTF-8">
+    <!-- TABLET VIEWPORT LOCK -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LIKApos Tablet</title>
     
+    <!-- iOS WEB APP META -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="LIKApos" />
+
+    <!-- ICONS -->
     <link rel="icon" type="image/png" href="https://realfavicongenerator.net/files/56477a3f-ceaa-4bcb-8de8-c8c79a099f2d/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="https://realfavicongenerator.net/files/56477a3f-ceaa-4bcb-8de8-c8c79a099f2d/favicon.svg" />
     <link rel="shortcut icon" href="https://realfavicongenerator.net/files/56477a3f-ceaa-4bcb-8de8-c8c79a099f2d/favicon.ico" />
-
+    <link rel="apple-touch-icon" sizes="180x180" href="https://realfavicongenerator.net/files/56477a3f-ceaa-4bcb-8de8-c8c79a099f2d/apple-touch-icon.png" />
+    
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+        /* --- CSS VARIABLES (Unified) --- */
         :root {
             --bg-app: #1A1D23;
             --bg-surface: #252A34;
@@ -42,9 +56,12 @@
             --radius-sm: 8px;
             --radius-md: 14px;
             --radius-lg: 18px;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.2);
             --shadow-lg: 0 8px 24px rgba(0,0,0,0.4);
             --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
             --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+            --safe-top: env(safe-area-inset-top);
+            --safe-bottom: env(safe-area-inset-bottom);
         }
 
         [data-theme="light"] {
@@ -63,8 +80,11 @@
             --text-tertiary: #9CA3AF;
             --border: #E5E7EB;
             --hover-overlay: rgba(0,0,0,0.05);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
         }
 
+        /* --- BASE STYLES --- */
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
         
         body {
@@ -72,212 +92,303 @@
             color: var(--text-primary);
             font-family: 'Inter', sans-serif;
             overflow: hidden;
-            height: 100vh; 
-            font-size: 15px;
-            transition: background 0.3s;
+            height: 100vh; /* Fixed height for tablet app feel */
+            width: 100vw;
+            font-size: 15px; /* Slightly larger text for tablet */
+            transition: background 0.3s, color 0.3s;
         }
 
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        /* Scrollbar optimization for touch */
+        .custom-scroll { -webkit-overflow-scrolling: touch; }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
-        .animate-fade-up { animation: fadeInUp 0.4s var(--ease-smooth); }
-        .animate-slide { animation: slideInRight 0.4s var(--ease-smooth); }
+        h1, h2, h3, h4 { font-weight: 600; letter-spacing: -0.02em; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .text-accent { color: var(--accent); }
+        .text-secondary { color: var(--secondary); }
+        .text-muted { color: var(--text-tertiary); }
+        .text-danger { color: var(--danger); }
+        .text-warning { color: var(--warning); }
+        
+        /* --- ANIMATIONS --- */
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slideInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(255, 75, 85, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(255, 75, 85, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 75, 85, 0); } }
 
-        #app { display: flex; height: 100vh; width: 100vw; }
+        .animate-slide { animation: slideInRight 0.4s var(--ease-smooth); }
+        .animate-fade-up { animation: fadeInUp 0.4s var(--ease-smooth); }
+        .animate-scale { animation: scaleIn 0.3s var(--ease-spring); }
+
+        /* --- LAYOUT --- */
+        #app { display: flex; height: 100%; width: 100%; }
         
+        /* TABLET OPTIMIZED SIDEBAR (Slim -> Expanded) */
         #sidebar {
-            width: 80px; 
+            width: 80px; /* Slim default */
             background: var(--bg-sidebar);
             border-right: 1px solid var(--border);
-            display: flex; flex-direction: column; z-index: 50;
+            display: flex; flex-direction: column; z-index: 100;
             transition: width 0.3s var(--ease-spring);
-            overflow: hidden;
+            padding-top: var(--safe-top);
         }
         #sidebar.expanded { width: 260px; }
 
         .brand { 
-            padding: 24px; font-size: 20px; font-weight: 700; display: flex; align-items: center; justify-content: center; 
-            border-bottom: 1px solid var(--border); height: 80px;
+            height: 70px; display: flex; align-items: center; justify-content: center; 
+            border-bottom: 1px solid var(--border); color: var(--text-primary); font-weight: 700; font-size: 20px;
+            cursor: pointer;
         }
-        #sidebar.expanded .brand { justify-content: flex-start; gap: 12px; }
+        #sidebar.expanded .brand { justify-content: flex-start; padding-left: 24px; gap: 12px; }
         .brand span { display: none; }
         #sidebar.expanded .brand span { display: inline; }
+        
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); transition: background 0.3s; }
+        .status-dot.offline { background: var(--danger); animation: pulse-red 2s infinite; }
 
-        .nav-container { padding: 16px 0; flex: 1; display: flex; flex-direction: column; align-items: center; }
-        #sidebar.expanded .nav-container { align-items: stretch; }
+        .nav-container { padding: 16px 0; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; overflow-y: auto; }
+        #sidebar.expanded .nav-container { align-items: stretch; padding: 16px; }
 
         .nav-item {
-            position: relative; display: flex; align-items: center; justify-content: center; 
-            width: 50px; height: 50px; margin-bottom: 8px; border-radius: 12px;
-            color: var(--text-secondary); text-decoration: none; cursor: pointer; transition: all 0.2s; font-weight: 500;
+            position: relative; display: flex; align-items: center; justify-content: center;
+            width: 48px; height: 48px; border-radius: 12px;
+            color: var(--text-secondary); text-decoration: none; transition: all 0.2s;
         }
-        #sidebar.expanded .nav-item { width: auto; height: auto; padding: 14px 24px; justify-content: flex-start; gap: 12px; border-radius: 0; margin-bottom: 0; }
+        #sidebar.expanded .nav-item { width: auto; height: 50px; justify-content: flex-start; padding: 0 16px; gap: 16px; }
         
-        .nav-item i { font-size: 20px; }
-        .nav-item span:not(.shortcut-badge) { display: none; }
+        .nav-item i { font-size: 20px; min-width: 24px; text-align: center; }
+        .nav-item span:not(.shortcut-badge) { display: none; white-space: nowrap; font-weight: 500; }
         #sidebar.expanded .nav-item span:not(.shortcut-badge) { display: inline; }
         
-        .nav-item:hover, .nav-item.active { color: var(--text-primary); background: var(--hover-overlay); }
+        .nav-item:active { transform: scale(0.95); }
+        .nav-item.active { background: var(--hover-overlay); color: var(--text-primary); }
         .nav-item.active i { color: var(--secondary); }
-
-        .shortcut-badge { display: none; }
+        .shortcut-badge { display: none; } /* Hide shortcuts on tablet to reduce clutter */
 
         #main { flex: 1; display: flex; flex-direction: column; background: var(--bg-app); position: relative; overflow: hidden; }
 
         header {
-            height: 70px; padding: 0 24px;
+            min-height: 70px; padding: var(--safe-top) 24px 0 24px;
             display: flex; align-items: center; justify-content: space-between;
-            border-bottom: 1px solid var(--border); background: var(--bg-surface);
+            border-bottom: 1px solid var(--border); background: var(--bg-surface); z-index: 90;
         }
 
+        /* --- TOUCH COMPONENTS --- */
         .btn {
-            border: none; border-radius: var(--radius-sm); padding: 12px 20px; font-weight: 600; font-size: 14px; cursor: pointer;
-            transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; justify-content: center;
+            border: none; border-radius: var(--radius-sm); padding: 0 20px; font-weight: 600; font-size: 14px; 
+            transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            height: 48px; /* Touch friendly height */
+            cursor: pointer;
         }
-        .btn-primary { background: linear-gradient(135deg, var(--secondary) 0%, #00A3FF 100%); color: #fff; }
+        .btn:active { transform: scale(0.96); }
+        .btn-primary { background: linear-gradient(135deg, var(--secondary) 0%, #00A3FF 100%); color: #fff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); }
         .btn-secondary { background: var(--bg-app); color: var(--text-primary); border: 1px solid var(--border); }
-        .btn-danger { background: rgba(255, 75, 85, 0.1); color: var(--danger); border: 1px solid rgba(255, 75, 85, 0.2); }
-        .btn-success { background: var(--accent); color: #fff; }
+        .btn-danger { background: rgba(255, 75, 85, 0.15); color: var(--danger); border: 1px solid rgba(255, 75, 85, 0.3); }
+        .btn-success { background: var(--accent); color: #fff; box-shadow: 0 4px 12px rgba(0, 229, 160, 0.2); }
 
         input, select {
             background: var(--bg-input); border: 1px solid var(--border); color: var(--text-primary); 
-            padding: 12px 16px; border-radius: var(--radius-sm); width: 100%; min-height: 48px;
+            padding: 0 16px; border-radius: var(--radius-sm); width: 100%; height: 50px; /* Touch friendly height */
+            font-size: 15px; appearance: none;
         }
+        input:focus, select:focus { border-color: var(--secondary); box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.15); }
 
         .card {
-            background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 20px;
+            background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 24px;
+            box-shadow: var(--shadow-sm);
         }
 
-        .view-container { display: none; padding: 24px; height: 100%; overflow-y: auto; }
+        .view-container { 
+            display: none; padding: 24px; height: 100%; overflow-y: auto; overflow-x: hidden;
+            padding-bottom: calc(24px + var(--safe-bottom));
+        }
         .view-container.active { display: block; }
 
-        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 24px; }
-        .stat-card { display: flex; flex-direction: column; gap: 8px; }
-        .stat-val { font-size: 26px; font-weight: 700; font-family: 'JetBrains Mono'; }
+        /* --- DASHBOARD --- */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .stat-card { display: flex; flex-direction: column; gap: 4px; justify-content: center; min-height: 100px; }
+        .stat-val { font-size: 28px; font-weight: 700; font-family: 'JetBrains Mono'; }
         
+        /* --- POS LAYOUT (Tablet) --- */
         .pos-layout { display: grid; grid-template-columns: 1fr 340px; gap: 20px; height: 100%; overflow: hidden; }
-        
-        @media (max-width: 900px) {
-             .pos-layout { grid-template-columns: 1fr 300px; gap: 16px; }
+        @media (max-width: 900px) { .pos-layout { grid-template-columns: 1fr 280px; gap: 16px; } }
+        /* Portrait Mode Support */
+        @media (max-width: 768px) and (orientation: portrait) {
+            .pos-layout { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
+            .cart-panel { max-height: 40vh; }
         }
 
         .product-grid { 
-            display: grid; gap: 12px; padding-right: 4px; overflow-y: auto; align-content: start; 
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); 
+            display: grid; gap: 12px; padding-right: 4px; align-content: start; 
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* Optimised for tablet touch */
         }
         
         .prod-card {
             background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md); 
-            cursor: pointer; display: flex; flex-direction: column; overflow: hidden; min-height: 180px;
+            cursor: pointer; display: flex; flex-direction: column; overflow: hidden; min-height: 160px;
+            position: relative; transition: transform 0.1s;
         }
-        .prod-img-container { height: 110px; background: var(--bg-app); display: flex; align-items: center; justify-content: center; }
+        .prod-card:active { transform: scale(0.96); }
+        
+        .prod-img-container { height: 100px; background: var(--bg-app); display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .prod-img { width: 100%; height: 100%; object-fit: cover; }
-        .prod-info { padding: 10px; display: flex; flex-direction: column; gap: 4px; }
-        .prod-price { background: var(--hover-overlay); color: var(--secondary); padding: 4px 8px; border-radius: 4px; align-self: flex-start; font-weight: 600; font-size: 12px; }
+        
+        .prod-info { padding: 10px; display: flex; flex-direction: column; gap: 4px; flex: 1; justify-content: space-between; }
+        .prod-name { font-weight: 600; font-size: 13px; line-height: 1.3; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        .prod-price { background: var(--hover-overlay); color: var(--secondary); padding: 4px 8px; border-radius: 4px; align-self: flex-start; font-weight: 600; font-size: 12px; font-family: 'JetBrains Mono'; }
 
+        /* --- CART --- */
         .cart-panel {
             background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-lg); 
             display: flex; flex-direction: column; overflow: hidden;
         }
-        .cart-items { flex: 1; overflow-y: auto; padding: 16px; }
+        .cart-items { flex: 1; overflow-y: auto; padding: 12px; }
         .cart-item { 
-            background: var(--bg-app); margin-bottom: 8px; padding: 12px; border-radius: 8px; 
+            background: var(--bg-app); margin-bottom: 8px; padding: 12px; border-radius: 10px; 
             display: flex; justify-content: space-between; align-items: center;
         }
+        
+        /* --- TABLES --- */
+        .table-container { background: var(--bg-surface); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm); }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; } /* Force scroll on small screens */
+        th { background: var(--hover-overlay); padding: 16px; color: var(--text-secondary); font-weight: 600; font-size: 12px; text-align: left; text-transform: uppercase; }
+        td { padding: 16px; border-top: 1px solid var(--border); color: var(--text-primary); font-size: 14px; }
+        tr:active { background: var(--hover-overlay); }
 
+        /* --- MODALS --- */
         .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 2000; 
+            position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 2000; 
             display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+            padding: 24px;
         }
         .modal-overlay.active { opacity: 1; pointer-events: all; }
         
         .modal {
             background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-lg); 
-            padding: 32px; width: 90%; max-width: 600px; transform: scale(0.95); transition: transform 0.3s;
+            padding: 24px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto;
+            transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
         .modal-overlay.active .modal { transform: scale(1); }
 
-        .text-accent { color: var(--accent); }
-        .text-secondary { color: var(--secondary); }
-        .text-muted { color: var(--text-tertiary); }
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        /* --- TOAST --- */
+        #toast {
+            position: fixed; top: 24px; left: 50%; transform: translateX(-50%) translateY(-100%); 
+            background: var(--bg-surface); border: 1px solid var(--secondary); color: var(--text-primary);
+            padding: 12px 24px; border-radius: 50px; box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            display: flex; align-items: center; gap: 10px; z-index: 3000;
+            opacity: 0; transition: all 0.4s var(--ease-spring);
+        }
+        #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        /* --- ONBOARDING (Tablet Adapted) --- */
+        .onboarding-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9000; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .onboarding-backdrop.active { opacity: 1; pointer-events: auto; }
+        .onboarding-spotlight { position: relative; z-index: 9001 !important; box-shadow: 0 0 0 4px var(--accent), 0 0 0 4000px rgba(0,0,0,0.7); pointer-events: none; }
+        .onboarding-tooltip {
+            position: fixed; z-index: 9005; background: var(--bg-surface); border: 1px solid var(--accent);
+            width: 300px; padding: 20px; border-radius: 16px; opacity: 0; transition: all 0.3s; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        }
+        .onboarding-tooltip.active { opacity: 1; }
+
+        /* --- UTILS --- */
         .hidden { display: none !important; }
-        
-        .table-container { overflow-x: auto; background: var(--bg-surface); border-radius: var(--radius-md); }
-        table { width: 100%; border-collapse: collapse; min-width: 600px; }
-        th, td { padding: 16px; text-align: left; border-bottom: 1px solid var(--border); }
-        
-        #toast { position:fixed; top:20px; left:50%; transform:translateX(-50%); background:var(--bg-surface); padding:12px 24px; border:1px solid var(--secondary); border-radius:30px; opacity:0; transition:opacity 0.3s; pointer-events:none; z-index:3000; }
+        .input-label { display: block; margin-bottom: 8px; font-size: 13px; font-weight: 500; color: var(--text-secondary); }
+
+        /* --- PRINT --- */
+        @media print {
+            body { background: white; color: black; height: auto; overflow: visible; }
+            #app, .modal-overlay { display: none; }
+            #printable-area { display: block !important; }
+        }
     </style>
 </head>
 <body>
     <div id="app">
+        <!-- SIDEBAR (Slim Logic) -->
         <nav id="sidebar">
-            <div class="brand" onclick="document.getElementById('sidebar').classList.toggle('expanded')">
-                <i class="fas fa-cube" style="color: var(--secondary); font-size: 24px;"></i>
+            <div class="brand" onclick="app.toggleSidebar()">
+                <div id="connection-status" class="status-dot" title="Online Status"></div>
                 <span>LIKApos</span>
+                <i class="fas fa-cube" style="color: var(--secondary); font-size: 24px; display: none;"></i> <!-- Icon for slim -->
             </div>
-            <div class="nav-container">
-                <a onclick="app.router('dashboard')" class="nav-item active" id="nav-dashboard"><i class="fas fa-chart-pie"></i> <span data-i18n="dashboard">Dashboard</span></a>
-                <a onclick="app.router('pos')" class="nav-item" id="nav-pos"><i class="fas fa-calculator"></i> <span data-i18n="pos">POS</span></a>
-                <a onclick="app.router('inventory')" class="nav-item" id="nav-inventory"><i class="fas fa-boxes"></i> <span data-i18n="inventory">Inventory</span></a>
-                <a onclick="app.router('customers')" class="nav-item" id="nav-customers"><i class="fas fa-users"></i> <span data-i18n="customers">Customers</span></a>
-                <a onclick="app.router('reports')" class="nav-item" id="nav-reports"><i class="fas fa-chart-bar"></i> <span data-i18n="analytics">Analytics</span></a>
-                <div style="height: 24px;"></div>
-                <a onclick="app.router('settings')" class="nav-item" id="nav-settings"><i class="fas fa-cog"></i> <span data-i18n="settings">Settings</span></a>
+            
+            <div class="nav-container custom-scroll">
+                <a onclick="app.router('dashboard')" class="nav-item active" id="nav-dashboard">
+                    <i class="fas fa-chart-pie"></i> <span data-i18n="dashboard">Dashboard</span>
+                </a>
+                <a onclick="app.router('pos')" class="nav-item" id="nav-pos">
+                    <i class="fas fa-calculator"></i> <span data-i18n="pos">POS</span>
+                </a>
+                <a onclick="app.router('inventory')" class="nav-item" id="nav-inventory">
+                    <i class="fas fa-boxes"></i> <span data-i18n="inventory">Inventory</span>
+                </a>
+                <a onclick="app.router('customers')" class="nav-item" id="nav-customers">
+                    <i class="fas fa-users"></i> <span data-i18n="customers">Customers</span>
+                </a>
+                <a onclick="app.router('reports')" class="nav-item" id="nav-reports">
+                    <i class="fas fa-chart-bar"></i> <span data-i18n="analytics">Analytics</span>
+                </a>
+                <div style="flex:1"></div>
+                <a onclick="app.router('settings')" class="nav-item" id="nav-settings">
+                    <i class="fas fa-cog"></i> <span data-i18n="settings">Settings</span>
+                </a>
             </div>
-            <div style="padding: 20px; text-align:center; cursor:pointer;" onclick="document.getElementById('sidebar').classList.toggle('expanded')">
-                <i class="fas fa-angle-double-right" style="color:var(--text-tertiary)"></i>
+            
+            <!-- Expand/Collapse Handle -->
+            <div style="padding: 16px; text-align: center; color: var(--text-tertiary); cursor: pointer;" onclick="app.toggleSidebar()">
+                <i class="fas fa-bars" style="font-size: 20px;"></i>
             </div>
         </nav>
 
         <main id="main">
+            <!-- HEADER -->
             <header>
                 <div style="display: flex; align-items: center; gap: 16px;">
-                    <button class="btn btn-secondary" style="width: 44px;" onclick="document.getElementById('sidebar').classList.toggle('expanded')"><i class="fas fa-bars"></i></button>
-                    <h2 id="header-title" class="animate-fade-up">Dashboard</h2>
+                    <h2 id="header-title" class="animate-fade-up" data-i18n="dashboard">Dashboard</h2>
                 </div>
                 <div style="display: flex; align-items: center; gap: 12px;">
-                    <div id="connection-status" style="width:10px; height:10px; border-radius:50%; background:var(--accent);"></div>
                     <button class="btn btn-secondary" onclick="app.toggleTheme()"><i class="fas fa-moon" id="theme-icon"></i></button>
+                    <button class="btn btn-secondary" onclick="onboarding.start(true)"><i class="fas fa-question"></i></button>
                 </div>
             </header>
 
+            <!-- DASHBOARD VIEW -->
             <div id="dashboard-view" class="view-container active animate-slide">
                 <div class="stats-grid">
                     <div class="card stat-card">
-                        <span class="text-muted">REVENUE</span>
+                        <span class="text-muted" data-i18n="today_revenue">REVENUE</span>
                         <div class="stat-val text-secondary" id="dash-sales">€0.00</div>
                     </div>
                     <div class="card stat-card">
-                        <span class="text-muted">ORDERS</span>
+                        <span class="text-muted" data-i18n="transactions">ORDERS</span>
                         <div class="stat-val text-accent" id="dash-tx">0</div>
                     </div>
                     <div class="card stat-card">
-                        <span class="text-muted">LOW STOCK</span>
+                        <span class="text-muted" data-i18n="low_stock_alerts">LOW STOCK</span>
                         <div class="stat-val text-warning" id="dash-lowstock">0</div>
                     </div>
                 </div>
 
                 <div class="card">
-                    <h3 style="margin-bottom: 24px;">Quick Actions</h3>
-                    <div id="dash-quick-actions" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
-                        <button class="btn btn-primary" onclick="app.router('pos')"><i class="fas fa-cash-register"></i> New Sale</button>
-                        <button class="btn btn-secondary" onclick="inventoryManager.showAddModal()"><i class="fas fa-plus"></i> Add Product</button>
-                        <button class="btn btn-secondary" onclick="customerManager.showAddModal()"><i class="fas fa-user-plus"></i> Add Customer</button>
-                        <button class="btn btn-secondary" onclick="app.router('reports')"><i class="fas fa-file-alt"></i> View Reports</button>
+                    <h3 style="margin-bottom: 20px;" data-i18n="quick_actions">Quick Actions</h3>
+                    <div id="dash-quick-actions" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px;">
+                        <button class="btn btn-primary" onclick="app.router('pos')"><i class="fas fa-cash-register"></i> <span data-i18n="new_sale">Sale</span></button>
+                        <button class="btn btn-secondary" onclick="inventoryManager.showAddModal()"><i class="fas fa-plus"></i> <span data-i18n="add_product">Product</span></button>
+                        <button class="btn btn-secondary" onclick="customerManager.showAddModal()"><i class="fas fa-user-plus"></i> <span data-i18n="add_customer">Customer</span></button>
+                        <button class="btn btn-secondary" onclick="app.router('reports')"><i class="fas fa-file-alt"></i> <span data-i18n="analytics">Reports</span></button>
                     </div>
                 </div>
             </div>
 
+            <!-- POS VIEW -->
             <div id="pos-view" class="view-container">
                 <div class="pos-layout">
                     <div style="display: flex; flex-direction: column; gap: 16px; overflow: hidden;">
                         <div style="display: grid; grid-template-columns: 1fr auto; gap: 12px;">
-                            <input type="text" id="pos-search" placeholder="Search..." onkeyup="pos.filterProducts()">
+                            <input type="text" id="pos-search" data-i18n-placeholder="search_products_ph" placeholder="Search..." onkeyup="pos.filterProducts()">
                             <select id="pos-category" style="width: 140px;" onchange="pos.filterProducts()"><option value="">All</option></select>
                         </div>
                         <div id="pos-grid" class="product-grid custom-scroll"></div>
@@ -285,74 +396,82 @@
 
                     <div class="cart-panel">
                         <div style="padding: 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--hover-overlay);">
-                            <div style="font-weight: 600;">Order</div>
-                            <button class="btn btn-danger" style="padding: 8px 12px;" onclick="pos.clearCart()"><i class="fas fa-trash"></i></button>
+                            <div style="font-weight: 600;" data-i18n="current_order">Order</div>
+                            <button class="btn btn-danger" style="width: 44px; padding: 0;" onclick="pos.clearCart()"><i class="fas fa-trash"></i></button>
                         </div>
                         <div style="padding: 12px;">
-                             <select id="pos-customer" style="padding: 8px;"><option value="">Guest Customer</option></select>
+                             <select id="pos-customer" style="padding: 0 12px;"><option value="" data-i18n="guest_customer">Guest</option></select>
                         </div>
                         <div id="cart-items" class="cart-items custom-scroll"></div>
                         <div style="padding: 20px; background: var(--hover-overlay); border-top: 1px solid var(--border);">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span class="text-muted">Subtotal</span><span id="cart-subtotal" class="font-mono">€0.00</span></div>
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 16px;"><span class="text-muted">Tax</span><span id="cart-tax" class="font-mono">€0.00</span></div>
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 24px; font-size: 24px; font-weight: 700;"><span>Total</span><span id="cart-total" class="font-mono text-accent">€0.00</span></div>
-                            <button class="btn btn-success" style="width: 100%; padding: 16px; font-size: 18px;" onclick="pos.showCheckout()">PAY NOW</button>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px;"><span class="text-muted" data-i18n="subtotal">Subtotal</span><span id="cart-subtotal" class="font-mono">€0.00</span></div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 16px; font-size: 13px;"><span class="text-muted" data-i18n="tax">Tax</span><span id="cart-tax" class="font-mono">€0.00</span></div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 22px; font-weight: 700;">
+                                <span data-i18n="total">Total</span>
+                                <span id="cart-total" class="font-mono text-accent">€0.00</span>
+                            </div>
+                            <button class="btn btn-success" style="width: 100%; height: 56px; font-size: 18px;" onclick="pos.showCheckout()" data-i18n="pay_now">PAY NOW</button>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- INVENTORY VIEW -->
             <div id="inventory-view" class="view-container">
-                <div style="margin-bottom: 20px; display: grid; grid-template-columns: 1fr auto; gap: 12px;">
-                    <input type="text" id="inventory-search" placeholder="Search inventory..." onkeyup="inventoryManager.render(this.value)">
+                <div style="margin-bottom: 20px; display: grid; grid-template-columns: 1fr auto auto; gap: 12px;">
+                    <input type="text" id="inventory-search" data-i18n-placeholder="search_inventory_ph" placeholder="Search..." onkeyup="inventoryManager.render(this.value)">
+                    <button class="btn btn-secondary" onclick="inventoryManager.downloadTXTTemplate()"><i class="fas fa-file-export"></i></button>
                     <button class="btn btn-primary" onclick="inventoryManager.showAddModal()"><i class="fas fa-plus"></i></button>
                 </div>
-                <div class="table-container">
+                <!-- Hidden inputs for import -->
+                <button class="btn btn-secondary" style="margin-bottom: 12px; width: 100%;" onclick="document.getElementById('txt-import').click()" data-i18n="import_txt">Import Inventory (.txt)</button>
+                <input type="file" id="txt-import" accept=".txt" class="hidden" onchange="inventoryManager.importTXT(this)">
+
+                <div class="table-container custom-scroll" style="overflow-x: auto;">
                     <table id="inventory-table">
-                        <thead><tr><th>Item</th><th>Stock</th><th>Price</th><th>Action</th></tr></thead>
+                        <thead><tr><th data-i18n="product">Item</th><th data-i18n="stock">Stock</th><th data-i18n="price">Price</th><th data-i18n="actions">Action</th></tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
             </div>
 
+            <!-- CUSTOMERS VIEW -->
             <div id="customers-view" class="view-container">
                  <div style="margin-bottom: 20px; display: grid; grid-template-columns: 1fr auto; gap: 12px;">
-                    <input type="text" placeholder="Search customers..." onkeyup="customerManager.render(this.value)">
+                    <input type="text" data-i18n-placeholder="search_customers_ph" placeholder="Search..." onkeyup="customerManager.render(this.value)">
                     <button class="btn btn-primary" onclick="customerManager.showAddModal()"><i class="fas fa-user-plus"></i></button>
                 </div>
-                <div class="table-container">
-                    <table id="customer-table"><thead><tr><th>Name</th><th>Phone</th><th>Actions</th></tr></thead><tbody></tbody></table>
+                <div class="table-container custom-scroll" style="overflow-x: auto;">
+                    <table id="customer-table"><thead><tr><th data-i18n="name">Name</th><th data-i18n="phone">Phone</th><th data-i18n="actions">Actions</th></tr></thead><tbody></tbody></table>
                 </div>
             </div>
 
+            <!-- REPORTS VIEW -->
             <div id="reports-view" class="view-container">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
-                    <h3>Sales</h3>
-                    <div style="display: flex; gap: 8px;">
-                        <button class="btn btn-secondary" onclick="reports.setFilter('today')">Today</button>
-                        <button class="btn btn-secondary" onclick="reports.setFilter('month')">Month</button>
+                <div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3 data-i18n="sales_performance">Sales</h3>
+                        <button class="btn btn-primary" onclick="reports.exportPDF()"><i class="fas fa-file-pdf"></i> PDF</button>
+                    </div>
+                    <div style="display: flex; gap: 8px; overflow-x: auto;">
+                        <button id="filter-today" class="btn btn-secondary active" onclick="reports.setFilter('today')" data-i18n="today">Today</button>
+                        <button id="filter-week" class="btn btn-secondary" onclick="reports.setFilter('week')" data-i18n="week">Week</button>
+                        <button id="filter-month" class="btn btn-secondary" onclick="reports.setFilter('month')" data-i18n="month">Month</button>
                     </div>
                 </div>
                 <div class="stats-grid">
-                    <div class="card stat-card"><span class="text-muted">REVENUE</span><div class="stat-val text-secondary" id="report-total">€0.00</div></div>
-                    <div class="card stat-card"><span class="text-muted">ORDERS</span><div class="stat-val text-accent" id="report-count">0</div></div>
+                    <div class="card stat-card"><span class="text-muted" data-i18n="total_revenue">REVENUE</span><div class="stat-val text-secondary" id="report-total">€0.00</div></div>
+                    <div class="card stat-card"><span class="text-muted" data-i18n="total_orders">ORDERS</span><div class="stat-val text-accent" id="report-count">0</div></div>
                 </div>
-                <div class="table-container"><table id="sales-table"><thead><tr><th>Time</th><th>Customer</th><th>Total</th></tr></thead><tbody></tbody></table></div>
+                <div class="table-container custom-scroll"><table id="sales-table"><thead><tr><th data-i18n="date">Time</th><th data-i18n="customer">Customer</th><th data-i18n="total">Total</th><th></th></tr></thead><tbody></tbody></table></div>
             </div>
 
+            <!-- SETTINGS VIEW -->
             <div id="settings-view" class="view-container">
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
                     
-                    <div class="card" style="grid-column: span 2;">
-                        <h3>Device Sync</h3>
-                        <p class="text-muted" style="margin-bottom:12px; font-size:13px;">Connect to Mobile or Desktop to share data.</p>
-                        <button class="btn btn-primary" onclick="syncApp.open()" style="width: 100%;">
-                            <i class="fas fa-sync"></i> Connect & Sync
-                        </button>
-                    </div>
-
                     <div class="card">
-                        <h3>Language</h3>
+                        <h3 data-i18n="system_language">Language</h3>
                         <div style="margin-top: 16px;">
                              <select id="setting-language-select" onchange="app.updateLanguage(this.value)">
                                  <option value="English">English</option>
@@ -360,21 +479,40 @@
                              </select>
                         </div>
                     </div>
+
                     <div class="card">
-                        <h3>Config</h3>
+                        <h3>Sync Devices</h3>
+                        <p class="text-muted" style="margin: 8px 0 16px 0; font-size: 13px;">Connect a mobile/desktop device.</p>
+                        <button class="btn btn-primary" style="width: 100%;" onclick="syncApp.open()"><i class="fas fa-sync"></i> Connect</button>
+                    </div>
+
+                    <div class="card">
+                        <h3 data-i18n="general_config">Config</h3>
                         <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 16px;">
-                            <input type="text" id="setting-store-name" placeholder="Store Name" onchange="app.updateSetting('storeName', this.value)">
+                            <div>
+                                <label class="input-label" data-i18n="store_name">Store Name</label>
+                                <input type="text" id="setting-store-name" onchange="app.updateSetting('storeName', this.value)">
+                            </div>
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                                <select id="setting-currency" onchange="app.updateSetting('currency', this.value)"><option value="€">EUR (€)</option><option value="$">USD ($)</option></select>
-                                <input type="number" id="setting-tax" placeholder="Tax %" onchange="app.updateSetting('taxRate', this.value)">
+                                <div>
+                                    <label class="input-label" data-i18n="currency_symbol">Currency</label>
+                                    <select id="setting-currency" onchange="app.updateSetting('currency', this.value)"><option value="€">EUR (€)</option><option value="$">USD ($)</option></select>
+                                </div>
+                                <div>
+                                    <label class="input-label" data-i18n="tax_rate">Tax %</label>
+                                    <input type="number" id="setting-tax" onchange="app.updateSetting('taxRate', this.value)">
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="card" style="grid-column: span 2;">
-                        <h3>Data</h3>
-                        <div style="margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
-                            <button class="btn btn-secondary" onclick="app.exportData()">Backup</button>
-                            <button class="btn btn-danger" onclick="app.resetData()">Reset App</button>
+
+                    <div class="card">
+                        <h3 data-i18n="danger_zone">Data</h3>
+                        <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+                            <button class="btn btn-secondary" onclick="app.exportData()" data-i18n="backup_data">Backup Data</button>
+                            <button class="btn btn-secondary" onclick="document.getElementById('file-import').click()" data-i18n="restore_backup">Restore Backup</button>
+                            <input type="file" id="file-import" accept=".json" class="hidden" onchange="app.importData(this)">
+                            <button class="btn btn-danger" onclick="app.resetData()" data-i18n="factory_reset">Factory Reset</button>
                         </div>
                     </div>
                 </div>
@@ -382,108 +520,256 @@
         </main>
     </div>
 
+    <!-- MODALS -->
+
+    <!-- CHECKOUT MODAL -->
     <div id="checkout-modal" class="modal-overlay">
-        <div class="modal" style="display: grid; grid-template-columns: 1fr 280px; gap: 24px;">
-            <div>
-                <h3 style="margin-bottom: 16px;">Checkout</h3>
-                <div class="card" style="text-align: right; margin-bottom: 24px; padding: 16px;">
-                    <span class="text-muted" style="font-size:12px;">DUE</span>
-                    <div class="font-mono text-accent" style="font-size: 32px; font-weight: 700;" id="checkout-total">€0.00</div>
-                </div>
-                <input type="number" id="checkout-cash" class="font-mono" style="font-size: 24px; height: 60px; margin-bottom: 16px;" placeholder="0.00" onkeyup="pos.calcChange()">
-                <div style="text-align: right;">
-                    <span class="text-muted" style="font-size:12px;">CHANGE</span>
-                    <div id="checkout-change" class="font-mono" style="font-size: 24px;">€0.00</div>
-                </div>
-                <button class="btn btn-success" style="width: 100%; margin-top: 24px; padding: 16px; font-size: 18px;" onclick="pos.finalizeSale()">COMPLETE</button>
+        <div class="modal" style="display: flex; flex-direction: column; height: 90vh; max-height: 800px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h3 data-i18n="payment_gateway">Checkout</h3>
+                <button class="btn btn-secondary" style="width: 44px; padding: 0;" onclick="document.getElementById('checkout-modal').classList.remove('active')"><i class="fas fa-times"></i></button>
             </div>
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; height: 350px;">
-                <button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('7')">7</button><button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('8')">8</button><button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('9')">9</button>
-                <button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('4')">4</button><button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('5')">5</button><button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('6')">6</button>
-                <button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('1')">1</button><button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('2')">2</button><button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('3')">3</button>
-                <button class="btn btn-danger" style="font-size: 24px;" onclick="pos.numpad('C')">C</button><button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('0')">0</button><button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('.')">.</button>
+            
+            <!-- Landscape Layout for Checkout -->
+            <div style="flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div style="display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div class="card" style="text-align: right; margin-bottom: 16px; padding: 16px;">
+                            <span class="text-muted" style="font-size:12px;" data-i18n="total_due">DUE</span>
+                            <div class="font-mono text-accent" style="font-size: 32px; font-weight: 700;" id="checkout-total">€0.00</div>
+                        </div>
+                        <label class="input-label" data-i18n="amount_tendered">Tendered</label>
+                        <input type="number" id="checkout-cash" class="font-mono" style="font-size: 24px; height: 60px; margin-bottom: 16px;" placeholder="0.00" onkeyup="pos.calcChange()">
+                        
+                        <!-- Quick Cash Buttons -->
+                        <div id="quick-cash" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;"></div>
+                    </div>
+                    
+                    <div style="text-align: right; margin-top: 16px;">
+                        <span class="text-muted" style="font-size:12px;" data-i18n="change_due">CHANGE</span>
+                        <div id="checkout-change" class="font-mono" style="font-size: 28px; font-weight: 700;">€0.00</div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; height: 100%;">
+                    <button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('7')">7</button><button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('8')">8</button><button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('9')">9</button>
+                    <button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('4')">4</button><button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('5')">5</button><button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('6')">6</button>
+                    <button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('1')">1</button><button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('2')">2</button><button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('3')">3</button>
+                    <button class="btn btn-danger" style="font-size: 20px;" onclick="pos.numpad('C')">CLR</button><button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('0')">0</button><button class="btn btn-secondary" style="font-size: 24px;" onclick="pos.numpad('.')">.</button>
+                </div>
+            </div>
+            
+            <button class="btn btn-success" style="width: 100%; margin-top: 24px; height: 64px; font-size: 20px;" onclick="pos.finalizeSale()" data-i18n="complete_tx">COMPLETE TRANSACTION</button>
+        </div>
+    </div>
+
+    <!-- PRODUCT MODAL -->
+    <div id="product-modal" class="modal-overlay">
+        <div class="modal">
+            <h3 style="margin-bottom: 20px;" data-i18n="product">Product</h3>
+            <input type="hidden" id="prod-id">
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                <div><label class="input-label">Name</label><input type="text" id="prod-name"></div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div><label class="input-label">Barcode</label><input type="text" id="prod-barcode"></div>
+                    <div><label class="input-label">Category</label><input type="text" id="prod-category" list="cat-list"><datalist id="cat-list"></datalist></div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div><label class="input-label">Price</label><input type="number" id="prod-price"></div>
+                    <div><label class="input-label">Cost</label><input type="number" id="prod-cost"></div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div><label class="input-label">Stock</label><input type="number" id="prod-stock"></div>
+                    <div><label class="input-label">Alert Limit</label><input type="number" id="prod-min"></div>
+                </div>
+                <div><label class="input-label">Image URL</label><input type="text" id="prod-image" onchange="inventoryManager.updatePreview()"></div>
+                <div id="prod-preview-box" style="height: 100px; background: var(--bg-app); display: flex; align-items: center; justify-content: center; border-radius: 8px;"><span class="text-muted">No Image</span></div>
+            </div>
+            <div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px;">
+                <button class="btn btn-secondary" onclick="document.getElementById('product-modal').classList.remove('active')" data-i18n="cancel">Cancel</button>
+                <button class="btn btn-primary" onclick="inventoryManager.saveProduct()" data-i18n="save_changes">Save</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CUSTOMER MODAL -->
+    <div id="customer-modal" class="modal-overlay">
+        <div class="modal">
+            <h3 style="margin-bottom: 20px;" data-i18n="customer_profile">Customer</h3>
+            <input type="hidden" id="cust-id">
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                <div><label class="input-label" data-i18n="name">Name</label><input type="text" id="cust-name"></div>
+                <div><label class="input-label" data-i18n="phone">Phone</label><input type="text" id="cust-phone"></div>
+                <div><label class="input-label">Email</label><input type="email" id="cust-email"></div>
+            </div>
+            <div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px;">
+                <button class="btn btn-secondary" onclick="document.getElementById('customer-modal').classList.remove('active')" data-i18n="cancel">Cancel</button>
+                <button class="btn btn-primary" onclick="customerManager.saveCustomer()" data-i18n="save_customer">Save</button>
             </div>
         </div>
     </div>
 
-    <div id="product-modal" class="modal-overlay"><div class="modal"><h3 style="margin-bottom: 20px;">Product</h3><input type="hidden" id="prod-id"><div style="display: flex; flex-direction: column; gap: 16px;"><input type="text" id="prod-name" placeholder="Name"><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;"><input type="text" id="prod-barcode" placeholder="Barcode"><input type="text" id="prod-category" placeholder="Category" list="cat-list"><datalist id="cat-list"></datalist></div><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;"><input type="number" id="prod-price" placeholder="Price"><input type="number" id="prod-stock" placeholder="Stock"></div><input type="text" id="prod-image" placeholder="Image URL"></div><div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px;"><button class="btn btn-secondary" onclick="document.getElementById('product-modal').classList.remove('active')">Cancel</button><button class="btn btn-primary" onclick="inventoryManager.saveProduct()">Save</button></div></div></div>
-    
-    <div id="customer-modal" class="modal-overlay"><div class="modal"><h3 style="margin-bottom: 20px;">Customer</h3><input type="hidden" id="cust-id"><div style="display: flex; flex-direction: column; gap: 16px;"><input type="text" id="cust-name" placeholder="Name"><input type="text" id="cust-phone" placeholder="Phone"></div><div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px;"><button class="btn btn-secondary" onclick="document.getElementById('customer-modal').classList.remove('active')">Cancel</button><button class="btn btn-primary" onclick="customerManager.saveCustomer()">Save</button></div></div></div>
+    <!-- SALE DETAIL MODAL -->
+    <div id="sale-detail-modal" class="modal-overlay">
+         <div class="modal">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
+                <h3 id="detail-id" class="font-mono text-secondary">#0000</h3>
+                <button class="btn btn-secondary" style="width: 44px; padding:0;" onclick="document.getElementById('sale-detail-modal').classList.remove('active')"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="detail-items" class="custom-scroll" style="max-height: 400px; overflow-y: auto; margin-bottom: 24px;"></div>
+            <div style="border-top: 1px solid var(--border); padding-top: 16px; display: flex; flex-direction: column; gap: 8px;">
+                <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 20px;"><span data-i18n="total">Total</span><span id="detail-total" class="font-mono text-accent"></span></div>
+            </div>
+        </div>
+    </div>
 
+    <!-- IMPORT PREVIEW MODAL -->
+    <div id="import-preview-modal" class="modal-overlay">
+        <div class="modal">
+            <h3>Confirm Import</h3>
+            <p class="text-muted" style="margin-bottom: 16px;">Duplicates marked in red.</p>
+            <div class="table-container custom-scroll" style="max-height: 300px; overflow-y: auto;">
+                <table id="import-table"><thead><tr><th>Select</th><th>Item</th><th>Code</th></tr></thead><tbody id="import-tbody"></tbody></table>
+            </div>
+            <div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px;">
+                <button class="btn btn-secondary" onclick="document.getElementById('import-preview-modal').classList.remove('active')">Cancel</button>
+                <button class="btn btn-primary" onclick="inventoryManager.confirmImport()">Import Selected</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SYNC MODAL -->
     <div id="sync-modal" class="modal-overlay">
-        <div class="modal" style="max-width: 400px; text-align: center;">
-            <h3 style="margin-bottom: 16px;">Device Sync</h3>
+        <div class="modal" style="text-align: center;">
+            <h3 style="margin-bottom: 16px;">Sync Devices</h3>
             <div id="sync-step-1">
-                <p class="text-muted" style="margin-bottom: 24px;">Connect two devices to transfer data.</p>
-                <div style="display: grid; gap: 12px;">
-                    <button class="btn btn-primary" onclick="syncApp.startHost()" style="justify-content: center; height: 50px;">
-                        <i class="fas fa-upload"></i> SEND DATA (Host)
-                    </button>
-                    <button class="btn btn-secondary" onclick="syncApp.startClient()" style="justify-content: center; height: 50px;">
-                        <i class="fas fa-download"></i> RECEIVE DATA (Join)
-                    </button>
-                </div>
+                <button class="btn btn-primary" onclick="syncApp.startHost()" style="width:100%; margin-bottom:12px;">I am HOST (Send Data)</button>
+                <button class="btn btn-secondary" onclick="syncApp.startClient()" style="width:100%;">I am CLIENT (Receive Data)</button>
             </div>
             <div id="sync-step-host" class="hidden">
-                <p class="text-muted">Enter this code on the other device:</p>
-                <div id="sync-code-display" style="font-size: 48px; font-family: 'JetBrains Mono'; font-weight: 700; color: var(--accent); margin: 20px 0; letter-spacing: 4px;">...</div>
-                <div style="font-size: 12px;" class="text-secondary"><i class="fas fa-spinner fa-spin"></i> Waiting for connection...</div>
+                <p>Enter this code on Client:</p>
+                <h1 id="sync-code-display" class="text-accent" style="font-size: 48px; margin: 20px 0;"></h1>
+                <p class="text-muted"><i class="fas fa-spinner fa-spin"></i> Waiting...</p>
             </div>
             <div id="sync-step-client" class="hidden">
-                <p class="text-muted">Enter the code from the Host device:</p>
-                <input type="number" id="sync-code-input" placeholder="0000" style="font-size: 32px; text-align: center; letter-spacing: 4px; font-family: 'JetBrains Mono'; margin: 20px 0; width: 100%;">
-                <button class="btn btn-success" onclick="syncApp.connectToHost()" style="width: 100%; justify-content: center;">CONNECT & SYNC</button>
+                <p>Enter Host Code:</p>
+                <input type="number" id="sync-code-input" placeholder="0000" style="text-align:center; font-size: 24px; margin: 20px 0;">
+                <button class="btn btn-success" style="width:100%;" onclick="syncApp.connectToHost()">Connect</button>
             </div>
-            <div style="margin-top: 24px; border-top: 1px solid var(--border); padding-top: 16px;">
-                <button class="btn btn-secondary" onclick="document.getElementById('sync-modal').classList.remove('active')">Close</button>
-            </div>
+            <button class="btn btn-danger" style="margin-top:24px; width:100%;" onclick="document.getElementById('sync-modal').classList.remove('active')">Close</button>
+        </div>
+    </div>
+    
+    <!-- ONBOARDING TOOLTIP -->
+    <div id="onboarding-backdrop" class="onboarding-backdrop"></div>
+    <div id="onboarding-tooltip" class="onboarding-tooltip">
+        <h3 id="onboarding-title" style="margin-bottom: 8px;"></h3>
+        <p id="onboarding-desc" class="text-muted" style="margin-bottom: 20px; font-size: 14px; line-height: 1.5;"></p>
+        <div style="display: flex; justify-content: space-between;">
+            <button class="btn btn-secondary" style="height: 36px;" onclick="onboarding.finish()" data-i18n="skip">Skip</button>
+            <button class="btn btn-primary" style="height: 36px;" onclick="onboarding.next()" id="onboarding-next-btn" data-i18n="next">Next</button>
         </div>
     </div>
 
-    <div id="toast" style="position:fixed; top:20px; left:50%; transform:translateX(-50%); background:var(--bg-surface); padding:12px 24px; border:1px solid var(--secondary); border-radius:30px; opacity:0; transition:opacity 0.3s; pointer-events:none; z-index:3000;"><span id="toast-msg"></span></div>
+    <div id="toast"><i class="fas fa-check-circle"></i> <span id="toast-msg">Action Successful</span></div>
+    <div id="printable-area" class="hidden"></div>
 
     <script>
+        // --- TRANSLATIONS (Unified) ---
         const TRANSLATIONS = {
-            "English": { dashboard: "Dashboard", pos: "POS", inventory: "Inventory", customers: "Customers", analytics: "Reports", settings: "Settings" },
-            "Albanian": { dashboard: "Ballina", pos: "Arka", inventory: "Stoku", customers: "Klientët", analytics: "Raporte", settings: "Cilësimet" }
+            "English": {
+                dashboard: "Dashboard", pos: "POS", inventory: "Inventory", customers: "Customers", analytics: "Reports", settings: "Settings",
+                today_revenue: "Revenue", transactions: "Orders", low_stock_alerts: "Low Stock", quick_actions: "Quick Actions",
+                new_sale: "Sale", add_product: "Product", add_customer: "Customer", current_order: "Order", guest_customer: "Guest",
+                subtotal: "Subtotal", tax: "Tax", total: "Total", pay_now: "PAY NOW", search_products_ph: "Search items...",
+                product: "Item", stock: "Stock", price: "Price", actions: "Action", name: "Name", phone: "Phone",
+                sales_performance: "Sales", total_revenue: "Revenue", total_orders: "Orders", date: "Time", customer: "Customer",
+                system_language: "Language", general_config: "Config", store_name: "Store Name", currency_symbol: "Currency", tax_rate: "Tax %",
+                danger_zone: "Data Management", backup_data: "Backup", restore_backup: "Restore", factory_reset: "Reset App",
+                payment_gateway: "Checkout", total_due: "DUE", amount_tendered: "Tendered", change_due: "CHANGE", complete_tx: "COMPLETE",
+                cancel: "Cancel", save_changes: "Save", save_customer: "Save", import_txt: "Import (.txt)",
+                tour_sidebar_title: "Sidebar", tour_sidebar_desc: "Tap the menu button or icons to navigate.",
+                tour_dash_title: "Stats", tour_dash_desc: "See your daily progress here.",
+                tour_pos_title: "POS", tour_pos_desc: "Tap items to add to cart.",
+                next: "Next", skip: "Skip", finish: "Finish"
+            },
+            "Albanian": {
+                dashboard: "Ballina", pos: "Arka", inventory: "Stoku", customers: "Klientët", analytics: "Raporte", settings: "Cilësimet",
+                today_revenue: "Të Hyrat", transactions: "Porositë", low_stock_alerts: "Stok i Ulët", quick_actions: "Veprime",
+                new_sale: "Shitje", add_product: "Produkt", add_customer: "Klient", current_order: "Porosia", guest_customer: "Mysafir",
+                subtotal: "Nëntotali", tax: "Taksa", total: "Totali", pay_now: "PAGUAJ", search_products_ph: "Kërko...",
+                product: "Artikulli", stock: "Sasia", price: "Çmimi", actions: "Veprimi", name: "Emri", phone: "Tel",
+                sales_performance: "Shitjet", total_revenue: "Të Hyrat", total_orders: "Porositë", date: "Koha", customer: "Klienti",
+                system_language: "Gjuha", general_config: "Konfigurimi", store_name: "Emri Dyqanit", currency_symbol: "Monedha", tax_rate: "Taksa %",
+                danger_zone: "Të Dhënat", backup_data: "Ruaj", restore_backup: "Rikthe", factory_reset: "Rivendos",
+                payment_gateway: "Pagesa", total_due: "BORXHI", amount_tendered: "PAGUAR", change_due: "KUSURI", complete_tx: "PËRFUNDO",
+                cancel: "Anulo", save_changes: "Ruaj", save_customer: "Ruaj", import_txt: "Importo (.txt)",
+                tour_sidebar_title: "Menuja", tour_sidebar_desc: "Përdorni ikonat për të lëvizur.",
+                tour_dash_title: "Statistikat", tour_dash_desc: "Shikoni progresin ditor.",
+                tour_pos_title: "Arka", tour_pos_desc: "Prekni produktet për t'i shitur.",
+                next: "Tjetra", skip: "Kalo", finish: "Fund"
+            }
         };
 
-        const db = { products: [], customers: [], sales: [], settings: { storeName: "LIKApos", currency: "€", taxRate: 10, nextSaleId: 1000, language: "English" } };
+        // --- DATABASE ---
+        const db = { 
+            products: [], customers: [], sales: [], 
+            settings: { 
+                storeName: "LIKApos", currency: "€", taxRate: 10, nextSaleId: 1000, language: "English" 
+            } 
+        };
 
         const app = {
             init: () => {
-                // Unified DB Key: likapos_db
                 const sDB = localStorage.getItem('likapos_db');
-                if(sDB) Object.assign(db, JSON.parse(sDB));
-                else app.loadDefaultData();
+                if(sDB) {
+                    try { Object.assign(db, JSON.parse(sDB)); } catch(e) { console.error(e); }
+                } else {
+                    app.loadDefaultData();
+                }
                 
+                // Initialize Settings
                 db.settings.language = localStorage.getItem('likapos_language') || "English";
+                document.getElementById('setting-language-select').value = db.settings.language;
+                document.getElementById('setting-store-name').value = db.settings.storeName;
+                document.getElementById('setting-currency').value = db.settings.currency;
+                document.getElementById('setting-tax').value = db.settings.taxRate;
+                
                 app.applyTranslations();
+                app.toggleTheme(localStorage.getItem('likapos_theme') || 'dark', true);
+                
                 pos.init();
                 inventoryManager.render();
+                customerManager.render();
                 app.updateDashboard();
                 app.checkConnection();
-                if(window.innerWidth < 1000) document.getElementById('sidebar').classList.remove('expanded');
+
+                // Auto-start tour if first time
+                if(!localStorage.getItem('likapos_tour_done')) {
+                    setTimeout(() => onboarding.start(), 1000);
+                }
             },
             loadDefaultData: () => {
-                 db.products = [
-                    { id: 101, name: "Fanta 0.5l", barcode: "50001", price: 1.00, cost: 0.50, stock: 100, category: "Beverages", minStock: 20, image: "https://britishessentials.com/cdn/shop/products/April0938_x700.jpg?v=1617962710" },
-                    { id: 102, name: "Croissant 7 Days 40gr", barcode: "50002", price: 1.50, cost: 0.75, stock: 50, category: "Bakery", minStock: 10, image: "https://marketonline.mk/wp-content/uploads/2020/03/25862-1.jpg" },
-                    { id: 104, name: "CocaCola 150ml", barcode: "50004", price: 1.20, cost: 0.60, stock: 120, category: "Beverages", minStock: 15, image: "https://assets.sainsburys-groceries.co.uk/gol/7965334/1/640x640.jpg" }
-                ];
-                db.customers = [{ id: 1, name: "Guest", phone: "", points: 0, totalSpent: 0 }];
+                db.products = [];
+                db.customers = [];
                 db.sales = [];
                 app.save();
             },
             save: () => { localStorage.setItem('likapos_db', JSON.stringify(db)); },
             t: (k) => { return (TRANSLATIONS[db.settings.language] || TRANSLATIONS["English"])[k] || k; },
-            applyTranslations: () => { document.querySelectorAll('[data-i18n]').forEach(el => el.innerText = app.t(el.getAttribute('data-i18n'))); },
-            updateLanguage: (v) => { db.settings.language = v; localStorage.setItem('likapos_language', v); app.save(); app.applyTranslations(); },
-            updateSetting: (k, v) => { db.settings[k] = v; app.save(); app.updateDashboard(); app.toast("Saved"); },
-            toggleTheme: () => {
-                const n = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-                document.documentElement.setAttribute('data-theme', n);
+            applyTranslations: () => { 
+                document.querySelectorAll('[data-i18n]').forEach(el => el.innerText = app.t(el.getAttribute('data-i18n')));
+                document.querySelectorAll('[data-i18n-placeholder]').forEach(el => el.placeholder = app.t(el.getAttribute('data-i18n-placeholder')));
             },
+            updateLanguage: (v) => { db.settings.language = v; localStorage.setItem('likapos_language', v); app.save(); app.applyTranslations(); },
+            updateSetting: (k, v) => { db.settings[k] = v; app.save(); app.updateDashboard(); pos.renderCart(); app.toast("Saved"); },
+            toggleTheme: (forceMode, skipSave) => {
+                let n = forceMode ? forceMode : (document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+                document.documentElement.setAttribute('data-theme', n);
+                document.getElementById('theme-icon').className = n === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+                if(!skipSave) localStorage.setItem('likapos_theme', n);
+            },
+            toggleSidebar: () => { document.getElementById('sidebar').classList.toggle('expanded'); },
             router: (v) => {
                 document.querySelectorAll('.view-container').forEach(e => e.classList.remove('active', 'animate-slide'));
                 document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
@@ -491,30 +777,44 @@
                 document.getElementById('nav-'+v).classList.add('active');
                 if(v==='dashboard') app.updateDashboard();
                 if(v==='reports') reports.render();
+                document.getElementById('header-title').innerText = app.t(v==='reports'?'analytics':v);
+                
+                // Collapse sidebar on route change for tablet
+                document.getElementById('sidebar').classList.remove('expanded');
             },
             toast: (m) => {
                 const t = document.getElementById('toast'); document.getElementById('toast-msg').innerText = m;
-                t.style.opacity = '1'; setTimeout(() => t.style.opacity = '0', 3000);
+                t.classList.remove('show'); void t.offsetWidth; t.classList.add('show');
+                setTimeout(() => t.classList.remove('show'), 3000);
             },
             updateDashboard: () => {
                 const today = new Date().toDateString();
                 const sales = db.sales.filter(s => new Date(s.date).toDateString() === today);
-                const total = sales.reduce((a, b) => a + (parseFloat(b.total)||0), 0);
-                const low = db.products.filter(p => p.stock <= 5).length;
+                const total = sales.reduce((a, b) => a + b.total, 0);
+                const low = db.products.filter(p => p.stock <= p.minStock).length;
                 
                 document.getElementById('dash-sales').innerText = db.settings.currency + total.toFixed(2);
                 document.getElementById('dash-tx').innerText = sales.length;
                 document.getElementById('dash-lowstock').innerText = low;
+                document.getElementById('dash-lowstock').style.color = low > 0 ? 'var(--danger)' : 'var(--text-primary)';
             },
             checkConnection: () => {
                 const el = document.getElementById('connection-status');
-                const u = () => el.style.background = navigator.onLine ? 'var(--accent)' : 'var(--danger)';
+                const u = () => { el.className = navigator.onLine ? 'status-dot' : 'status-dot offline'; };
                 window.addEventListener('online', u); window.addEventListener('offline', u); u();
             },
-            resetData: () => { if(confirm("Delete All Data?")) { localStorage.removeItem('likapos_db'); location.reload(); } },
+            resetData: () => { if(confirm("Delete ALL Data? This cannot be undone.")) { localStorage.removeItem('likapos_db'); location.reload(); } },
             exportData: () => {
                 const blob = new Blob([JSON.stringify(db)], {type: "application/json"});
-                const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "likapos_tablet_backup.json"; a.click();
+                const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `likapos_backup_${new Date().toISOString().split('T')[0]}.json`; a.click();
+            },
+            importData: (input) => {
+                if(!input.files[0]) return;
+                const r = new FileReader();
+                r.onload = (e) => {
+                    try { Object.assign(db, JSON.parse(e.target.result)); app.save(); location.reload(); } catch(err) { alert("Invalid File"); }
+                };
+                r.readAsText(input.files[0]);
             }
         };
 
@@ -523,12 +823,12 @@
             init: () => { pos.renderGrid(); pos.populateCats(); pos.populateCust(); },
             populateCats: () => {
                 const c = [...new Set(db.products.map(p=>p.category))];
-                const s = document.getElementById('pos-category'); s.innerHTML = '<option value="">All</option>';
+                const s = document.getElementById('pos-category'); s.innerHTML = `<option value="">${app.t('all_categories') || 'All'}</option>`;
                 const l = document.getElementById('cat-list'); l.innerHTML = '';
-                c.forEach(x => { s.innerHTML += `<option value="${x}">${x}</option>`; l.innerHTML += `<option value="${x}">`; });
+                c.forEach(x => { if(x) { s.innerHTML += `<option value="${x}">${x}</option>`; l.innerHTML += `<option value="${x}">`; }});
             },
             populateCust: () => {
-                const s = document.getElementById('pos-customer'); s.innerHTML = '<option value="">Guest</option>';
+                const s = document.getElementById('pos-customer'); s.innerHTML = `<option value="">${app.t('guest_customer') || 'Guest'}</option>`;
                 db.customers.forEach(x => s.innerHTML += `<option value="${x.id}">${x.name}</option>`);
             },
             filterProducts: () => pos.renderGrid(),
@@ -537,9 +837,16 @@
                 const cat = document.getElementById('pos-category').value;
                 const c = document.getElementById('pos-grid'); c.innerHTML = '';
                 db.products.filter(p => (p.name.toLowerCase().includes(q) || p.barcode.includes(q)) && (cat === "" || p.category === cat)).forEach(p => {
-                    const el = document.createElement('div'); el.className = 'prod-card animate-fade-up'; el.onclick = () => pos.addToCart(p.id);
-                    const img = p.image ? `<div class="prod-img-container"><img src="${p.image}" class="prod-img"></div>` : `<div class="prod-img-container"><i class="fas fa-box" style="font-size:24px; color:var(--text-tertiary)"></i></div>`;
-                    el.innerHTML = `${img}<div class="prod-info"><div style="font-weight:600; font-size:13px;">${p.name}</div><div class="prod-price">${db.settings.currency}${p.price}</div></div>`;
+                    const el = document.createElement('div'); el.className = 'prod-card animate-scale'; el.onclick = () => pos.addToCart(p.id);
+                    const img = p.image ? `<img src="${p.image}" class="prod-img" onerror="this.style.display='none'">` : '';
+                    el.innerHTML = `
+                        <div class="prod-img-container">${img || '<i class="fas fa-box" style="font-size:24px; color:var(--text-tertiary)"></i>'}</div>
+                        <div class="prod-info">
+                            <div class="prod-name">${p.name}</div>
+                            <div class="prod-price">${db.settings.currency}${p.price}</div>
+                        </div>
+                        <div style="position:absolute; top:4px; right:4px; background:rgba(0,0,0,0.5); padding:2px 6px; border-radius:4px; font-size:10px; color:#fff;">${p.stock}</div>
+                    `;
                     c.appendChild(el);
                 });
             },
@@ -547,7 +854,7 @@
                 const p = db.products.find(x => x.id == id);
                 if(p.stock <= 0) return app.toast("Out of Stock");
                 const ex = pos.cart.find(x => x.product.id == id);
-                if(ex) { if(ex.qty < p.stock) ex.qty++; } else { pos.cart.push({product:p, qty:1}); }
+                if(ex) { if(ex.qty < p.stock) ex.qty++; else return app.toast("Max Stock"); } else { pos.cart.push({product:p, qty:1}); }
                 pos.renderCart();
             },
             renderCart: () => {
@@ -555,7 +862,15 @@
                 let t = 0;
                 pos.cart.forEach((i, idx) => {
                     t += i.product.price * i.qty;
-                    c.innerHTML += `<div class="cart-item"><div><b>${i.product.name}</b><br><span class="text-muted">${i.qty} x ${i.product.price}</span></div><div><button class="btn btn-secondary" style="padding:8px 12px" onclick="pos.upd(${idx},-1)">-</button> <span style="margin:0 8px; font-size:16px;">${i.qty}</span> <button class="btn btn-secondary" style="padding:8px 12px" onclick="pos.upd(${idx},1)">+</button></div></div>`;
+                    c.innerHTML += `
+                        <div class="cart-item">
+                            <div style="flex:1"><b>${i.product.name}</b><br><span class="text-muted" style="font-size:12px;">${i.qty} x ${i.product.price}</span></div>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <button class="btn btn-secondary" style="width:32px; height:32px; padding:0;" onclick="pos.upd(${idx},-1)">-</button> 
+                                <span style="font-weight:600; width:20px; text-align:center;">${i.qty}</span> 
+                                <button class="btn btn-secondary" style="width:32px; height:32px; padding:0;" onclick="pos.upd(${idx},1)">+</button>
+                            </div>
+                        </div>`;
                 });
                 pos.currentTotal = t;
                 const tax = t * (db.settings.taxRate / 100);
@@ -563,23 +878,50 @@
                 document.getElementById('cart-tax').innerText = db.settings.currency + tax.toFixed(2);
                 document.getElementById('cart-total').innerText = db.settings.currency + (t+tax).toFixed(2);
                 document.getElementById('checkout-total').innerText = document.getElementById('cart-total').innerText;
+                
+                // Update Quick Cash Suggestions
+                const totalVal = t + tax;
+                const suggs = [Math.ceil(totalVal), Math.ceil(totalVal/5)*5, Math.ceil(totalVal/10)*10].filter((v,i,a)=>a.indexOf(v)===i && v >= totalVal);
+                if(suggs.length < 1) suggs.push(totalVal);
+                const qc = document.getElementById('quick-cash'); qc.innerHTML = '';
+                suggs.forEach(s => {
+                   qc.innerHTML += `<button class="btn btn-secondary font-mono" onclick="document.getElementById('checkout-cash').value='${s.toFixed(2)}'; pos.calcChange();">${s}</button>`; 
+                });
             },
             upd: (i, d) => { const x = pos.cart[i]; const n = x.qty + d; if(n<=0) pos.cart.splice(i,1); else if(n<=x.product.stock) x.qty = n; pos.renderCart(); },
             clearCart: () => { pos.cart=[]; pos.renderCart(); },
-            showCheckout: () => { if(pos.cart.length) { document.getElementById('checkout-modal').classList.add('active'); } },
-            numpad: (k) => { const i = document.getElementById('checkout-cash'); if(k==='C') i.value=''; else i.value+=k; pos.calcChange(); },
+            showCheckout: () => { 
+                if(!pos.cart.length) return app.toast("Empty Cart");
+                document.getElementById('checkout-modal').classList.add('active');
+                document.getElementById('checkout-cash').value = '';
+                document.getElementById('checkout-change').innerText = db.settings.currency + '0.00';
+            },
+            numpad: (k) => { 
+                const i = document.getElementById('checkout-cash'); 
+                if(k==='C') i.value=''; else i.value += k; 
+                pos.calcChange(); 
+            },
             calcChange: () => {
                 const pay = parseFloat(document.getElementById('checkout-cash').value) || 0;
                 const tot = parseFloat(document.getElementById('cart-total').innerText.replace(db.settings.currency, ''));
-                document.getElementById('checkout-change').innerText = db.settings.currency + Math.max(0, pay - tot).toFixed(2);
+                const chg = Math.max(0, pay - tot);
+                const el = document.getElementById('checkout-change');
+                el.innerText = db.settings.currency + chg.toFixed(2);
+                el.className = chg > 0 ? 'font-mono text-accent' : 'font-mono';
             },
             finalizeSale: () => {
                 const pay = parseFloat(document.getElementById('checkout-cash').value) || 0;
                 const tot = parseFloat(document.getElementById('cart-total').innerText.replace(db.settings.currency, ''));
-                if(pay < tot) return app.toast("Insufficient Cash");
+                if(pay < tot && Math.abs(pay-tot) > 0.01) return app.toast("Insufficient Cash");
                 
                 pos.cart.forEach(i => db.products.find(x => x.id === i.product.id).stock -= i.qty);
-                db.sales.push({ id: db.settings.nextSaleId++, date: new Date().toISOString(), total: tot, items: [...pos.cart], customerId: document.getElementById('pos-customer').value });
+                db.sales.push({ 
+                    id: db.settings.nextSaleId++, 
+                    date: new Date().toISOString(), 
+                    total: tot, 
+                    items: [...pos.cart], 
+                    customerId: document.getElementById('pos-customer').value || null 
+                });
                 app.save();
                 document.getElementById('checkout-modal').classList.remove('active');
                 pos.clearCart(); pos.renderGrid(); inventoryManager.render(); app.updateDashboard();
@@ -588,26 +930,96 @@
         };
 
         const inventoryManager = {
+            pendingImport: [],
             render: (q="") => {
                 const t = document.querySelector('#inventory-table tbody'); t.innerHTML = '';
-                db.products.filter(p => p.name.toLowerCase().includes(q.toLowerCase())).forEach(p => {
-                    t.innerHTML += `<tr><td><div>${p.name}</div><div class="text-muted" style="font-size:11px">${p.barcode}</div></td><td>${p.stock}</td><td>${p.price}</td><td><button class="btn btn-secondary" onclick="inventoryManager.del(${p.id})"><i class="fas fa-trash"></i></button></td></tr>`;
+                db.products.filter(p => p.name.toLowerCase().includes(q.toLowerCase()) || p.barcode.includes(q)).forEach(p => {
+                    t.innerHTML += `<tr>
+                        <td><div>${p.name}</div><div class="text-muted" style="font-size:11px">${p.barcode}</div></td>
+                        <td>${p.stock}</td>
+                        <td>${app.formatMoney(p.price)}</td>
+                        <td>
+                            <button class="btn btn-secondary" style="width:36px; padding:0;" onclick="inventoryManager.edit(${p.id})"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-danger" style="width:36px; padding:0;" onclick="inventoryManager.del(${p.id})"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>`;
                 });
             },
-            showAddModal: () => document.getElementById('product-modal').classList.add('active'),
+            showAddModal: () => {
+                document.getElementById('prod-id').value = '';
+                document.querySelectorAll('#product-modal input').forEach(i => i.value = '');
+                document.getElementById('product-modal').classList.add('active');
+            },
+            edit: (id) => {
+                const p = db.products.find(x => x.id == id);
+                document.getElementById('prod-id').value = p.id;
+                document.getElementById('prod-name').value = p.name;
+                document.getElementById('prod-barcode').value = p.barcode;
+                document.getElementById('prod-category').value = p.category;
+                document.getElementById('prod-price').value = p.price;
+                document.getElementById('prod-cost').value = p.cost;
+                document.getElementById('prod-stock').value = p.stock;
+                document.getElementById('prod-min').value = p.minStock;
+                document.getElementById('prod-image').value = p.image || '';
+                inventoryManager.updatePreview();
+                document.getElementById('product-modal').classList.add('active');
+            },
+            updatePreview: () => {
+                const url = document.getElementById('prod-image').value;
+                document.getElementById('prod-preview-box').innerHTML = url ? `<img src="${url}" style="height:100%; object-fit:contain">` : '<span class="text-muted">No Image</span>';
+            },
             saveProduct: () => {
                 const n = document.getElementById('prod-name').value;
                 if(!n) return;
-                db.products.push({
-                    id: Date.now(), name: n, barcode: document.getElementById('prod-barcode').value,
+                const id = document.getElementById('prod-id').value;
+                const p = {
+                    id: id ? parseInt(id) : Date.now(), 
+                    name: n, 
+                    barcode: document.getElementById('prod-barcode').value,
                     category: document.getElementById('prod-category').value || "General",
                     price: parseFloat(document.getElementById('prod-price').value)||0,
+                    cost: parseFloat(document.getElementById('prod-cost').value)||0,
                     stock: parseInt(document.getElementById('prod-stock').value)||0,
+                    minStock: parseInt(document.getElementById('prod-min').value)||0,
                     image: document.getElementById('prod-image').value
-                });
+                };
+                if(id) {
+                    const idx = db.products.findIndex(x => x.id == id);
+                    if(idx > -1) db.products[idx] = p;
+                } else {
+                    db.products.push(p);
+                }
                 app.save(); inventoryManager.render(); pos.init(); document.getElementById('product-modal').classList.remove('active');
             },
-            del: (id) => { if(confirm("Delete?")) { db.products = db.products.filter(x=>x.id!==id); app.save(); inventoryManager.render(); pos.init(); } }
+            del: (id) => { if(confirm("Delete Item?")) { db.products = db.products.filter(x=>x.id!==id); app.save(); inventoryManager.render(); pos.init(); } },
+            downloadTXTTemplate: () => {
+                const txt = db.products.map(p => `${p.name} - ${p.barcode} - ${p.category} - ${p.price} - ${p.stock}`).join('\n');
+                const blob = new Blob([txt], {type: "text/plain"});
+                const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "inventory.txt"; a.click();
+            },
+            importTXT: (input) => {
+                const f = input.files[0]; if(!f) return;
+                const r = new FileReader();
+                r.onload = (e) => {
+                    inventoryManager.pendingImport = e.target.result.split('\n').filter(l=>l.trim().length>0).map((l, i) => {
+                        const p = l.split(' - ');
+                        return { id: Date.now()+i, name: p[0], barcode: p[1]||"", category: p[2]||"General", price: parseFloat(p[3])||0, stock: parseInt(p[4])||0 };
+                    });
+                    const tbody = document.getElementById('import-tbody'); tbody.innerHTML = '';
+                    inventoryManager.pendingImport.forEach((p, i) => {
+                        const isDup = db.products.some(x => x.barcode === p.barcode && p.barcode !== "");
+                        tbody.innerHTML += `<tr style="${isDup?'color:var(--danger)':''}"><td><input type="checkbox" class="import-chk" data-idx="${i}" checked></td><td>${p.name}</td><td>${p.barcode} ${isDup?'(DUP)':''}</td></tr>`;
+                    });
+                    document.getElementById('import-preview-modal').classList.add('active');
+                };
+                r.readAsText(f);
+            },
+            confirmImport: () => {
+                document.querySelectorAll('.import-chk:checked').forEach(c => {
+                    db.products.push(inventoryManager.pendingImport[c.getAttribute('data-idx')]);
+                });
+                app.save(); inventoryManager.render(); pos.init(); document.getElementById('import-preview-modal').classList.remove('active'); app.toast("Imported!");
+            }
         };
 
         const customerManager = {
@@ -619,84 +1031,82 @@
             },
             showAddModal: () => document.getElementById('customer-modal').classList.add('active'),
             saveCustomer: () => {
-                db.customers.push({ id:Date.now(), name:document.getElementById('cust-name').value, phone:document.getElementById('cust-phone').value });
+                db.customers.push({ id:Date.now(), name:document.getElementById('cust-name').value, phone:document.getElementById('cust-phone').value, email:document.getElementById('cust-email').value });
                 app.save(); customerManager.render(); pos.populateCust(); document.getElementById('customer-modal').classList.remove('active');
             },
             del: (id) => { if(confirm("Delete?")) { db.customers = db.customers.filter(x=>x.id!==id); app.save(); customerManager.render(); } }
         };
 
-        // --- SAFE REPORTS (UNIFIED & CRASH PROOF) ---
         const reports = {
             filter: 'today',
-            setFilter: (f) => { reports.filter = f; reports.render(); },
+            setFilter: (f) => { 
+                reports.filter = f; 
+                document.querySelectorAll('#reports-view button').forEach(b => b.classList.remove('active', 'btn-primary'));
+                document.getElementById('filter-'+f).classList.add('active', 'btn-primary');
+                reports.render(); 
+            },
             render: () => {
-                const now = new Date();
-                const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                const now = new Date(); const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                if(reports.filter === 'week') start.setDate(start.getDate() - 7);
+                if(reports.filter === 'month') start.setDate(1);
                 
-                // Safe filtering
-                const d = db.sales.filter(s => {
-                    if(!s.date) return false;
-                    const date = new Date(s.date);
-                    if(isNaN(date.getTime())) return false;
-                    
-                    if(reports.filter === 'today') return date >= start;
-                    if(reports.filter === 'month') return date.getMonth() === now.getMonth();
-                    return true;
-                }).reverse();
-
-                const total = d.reduce((a,b)=>a+(parseFloat(b.total)||0),0);
-                document.getElementById('report-total').innerText = db.settings.currency + total.toFixed(2);
+                const d = db.sales.filter(s => new Date(s.date) >= start).reverse();
+                document.getElementById('report-total').innerText = db.settings.currency + d.reduce((a,b)=>a+b.total,0).toFixed(2);
                 document.getElementById('report-count').innerText = d.length;
                 
-                const t = document.querySelector('#sales-table tbody'); 
-                t.innerHTML = '';
+                const t = document.querySelector('#sales-table tbody'); t.innerHTML = '';
                 d.forEach(s => {
-                    // Hybrid Customer Check
-                    let cust = "Guest";
-                    if(s.customerId) {
-                        const c = db.customers.find(c=>c.id==s.customerId);
-                        cust = c ? c.name : "Guest";
-                    } else if (s.customer) {
-                        cust = s.customer;
-                    }
-
-                    t.innerHTML += `<tr><td>${new Date(s.date).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</td><td>${cust}</td><td>${db.settings.currency}${parseFloat(s.total).toFixed(2)}</td></tr>`;
+                    const cName = s.customerId ? (db.customers.find(c=>c.id==s.customerId)?.name || 'Unknown') : 'Guest';
+                    t.innerHTML += `<tr>
+                        <td>${new Date(s.date).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</td>
+                        <td>${cName}</td>
+                        <td>${db.settings.currency}${s.total.toFixed(2)}</td>
+                        <td><button class="btn btn-secondary" style="width:32px; padding:0;" onclick="reports.view(${s.id})"><i class="fas fa-eye"></i></button></td>
+                    </tr>`;
                 });
+            },
+            view: (id) => {
+                const s = db.sales.find(x => x.id == id);
+                document.getElementById('detail-id').innerText = '#' + s.id;
+                document.getElementById('detail-total').innerText = db.settings.currency + s.total.toFixed(2);
+                const l = document.getElementById('detail-items'); l.innerHTML = '';
+                s.items.forEach(i => {
+                    l.innerHTML += `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border);">
+                        <span>${i.product.name} <small class="text-muted">x${i.qty}</small></span>
+                        <span>${db.settings.currency}${(i.product.price*i.qty).toFixed(2)}</span>
+                    </div>`;
+                });
+                document.getElementById('sale-detail-modal').classList.add('active');
+            },
+            exportPDF: () => {
+                const d = document.getElementById('sales-table').outerHTML;
+                const win = window.open('', '', 'height=700,width=700');
+                win.document.write('<html><head><title>Report</title></head><body><h1>Sales Report</h1>');
+                win.document.write(d);
+                win.document.write('</body></html>');
+                win.document.close();
+                win.print();
             }
         };
 
-        // --- SYNC ENGINE (PeerJS) ---
         const syncApp = {
             peer: null, conn: null,
-            open: () => {
-                document.getElementById('sync-modal').classList.add('active');
-                document.getElementById('sync-step-1').classList.remove('hidden');
-                document.getElementById('sync-step-host').classList.add('hidden');
-                document.getElementById('sync-step-client').classList.add('hidden');
-            },
+            open: () => document.getElementById('sync-modal').classList.add('active'),
             startHost: () => {
-                if(syncApp.peer) syncApp.peer.destroy();
                 const code = Math.floor(1000 + Math.random() * 9000);
-                syncApp.peer = new Peer('likapos-sync-' + code);
-                
-                syncApp.peer.on('open', (id) => {
+                syncApp.peer = new Peer('likapos-' + code);
+                syncApp.peer.on('open', () => {
                     document.getElementById('sync-step-1').classList.add('hidden');
                     document.getElementById('sync-step-host').classList.remove('hidden');
                     document.getElementById('sync-code-display').innerText = code;
                 });
-
-                syncApp.peer.on('connection', (conn) => {
-                    conn.on('open', () => {
-                        app.toast("Device Connected! Sending data...");
-                        conn.send({ type: 'SYNC_DATA', data: db });
-                        setTimeout(() => {
-                            app.toast("Sync Complete!");
-                            document.getElementById('sync-modal').classList.remove('active');
-                            syncApp.peer.destroy(); 
-                        }, 2000);
+                syncApp.peer.on('connection', (c) => {
+                    c.on('open', () => {
+                        c.send({type: 'SYNC', data: db});
+                        app.toast("Data Sent!");
+                        setTimeout(() => document.getElementById('sync-modal').classList.remove('active'), 2000);
                     });
                 });
-                syncApp.peer.on('error', (err) => app.toast("Sync Error: " + err.type));
             },
             startClient: () => {
                 document.getElementById('sync-step-1').classList.add('hidden');
@@ -704,28 +1114,62 @@
             },
             connectToHost: () => {
                 const code = document.getElementById('sync-code-input').value;
-                if(!code) return app.toast("Enter code");
-                if(syncApp.peer) syncApp.peer.destroy();
-                syncApp.peer = new Peer();
-                syncApp.peer.on('open', () => {
-                    const conn = syncApp.peer.connect('likapos-sync-' + code);
-                    conn.on('open', () => { app.toast("Connected! Waiting for data..."); });
-                    conn.on('data', (msg) => {
-                        if(msg.type === 'SYNC_DATA') {
-                            // IMPROVED: No alert popup, just clean toast and reload
-                            if(confirm("Data received! Overwrite current data?")) {
-                                Object.assign(db, msg.data);
-                                app.save();
-                                document.getElementById('sync-modal').classList.remove('active');
-                                app.toast("Sync Success! Reloading...");
-                                setTimeout(() => location.reload(), 1500);
+                if(!code) return alert("Enter Code");
+                const p = new Peer();
+                p.on('open', () => {
+                    const c = p.connect('likapos-' + code);
+                    c.on('data', (d) => {
+                        if(d.type === 'SYNC') {
+                            if(confirm("Overwrite local data?")) {
+                                Object.assign(db, d.data); app.save(); location.reload();
                             }
                         }
                     });
                 });
-                syncApp.peer.on('error', (err) => app.toast("Connection Failed. Check code or internet."));
             }
         };
+        
+        // --- ONBOARDING TOUR ---
+        const onboarding = {
+            steps: [
+                { el: '#sidebar', titleKey: 'tour_sidebar_title', descKey: 'tour_sidebar_desc' },
+                { el: '.stats-grid', titleKey: 'tour_dash_title', descKey: 'tour_dash_desc' },
+                { el: '#dash-quick-actions', titleKey: 'quick_actions', descKey: 'tour_pos_desc' }
+            ],
+            idx: 0,
+            start: (force) => {
+                if(force) localStorage.removeItem('likapos_tour_done');
+                document.getElementById('onboarding-backdrop').classList.add('active');
+                onboarding.idx = 0; onboarding.show();
+            },
+            show: () => {
+                const s = onboarding.steps[onboarding.idx];
+                const el = document.querySelector(s.el);
+                if(!el) return onboarding.finish();
+                
+                document.querySelectorAll('.onboarding-spotlight').forEach(e => e.classList.remove('onboarding-spotlight'));
+                el.classList.add('onboarding-spotlight');
+                el.scrollIntoView({behavior: 'smooth', block: 'center'});
+                
+                document.getElementById('onboarding-title').innerText = app.t(s.titleKey);
+                document.getElementById('onboarding-desc').innerText = app.t(s.descKey);
+                document.getElementById('onboarding-tooltip').classList.add('active');
+                document.getElementById('onboarding-next-btn').innerText = onboarding.idx === onboarding.steps.length - 1 ? app.t('finish') : app.t('next');
+            },
+            next: () => {
+                onboarding.idx++;
+                if(onboarding.idx >= onboarding.steps.length) onboarding.finish(); else onboarding.show();
+            },
+            finish: () => {
+                document.querySelectorAll('.onboarding-spotlight').forEach(e => e.classList.remove('onboarding-spotlight'));
+                document.getElementById('onboarding-backdrop').classList.remove('active');
+                document.getElementById('onboarding-tooltip').classList.remove('active');
+                localStorage.setItem('likapos_tour_done', 'true');
+            }
+        };
+
+        // --- UTILS ---
+        app.formatMoney = (n) => db.settings.currency + parseFloat(n).toFixed(2);
 
         app.init();
     </script>
