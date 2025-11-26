@@ -1094,7 +1094,8 @@
             open: () => document.getElementById('sync-modal').classList.add('active'),
             startHost: () => {
                 const code = Math.floor(1000 + Math.random() * 9000);
-                syncApp.peer = new Peer('likapos-' + code);
+                // FIXED: Use common prefix 'likapos-sync-' to match Desktop version
+                syncApp.peer = new Peer('likapos-sync-' + code);
                 syncApp.peer.on('open', () => {
                     document.getElementById('sync-step-1').classList.add('hidden');
                     document.getElementById('sync-step-host').classList.remove('hidden');
@@ -1102,10 +1103,13 @@
                 });
                 syncApp.peer.on('connection', (c) => {
                     c.on('open', () => {
-                        c.send({type: 'SYNC', data: db});
+                        c.send({type: 'SYNC_DATA', data: db});
                         app.toast("Data Sent!");
                         setTimeout(() => document.getElementById('sync-modal').classList.remove('active'), 2000);
                     });
+                });
+                syncApp.peer.on('error', (err) => {
+                    alert("Sync Error: " + err.type);
                 });
             },
             startClient: () => {
@@ -1115,15 +1119,33 @@
             connectToHost: () => {
                 const code = document.getElementById('sync-code-input').value;
                 if(!code) return alert("Enter Code");
+                
                 const p = new Peer();
                 p.on('open', () => {
-                    const c = p.connect('likapos-' + code);
+                    // FIXED: Use common prefix 'likapos-sync-' to match Desktop version
+                    const c = p.connect('likapos-sync-' + code);
+                    
+                    c.on('open', () => {
+                        app.toast("Connected! Waiting for data...");
+                    });
+
                     c.on('data', (d) => {
-                        if(d.type === 'SYNC') {
-                            if(confirm("Overwrite local data?")) {
-                                Object.assign(db, d.data); app.save(); location.reload();
+                        // FIXED: Handle 'SYNC_DATA' type (standardized across versions)
+                        if(d.type === 'SYNC_DATA' || d.type === 'SYNC') {
+                            if(confirm("Incoming Data received! Overwrite current data?")) {
+                                Object.assign(db, d.data); 
+                                app.save(); 
+                                alert("Sync Successful! App will reload."); 
+                                location.reload();
                             }
                         }
+                    });
+                    
+                    // Error handling for connection failure
+                    p.on('error', (err) => {
+                        alert("Connection Failed. Is the other device waiting?");
+                        document.getElementById('sync-step-client').classList.add('hidden');
+                        document.getElementById('sync-step-1').classList.remove('hidden');
                     });
                 });
             }
