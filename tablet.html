@@ -9,6 +9,8 @@
       gtag('config', 'G-8XSLX790TS');
     </script>
 
+    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LIKApos Tablet</title>
@@ -71,7 +73,7 @@
             font-family: 'Inter', sans-serif;
             overflow: hidden;
             height: 100vh; 
-            font-size: 15px; /* Slightly larger text for tablet */
+            font-size: 15px;
             transition: background 0.3s;
         }
 
@@ -79,18 +81,15 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
-        /* Animations */
         .animate-fade-up { animation: fadeInUp 0.4s var(--ease-smooth); }
         .animate-slide { animation: slideInRight 0.4s var(--ease-smooth); }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slideInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
 
-        /* LAYOUT */
         #app { display: flex; height: 100vh; width: 100vw; }
         
-        /* TABLET SIDEBAR (Slim by default) */
         #sidebar {
-            width: 80px; /* Slim width */
+            width: 80px; 
             background: var(--bg-sidebar);
             border-right: 1px solid var(--border);
             display: flex; flex-direction: column; z-index: 50;
@@ -124,7 +123,7 @@
         .nav-item:hover, .nav-item.active { color: var(--text-primary); background: var(--hover-overlay); }
         .nav-item.active i { color: var(--secondary); }
 
-        .shortcut-badge { display: none; } /* Hide shortcuts on slim sidebar */
+        .shortcut-badge { display: none; }
 
         #main { flex: 1; display: flex; flex-direction: column; background: var(--bg-app); position: relative; overflow: hidden; }
 
@@ -134,10 +133,9 @@
             border-bottom: 1px solid var(--border); background: var(--bg-surface);
         }
 
-        /* TOUCH FRIENDLY BUTTONS */
         .btn {
             border: none; border-radius: var(--radius-sm); padding: 12px 20px; font-weight: 600; font-size: 14px; cursor: pointer;
-            transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; /* Touch target */
+            transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; justify-content: center;
         }
         .btn-primary { background: linear-gradient(135deg, var(--secondary) 0%, #00A3FF 100%); color: #fff; }
         .btn-secondary { background: var(--bg-app); color: var(--text-primary); border: 1px solid var(--border); }
@@ -146,14 +144,13 @@
 
         input, select {
             background: var(--bg-input); border: 1px solid var(--border); color: var(--text-primary); 
-            padding: 12px 16px; border-radius: var(--radius-sm); width: 100%; min-height: 48px; /* Touch target */
+            padding: 12px 16px; border-radius: var(--radius-sm); width: 100%; min-height: 48px;
         }
 
         .card {
             background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 20px;
         }
 
-        /* VIEWS */
         .view-container { display: none; padding: 24px; height: 100%; overflow-y: auto; }
         .view-container.active { display: block; }
 
@@ -161,17 +158,15 @@
         .stat-card { display: flex; flex-direction: column; gap: 8px; }
         .stat-val { font-size: 26px; font-weight: 700; font-family: 'JetBrains Mono'; }
         
-        /* POS LAYOUT (Tablet Optimized) */
         .pos-layout { display: grid; grid-template-columns: 1fr 340px; gap: 20px; height: 100%; overflow: hidden; }
         
-        /* If tablet is in portrait, stack them? Optional, but Grid usually fits */
         @media (max-width: 900px) {
              .pos-layout { grid-template-columns: 1fr 300px; gap: 16px; }
         }
 
         .product-grid { 
             display: grid; gap: 12px; padding-right: 4px; overflow-y: auto; align-content: start; 
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); /* Smaller cards for tablet */
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); 
         }
         
         .prod-card {
@@ -183,7 +178,6 @@
         .prod-info { padding: 10px; display: flex; flex-direction: column; gap: 4px; }
         .prod-price { background: var(--hover-overlay); color: var(--secondary); padding: 4px 8px; border-radius: 4px; align-self: flex-start; font-weight: 600; font-size: 12px; }
 
-        /* CART */
         .cart-panel {
             background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-lg); 
             display: flex; flex-direction: column; overflow: hidden;
@@ -194,7 +188,6 @@
             display: flex; justify-content: space-between; align-items: center;
         }
 
-        /* MODALS */
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 2000; 
             display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s;
@@ -207,7 +200,6 @@
         }
         .modal-overlay.active .modal { transform: scale(1); }
 
-        /* UTILS */
         .text-accent { color: var(--accent); }
         .text-secondary { color: var(--secondary); }
         .text-muted { color: var(--text-tertiary); }
@@ -217,6 +209,8 @@
         .table-container { overflow-x: auto; background: var(--bg-surface); border-radius: var(--radius-md); }
         table { width: 100%; border-collapse: collapse; min-width: 600px; }
         th, td { padding: 16px; text-align: left; border-bottom: 1px solid var(--border); }
+        
+        #toast { position:fixed; top:20px; left:50%; transform:translateX(-50%); background:var(--bg-surface); padding:12px 24px; border:1px solid var(--secondary); border-radius:30px; opacity:0; transition:opacity 0.3s; pointer-events:none; z-index:3000; }
     </style>
 </head>
 <body>
@@ -348,6 +342,15 @@
 
             <div id="settings-view" class="view-container">
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                    
+                    <div class="card" style="grid-column: span 2;">
+                        <h3>Device Sync</h3>
+                        <p class="text-muted" style="margin-bottom:12px; font-size:13px;">Connect to Mobile or Desktop to share data.</p>
+                        <button class="btn btn-primary" onclick="syncApp.open()" style="width: 100%;">
+                            <i class="fas fa-sync"></i> Connect & Sync
+                        </button>
+                    </div>
+
                     <div class="card">
                         <h3>Language</h3>
                         <div style="margin-top: 16px;">
@@ -407,30 +410,70 @@
     
     <div id="customer-modal" class="modal-overlay"><div class="modal"><h3 style="margin-bottom: 20px;">Customer</h3><input type="hidden" id="cust-id"><div style="display: flex; flex-direction: column; gap: 16px;"><input type="text" id="cust-name" placeholder="Name"><input type="text" id="cust-phone" placeholder="Phone"></div><div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px;"><button class="btn btn-secondary" onclick="document.getElementById('customer-modal').classList.remove('active')">Cancel</button><button class="btn btn-primary" onclick="customerManager.saveCustomer()">Save</button></div></div></div>
 
+    <div id="sync-modal" class="modal-overlay">
+        <div class="modal" style="max-width: 400px; text-align: center;">
+            <h3 style="margin-bottom: 16px;">Device Sync</h3>
+            <div id="sync-step-1">
+                <p class="text-muted" style="margin-bottom: 24px;">Connect two devices to transfer data.</p>
+                <div style="display: grid; gap: 12px;">
+                    <button class="btn btn-primary" onclick="syncApp.startHost()" style="justify-content: center; height: 50px;">
+                        <i class="fas fa-upload"></i> SEND DATA (Host)
+                    </button>
+                    <button class="btn btn-secondary" onclick="syncApp.startClient()" style="justify-content: center; height: 50px;">
+                        <i class="fas fa-download"></i> RECEIVE DATA (Join)
+                    </button>
+                </div>
+            </div>
+            <div id="sync-step-host" class="hidden">
+                <p class="text-muted">Enter this code on the other device:</p>
+                <div id="sync-code-display" style="font-size: 48px; font-family: 'JetBrains Mono'; font-weight: 700; color: var(--accent); margin: 20px 0; letter-spacing: 4px;">...</div>
+                <div style="font-size: 12px;" class="text-secondary"><i class="fas fa-spinner fa-spin"></i> Waiting for connection...</div>
+            </div>
+            <div id="sync-step-client" class="hidden">
+                <p class="text-muted">Enter the code from the Host device:</p>
+                <input type="number" id="sync-code-input" placeholder="0000" style="font-size: 32px; text-align: center; letter-spacing: 4px; font-family: 'JetBrains Mono'; margin: 20px 0; width: 100%;">
+                <button class="btn btn-success" onclick="syncApp.connectToHost()" style="width: 100%; justify-content: center;">CONNECT & SYNC</button>
+            </div>
+            <div style="margin-top: 24px; border-top: 1px solid var(--border); padding-top: 16px;">
+                <button class="btn btn-secondary" onclick="document.getElementById('sync-modal').classList.remove('active')">Close</button>
+            </div>
+        </div>
+    </div>
+
     <div id="toast" style="position:fixed; top:20px; left:50%; transform:translateX(-50%); background:var(--bg-surface); padding:12px 24px; border:1px solid var(--secondary); border-radius:30px; opacity:0; transition:opacity 0.3s; pointer-events:none; z-index:3000;"><span id="toast-msg"></span></div>
 
     <script>
-        // --- TRANSLATIONS ---
         const TRANSLATIONS = {
             "English": { dashboard: "Dashboard", pos: "POS", inventory: "Inventory", customers: "Customers", analytics: "Reports", settings: "Settings" },
             "Albanian": { dashboard: "Ballina", pos: "Arka", inventory: "Stoku", customers: "Klientët", analytics: "Raporte", settings: "Cilësimet" }
         };
 
-        // --- DATABASE ---
         const db = { products: [], customers: [], sales: [], settings: { storeName: "LIKApos", currency: "€", taxRate: 10, nextSaleId: 1000, language: "English" } };
 
         const app = {
             init: () => {
+                // Unified DB Key: likapos_db
                 const sDB = localStorage.getItem('likapos_db');
                 if(sDB) Object.assign(db, JSON.parse(sDB));
+                else app.loadDefaultData();
+                
                 db.settings.language = localStorage.getItem('likapos_language') || "English";
                 app.applyTranslations();
                 pos.init();
                 inventoryManager.render();
                 app.updateDashboard();
                 app.checkConnection();
-                // Allow sidebar toggle by default if screen is smaller
                 if(window.innerWidth < 1000) document.getElementById('sidebar').classList.remove('expanded');
+            },
+            loadDefaultData: () => {
+                 db.products = [
+                    { id: 101, name: "Fanta 0.5l", barcode: "50001", price: 1.00, cost: 0.50, stock: 100, category: "Beverages", minStock: 20, image: "https://britishessentials.com/cdn/shop/products/April0938_x700.jpg?v=1617962710" },
+                    { id: 102, name: "Croissant 7 Days 40gr", barcode: "50002", price: 1.50, cost: 0.75, stock: 50, category: "Bakery", minStock: 10, image: "https://marketonline.mk/wp-content/uploads/2020/03/25862-1.jpg" },
+                    { id: 104, name: "CocaCola 150ml", barcode: "50004", price: 1.20, cost: 0.60, stock: 120, category: "Beverages", minStock: 15, image: "https://assets.sainsburys-groceries.co.uk/gol/7965334/1/640x640.jpg" }
+                ];
+                db.customers = [{ id: 1, name: "Guest", phone: "", points: 0, totalSpent: 0 }];
+                db.sales = [];
+                app.save();
             },
             save: () => { localStorage.setItem('likapos_db', JSON.stringify(db)); },
             t: (k) => { return (TRANSLATIONS[db.settings.language] || TRANSLATIONS["English"])[k] || k; },
@@ -456,7 +499,7 @@
             updateDashboard: () => {
                 const today = new Date().toDateString();
                 const sales = db.sales.filter(s => new Date(s.date).toDateString() === today);
-                const total = sales.reduce((a, b) => a + b.total, 0);
+                const total = sales.reduce((a, b) => a + (parseFloat(b.total)||0), 0);
                 const low = db.products.filter(p => p.stock <= 5).length;
                 
                 document.getElementById('dash-sales').innerText = db.settings.currency + total.toFixed(2);
@@ -582,17 +625,105 @@
             del: (id) => { if(confirm("Delete?")) { db.customers = db.customers.filter(x=>x.id!==id); app.save(); customerManager.render(); } }
         };
 
+        // --- SAFE REPORTS (UNIFIED & CRASH PROOF) ---
         const reports = {
             filter: 'today',
             setFilter: (f) => { reports.filter = f; reports.render(); },
             render: () => {
-                const start = new Date(); start.setHours(0,0,0,0);
-                if(reports.filter === 'month') start.setDate(1);
-                const d = db.sales.filter(s => new Date(s.date) >= start).reverse();
-                document.getElementById('report-total').innerText = db.settings.currency + d.reduce((a,b)=>a+b.total,0).toFixed(2);
+                const now = new Date();
+                const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                
+                // Safe filtering
+                const d = db.sales.filter(s => {
+                    if(!s.date) return false;
+                    const date = new Date(s.date);
+                    if(isNaN(date.getTime())) return false;
+                    
+                    if(reports.filter === 'today') return date >= start;
+                    if(reports.filter === 'month') return date.getMonth() === now.getMonth();
+                    return true;
+                }).reverse();
+
+                const total = d.reduce((a,b)=>a+(parseFloat(b.total)||0),0);
+                document.getElementById('report-total').innerText = db.settings.currency + total.toFixed(2);
                 document.getElementById('report-count').innerText = d.length;
-                const t = document.querySelector('#sales-table tbody'); t.innerHTML = '';
-                d.forEach(s => t.innerHTML += `<tr><td>${new Date(s.date).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</td><td>${s.customerId?'User':'Guest'}</td><td>${db.settings.currency}${s.total.toFixed(2)}</td></tr>`);
+                
+                const t = document.querySelector('#sales-table tbody'); 
+                t.innerHTML = '';
+                d.forEach(s => {
+                    // Hybrid Customer Check
+                    let cust = "Guest";
+                    if(s.customerId) {
+                        const c = db.customers.find(c=>c.id==s.customerId);
+                        cust = c ? c.name : "Guest";
+                    } else if (s.customer) {
+                        cust = s.customer;
+                    }
+
+                    t.innerHTML += `<tr><td>${new Date(s.date).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</td><td>${cust}</td><td>${db.settings.currency}${parseFloat(s.total).toFixed(2)}</td></tr>`;
+                });
+            }
+        };
+
+        // --- SYNC ENGINE (PeerJS) ---
+        const syncApp = {
+            peer: null, conn: null,
+            open: () => {
+                document.getElementById('sync-modal').classList.add('active');
+                document.getElementById('sync-step-1').classList.remove('hidden');
+                document.getElementById('sync-step-host').classList.add('hidden');
+                document.getElementById('sync-step-client').classList.add('hidden');
+            },
+            startHost: () => {
+                if(syncApp.peer) syncApp.peer.destroy();
+                const code = Math.floor(1000 + Math.random() * 9000);
+                syncApp.peer = new Peer('likapos-sync-' + code);
+                
+                syncApp.peer.on('open', (id) => {
+                    document.getElementById('sync-step-1').classList.add('hidden');
+                    document.getElementById('sync-step-host').classList.remove('hidden');
+                    document.getElementById('sync-code-display').innerText = code;
+                });
+
+                syncApp.peer.on('connection', (conn) => {
+                    conn.on('open', () => {
+                        app.toast("Device Connected! Sending data...");
+                        conn.send({ type: 'SYNC_DATA', data: db });
+                        setTimeout(() => {
+                            app.toast("Sync Complete!");
+                            document.getElementById('sync-modal').classList.remove('active');
+                            syncApp.peer.destroy(); 
+                        }, 2000);
+                    });
+                });
+                syncApp.peer.on('error', (err) => app.toast("Sync Error: " + err.type));
+            },
+            startClient: () => {
+                document.getElementById('sync-step-1').classList.add('hidden');
+                document.getElementById('sync-step-client').classList.remove('hidden');
+            },
+            connectToHost: () => {
+                const code = document.getElementById('sync-code-input').value;
+                if(!code) return app.toast("Enter code");
+                if(syncApp.peer) syncApp.peer.destroy();
+                syncApp.peer = new Peer();
+                syncApp.peer.on('open', () => {
+                    const conn = syncApp.peer.connect('likapos-sync-' + code);
+                    conn.on('open', () => { app.toast("Connected! Waiting for data..."); });
+                    conn.on('data', (msg) => {
+                        if(msg.type === 'SYNC_DATA') {
+                            // IMPROVED: No alert popup, just clean toast and reload
+                            if(confirm("Data received! Overwrite current data?")) {
+                                Object.assign(db, msg.data);
+                                app.save();
+                                document.getElementById('sync-modal').classList.remove('active');
+                                app.toast("Sync Success! Reloading...");
+                                setTimeout(() => location.reload(), 1500);
+                            }
+                        }
+                    });
+                });
+                syncApp.peer.on('error', (err) => app.toast("Connection Failed. Check code or internet."));
             }
         };
 
