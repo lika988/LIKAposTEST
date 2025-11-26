@@ -75,6 +75,20 @@
             font-size: 14px;
         }
 
+        /* --- MOBILE ONLY LOCK --- */
+        #desktop-warning {
+            display: none;
+            position: fixed; inset: 0; background: var(--bg-app); z-index: 9999;
+            flex-direction: column; align-items: center; justify-content: center; text-align: center;
+            padding: 40px;
+        }
+
+        /* Force Mobile View Logic - Strict Phone Only (Blocks Tablets 768px+) */
+        @media screen and (min-width: 768px) {
+            #app { display: none !important; }
+            #desktop-warning { display: flex !important; }
+        }
+
         /* --- LAYOUT STRUCTURE --- */
         #app {
             display: flex;
@@ -407,6 +421,17 @@
     </style>
 </head>
 <body>
+    <!-- DEVICE BLOCKER -->
+    <div id="desktop-warning">
+        <div style="font-size: 64px; margin-bottom: 24px; color: var(--secondary);">
+            <i class="fas fa-mobile-alt"></i>
+        </div>
+        <h2 style="margin-bottom: 12px;">Mobile Phone Only</h2>
+        <p style="color: var(--text-secondary); max-width: 300px; line-height: 1.5;">
+            LIKApos is designed exclusively for mobile phones. Tablets and Desktop screens are not supported.
+        </p>
+    </div>
+
     <div id="app">
         <header>
             <h3 id="header-title" style="font-size: 18px; font-weight: 700;">Dashboard</h3>
@@ -534,7 +559,8 @@
             <div class="scroll-content">
                 <div class="card">
                     <h3 style="margin-bottom: 16px;">Device Sync</h3>
-                    <button class="btn btn-primary" onclick="syncApp.open()" style="width: 100%;">
+                    <!-- CHANGED: Now simply routes to the sync view instead of opening a modal -->
+                    <button class="btn btn-primary" onclick="app.router('sync')" style="width: 100%;">
                         <i class="fas fa-sync"></i> Connect & Sync
                     </button>
                 </div>
@@ -617,38 +643,45 @@
             </div>
         </div>
 
-        <div id="sync-modal" class="modal-overlay">
-            <div class="modal" style="width: 90%; max-width: 400px; text-align: center; background: var(--bg-surface); padding: 24px; border-radius: 16px; border: 1px solid var(--border);">
-                <h3 style="margin-bottom: 16px;">Device Sync</h3>
-                
-                <div id="sync-step-1">
+        <!-- NEW SYNC VIEW (REPLACING MODAL) -->
+        <div id="sync-view" class="view-container">
+            <div class="scroll-content">
+                <div style="margin-bottom: 20px;">
+                    <button class="btn btn-secondary" onclick="app.router('settings')" style="width: auto; padding: 8px 16px; font-size: 12px;">
+                        <i class="fas fa-arrow-left"></i> Back to Settings
+                    </button>
+                </div>
+
+                <div class="card" style="text-align: center; padding: 32px 16px;">
+                    <h2 style="margin-bottom: 12px;">Device Sync</h2>
                     <p class="text-muted" style="margin-bottom: 24px;">Connect two devices to transfer data.</p>
-                    <div style="display: grid; gap: 12px;">
-                        <button class="btn btn-primary" onclick="syncApp.startHost()" style="justify-content: center; height: 50px;">
-                            <i class="fas fa-upload"></i> SEND DATA (Host)
-                        </button>
-                        <button class="btn btn-secondary" onclick="syncApp.startClient()" style="justify-content: center; height: 50px;">
-                            <i class="fas fa-download"></i> RECEIVE DATA (Join)
-                        </button>
+                    
+                    <div id="sync-step-1">
+                        <div style="display: grid; gap: 16px; max-width: 300px; margin: 0 auto;">
+                            <button class="btn btn-primary" onclick="syncApp.startHost()" style="justify-content: center; height: 50px;">
+                                <i class="fas fa-upload"></i> SEND DATA (Host)
+                            </button>
+                            <button class="btn btn-secondary" onclick="syncApp.startClient()" style="justify-content: center; height: 50px;">
+                                <i class="fas fa-download"></i> RECEIVE DATA (Join)
+                            </button>
+                        </div>
                     </div>
-                </div>
 
-                <div id="sync-step-host" class="hidden">
-                    <p class="text-muted">Enter this code on the other device:</p>
-                    <div id="sync-code-display" style="font-size: 48px; font-family: 'JetBrains Mono'; font-weight: 700; color: var(--accent); margin: 20px 0; letter-spacing: 4px;">
-                        ...
+                    <div id="sync-step-host" class="hidden">
+                        <p class="text-muted">Enter this code on the other device:</p>
+                        <div id="sync-code-display" style="font-size: 48px; font-family: 'JetBrains Mono'; font-weight: 700; color: var(--accent); margin: 20px 0; letter-spacing: 4px;">
+                            ...
+                        </div>
+                        <div style="font-size: 12px;" class="text-secondary"><i class="fas fa-spinner fa-spin"></i> Waiting for connection...</div>
+                        <button class="btn btn-secondary" onclick="syncApp.resetUI()" style="margin-top: 20px; width: auto; display: inline-flex;">Cancel</button>
                     </div>
-                    <div style="font-size: 12px;" class="text-secondary"><i class="fas fa-spinner fa-spin"></i> Waiting for connection...</div>
-                </div>
 
-                <div id="sync-step-client" class="hidden">
-                    <p class="text-muted">Enter the code from the Host device:</p>
-                    <input type="number" id="sync-code-input" placeholder="0000" style="font-size: 32px; text-align: center; letter-spacing: 4px; font-family: 'JetBrains Mono'; margin: 20px 0; width: 100%; padding: 10px; background: var(--bg-app); border: 1px solid var(--border); color: var(--text-primary); border-radius: 8px;">
-                    <button class="btn btn-success" onclick="syncApp.connectToHost()" style="width: 100%; justify-content: center; height: 50px;">CONNECT & SYNC</button>
-                </div>
-
-                <div style="margin-top: 24px; border-top: 1px solid var(--border); padding-top: 16px;">
-                    <button class="btn btn-secondary" onclick="document.getElementById('sync-modal').classList.remove('active')" style="width:100%;">Close</button>
+                    <div id="sync-step-client" class="hidden">
+                        <p class="text-muted">Enter the code from the Host device:</p>
+                        <input type="number" id="sync-code-input" placeholder="0000" style="font-size: 32px; text-align: center; letter-spacing: 4px; font-family: 'JetBrains Mono'; margin: 20px auto; width: 100%; max-width: 200px; padding: 10px; background: var(--bg-app); border: 1px solid var(--border); color: var(--text-primary); border-radius: 8px;">
+                        <button class="btn btn-success" onclick="syncApp.connectToHost()" style="width: 100%; max-width: 300px; margin: 0 auto; justify-content: center; height: 50px;">CONNECT & SYNC</button>
+                         <button class="btn btn-secondary" onclick="syncApp.resetUI()" style="margin-top: 16px; width: auto; display: inline-flex;">Cancel</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -873,6 +906,11 @@
             toastTimeout: null,
             
             init: () => {
+                // Strict Mobile Check on Load (Blocks Tablets 768px+)
+                if(window.innerWidth >= 768) {
+                    console.log("Tablet/Desktop mode detected - Blocking View");
+                }
+
                 const s = localStorage.getItem('likapos_db');
                 if(s) {
                      Object.assign(db, JSON.parse(s));
@@ -923,9 +961,27 @@
             router: (v) => {
                 document.querySelectorAll('.view-container').forEach(e => e.classList.remove('active'));
                 document.getElementById(v + '-view').classList.add('active');
+                
+                // Nav state
                 document.querySelectorAll('.nav-btn').forEach(e => e.classList.remove('active'));
-                const nav = v === 'pos' ? 'nav-pos' : (v === 'dashboard' ? 'nav-dashboard' : 'nav-more');
-                document.getElementById(nav).classList.add('active');
+                
+                // Hide nav on sync view
+                const navBar = document.querySelector('.bottom-nav');
+                if(v === 'sync') {
+                    navBar.style.display = 'none';
+                    document.getElementById('header-title').innerText = "Device Sync";
+                    return; // Skip nav highlighting logic
+                } else {
+                    navBar.style.display = 'flex';
+                }
+
+                // Normal routing
+                let nav = '';
+                if(v === 'pos') nav = 'nav-pos';
+                else if(v === 'dashboard') nav = 'nav-dashboard';
+                else nav = 'nav-more';
+                
+                if(document.getElementById(nav)) document.getElementById(nav).classList.add('active');
                 document.getElementById('header-title').innerText = app.t(v);
                 
                 if(v === 'dashboard') app.dash();
@@ -933,6 +989,9 @@
                 if(v === 'inventory') inventoryManager.render();
                 if(v === 'customers') customerManager.render();
                 if(v === 'reports') reports.render();
+                
+                // Reset sync UI when leaving sync view
+                if(v !== 'sync') syncApp.resetUI();
             },
             
             dash: () => {
@@ -1026,14 +1085,16 @@
         };
 
         // --- SYNC ENGINE (PeerJS) ---
+        // UPDATED: Now works inside the Sync View, no alerts
         const syncApp = {
             peer: null, conn: null,
             
-            open: () => {
-                document.getElementById('sync-modal').classList.add('active');
+            resetUI: () => {
                 document.getElementById('sync-step-1').classList.remove('hidden');
                 document.getElementById('sync-step-host').classList.add('hidden');
                 document.getElementById('sync-step-client').classList.add('hidden');
+                if(syncApp.peer) syncApp.peer.destroy();
+                syncApp.peer = null;
             },
             
             startHost: () => {
@@ -1056,8 +1117,7 @@
                         
                         setTimeout(() => {
                             app.toast("Sync Complete!");
-                            document.getElementById('sync-modal').classList.remove('active');
-                            // Don't destroy peer immediately in case client needs to retry
+                            app.router('settings'); // Auto return to settings on success
                         }, 2000);
                     });
                 });
@@ -1091,8 +1151,8 @@
                             if(confirm("Incoming Data received! Overwrite current data?")) {
                                 Object.assign(db, msg.data);
                                 app.save();
-                                alert("Sync Successful! App will reload.");
-                                location.reload();
+                                app.toast("Sync Successful! Reloading...");
+                                setTimeout(() => location.reload(), 1500);
                             }
                         }
                     });
